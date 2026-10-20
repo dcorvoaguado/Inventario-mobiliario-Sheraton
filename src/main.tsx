@@ -32,6 +32,7 @@ import {
   productRows,
   replaceDestinations,
   resetAllocationSelection,
+  syncRemainders,
 } from "./allocation";
 import PdfExport from "./PdfExport";
 import { deletedKey, readDeleted } from "./deleted";
@@ -74,7 +75,7 @@ function App() {
   });
   const [items, setItems] = useState<Item[]>(() => {
     try {
-      return read();
+      return syncRemainders(read());
     } catch {
       return [];
     }
@@ -94,6 +95,9 @@ function App() {
   const [resetOpen, setResetOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [recoverOpen, setRecoverOpen] = useState(false);
+  const [recoverySelection, setRecoverySelection] = useState<Set<string>>(
+    new Set(),
+  );
   const [archive, setArchive] = useState<Item[]>(() => {
     try {
       return readDeleted();
@@ -106,6 +110,7 @@ function App() {
   );
   const [actor, setActor] = useState(sender);
   const [view, setView] = useState<"table" | "gallery">("table");
+  const selectable = items.filter((row) => !row.isRemainder);
   const visible = items.filter(
     (i) =>
       normalizeSearch(
@@ -122,6 +127,7 @@ function App() {
   function persist(next: Item[]) {
     if (loadError) return false;
     try {
+      next = syncRemainders(next);
       localStorage.setItem(key, JSON.stringify(next));
       setItems(next);
       setError("");
@@ -143,9 +149,10 @@ function App() {
   }
   function resetSelected() {
     if (actor !== sender || !selected.size) return;
-    const next = resetAllocationSelection(items, selected).filter(
-      (row) => !deleted.some((removed) => removed.id === row.id),
-    );
+    const next = resetAllocationSelection(
+      items.filter((row) => !row.isRemainder),
+      selected,
+    ).filter((row) => !deleted.some((removed) => removed.id === row.id));
     if (persist(next)) {
       setSelected(new Set());
       setResetOpen(false);
@@ -179,10 +186,12 @@ function App() {
   }
   function recoverFurniture() {
     if (loadError || actor !== sender || !deleted.length) return;
-    const next = [...items, ...structuredClone(deleted)];
+    const chosen = deleted.filter((row) => recoverySelection.has(row.id));
+    if (!chosen.length) return;
+    const next = [...items, ...structuredClone(chosen)];
     // Restore the saved rows exactly; never overwrite current movements or
     // silently reinstate a distribution exceeding its shared stock.
-    for (const row of deleted) {
+    for (const row of chosen) {
       const problem = allocationError(next, row);
       if (problem) {
         setError(
@@ -196,7 +205,7 @@ function App() {
     // the recovery list; subsequent deletion replaces their snapshots.
     setRecoverOpen(false);
     setMessage(
-      `${deleted.length} elementos recuperados con sus fotografías y datos guardados.`,
+      `${chosen.length} elementos recuperados con sus fotografías y datos guardados.`,
     );
   }
   function save(e: FormEvent) {
@@ -256,6 +265,14 @@ function App() {
       return false;
     }
     const next = { ...item, [field]: value };
+    if (item.isRemainder && field === "location") {
+      next.id = crypto.randomUUID();
+      next.isRemainder = false;
+    }
+    if (field === "allocatedQuantity" && !item.location) {
+      setError("Selecciona un hotel antes de asignarle cantidades.");
+      return false;
+    }
     if (field === "sent") next.sentBy = value === null ? null : sender;
     if (field === "received") next.receivedBy = value === null ? null : actor;
     if (field === "damageSentMode")
@@ -285,7 +302,11 @@ function App() {
               : i,
           )
         : items.map((i) => (i.id === item.id ? next : i));
-    if (["correctedQuantity", "sent", "received"].includes(field)) {
+    if (
+      ["allocatedQuantity", "correctedQuantity", "sent", "received"].includes(
+        field,
+      )
+    ) {
       const issue = allocationError(proposed, next);
       if (issue) {
         setError(issue);
@@ -347,6 +368,7 @@ function App() {
         "Hotel destino",
         "Sección",
         "Inventariadas originales",
+        "Cantidades necesarias",
         "Inventario corregido",
         "Enviadas",
         "Rotura envío",
@@ -365,6 +387,7 @@ function App() {
         i.location,
         i.category,
         i.quantity,
+        i.allocatedQuantity ?? null,
         i.correctedQuantity ?? null,
         i.sent,
         i.damageSent ?? null,
@@ -500,17 +523,19 @@ function App() {
               <input
                 type="checkbox"
                 aria-label="Seleccionar todo el mobiliario"
-                checked={items.length > 0 && selected.size === items.length}
+                checked={
+                  items.length > 0 && selected.size === selectable.length
+                }
                 ref={(node) => {
                   if (node)
                     node.indeterminate =
-                      selected.size > 0 && selected.size < items.length;
+                      selected.size > 0 && selected.size < selectable.length;
                 }}
                 disabled={loadError || !items.length}
                 onChange={(e) =>
                   setSelected(
                     e.target.checked
-                      ? new Set(items.map((i) => i.id))
+                      ? new Set(selectable.map((i) => i.id))
                       : new Set(),
                   )
                 }
@@ -518,7 +543,7 @@ function App() {
               Seleccionar todo el mobiliario
             </label>
             <span role="status">
-              {selected.size} de {items.length} seleccionados
+              {selected.size} de {selectable.length} seleccionados
               {selected.size > visible.filter((i) => selected.has(i.id)).length
                 ? " · incluye registros fuera del filtro"
                 : ""}
@@ -555,6 +580,7 @@ function App() {
               disabled={loadError || !deleted.length || actor !== sender}
               onClick={() => {
                 setError("");
+                setRecoverySelection(new Set());
                 setRecoverOpen(true);
               }}
             >
@@ -623,13 +649,13 @@ function App() {
             <div className="table-scroll">
               <table className="editable-table">
                 <colgroup>
-                  {[22, 8, 17, 7, 6, 6, 10, 6, 10, 8].map((width, index) => (
+                  {[19, 7, 15, 8, 6, 7, 6, 9, 6, 9, 8].map((width, index) => (
                     <col key={index} style={{ width: width + "%" }} />
                   ))}
                 </colgroup>
                 <thead>
                   <tr className="block-headings">
-                    <th colSpan={4} className="block-base">
+                    <th colSpan={5} className="block-base">
                       Información original
                     </th>
                     <th colSpan={3} className="block-sender block-start">
@@ -648,6 +674,11 @@ function App() {
                       Inventario
                       <br />
                       original
+                    </th>
+                    <th className="block-base">
+                      Cantidades
+                      <br />
+                      necesarias
                     </th>
                     <th className="block-sender block-start">
                       Inventario
@@ -692,7 +723,7 @@ function App() {
                             type="checkbox"
                             aria-label={"Seleccionar " + i.name}
                             checked={selected.has(i.id)}
-                            disabled={loadError}
+                            disabled={loadError || !!i.isRemainder}
                             onChange={() => selectItem(i.id)}
                           />
                           <Photo item={i} onOpen={() => setDetail(i)} />
@@ -725,6 +756,31 @@ function App() {
                         className="block-base"
                       >
                         <strong>{displayCount(i.quantity)}</strong>
+                        {productRows(items, i).length > 1 && (
+                          <small className="shared-stock">
+                            (Total mobiliario a repartir entre hoteles)
+                          </small>
+                        )}
+                      </td>
+                      <td
+                        data-label="Cantidades necesarias"
+                        className="block-base"
+                      >
+                        {i.isRemainder || !i.location ? (
+                          <>
+                            <strong>
+                              {displayCount(i.allocatedQuantity ?? null)}
+                            </strong>
+                            <small>Sin hotel asignado</small>
+                          </>
+                        ) : (
+                          <Count
+                            value={i.allocatedQuantity ?? null}
+                            label="Cantidades necesarias"
+                            disabled={loadError || actor !== sender}
+                            onSave={(v) => update(i, "allocatedQuantity", v)}
+                          />
+                        )}
                       </td>
                       <td
                         data-label="Inventario corregido"
@@ -733,7 +789,9 @@ function App() {
                         <Count
                           value={i.correctedQuantity ?? null}
                           label="Inventario corregido"
-                          disabled={loadError || actor !== sender}
+                          disabled={
+                            loadError || actor !== sender || !!i.isRemainder
+                          }
                           onSave={(v) => update(i, "correctedQuantity", v)}
                         />
                         <small className="allocation-summary">
@@ -763,7 +821,9 @@ function App() {
                         <Count
                           value={i.sent}
                           label="Enviadas"
-                          disabled={loadError || actor !== sender}
+                          disabled={
+                            loadError || actor !== sender || !!i.isRemainder
+                          }
                           onSave={(v) => update(i, "sent", v)}
                         />
                         {i.sent !== null && (
@@ -778,7 +838,9 @@ function App() {
                         <Damage
                           item={i}
                           side="Sent"
-                          disabled={loadError || actor !== sender}
+                          disabled={
+                            loadError || actor !== sender || !!i.isRemainder
+                          }
                           change={(f, v) => update(i, f, v)}
                         />
                         {i.recycled !== null && (
@@ -848,7 +910,7 @@ function App() {
                       type="checkbox"
                       aria-label={"Seleccionar " + i.name}
                       checked={selected.has(i.id)}
-                      disabled={loadError}
+                      disabled={loadError || !!i.isRemainder}
                       onChange={() => selectItem(i.id)}
                     />
                     Seleccionar
@@ -864,6 +926,14 @@ function App() {
                     <p>
                       <strong>{displayCount(i.quantity)}</strong> inventariadas
                       originales
+                      {productRows(items, i).length > 1 && (
+                        <small>
+                          (Total mobiliario a repartir entre hoteles)
+                        </small>
+                      )}
+                      <br />
+                      Cantidades necesarias:{" "}
+                      {displayCount(i.allocatedQuantity ?? null)}
                       {i.correctedQuantity != null && (
                         <>
                           <br />
@@ -932,13 +1002,64 @@ function App() {
           <h2 id="furniture-action-title">
             {deleteOpen
               ? "¿Eliminar el mobiliario seleccionado?"
-              : "¿Recuperar todo el mobiliario eliminado?"}
+              : "Seleccionar mobiliario para recuperar"}
           </h2>
           <p>
             {deleteOpen
               ? `Vas a eliminar ${selected.size} filas de mobiliario, incluidas las seleccionadas fuera del filtro. Esta acción puede afectar al inventario y al reparto entre hoteles. Las filas desaparecerán de la tabla y de las exportaciones. Se guardará una copia con sus fotografías y datos para recuperarlas posteriormente en este navegador.`
-              : `Se recuperarán ${deleted.length} filas con sus fotografías, destinos y cantidades guardadas. Se comprobarán los límites del inventario antes de restaurarlas. Los elementos activos se conservarán. La copia de recuperación está guardada en este navegador; no borres sus datos si quieres conservarla.`}
+              : `Selecciona las filas que quieres recuperar con sus fotografías, destinos y cantidades guardadas. Se comprobarán los límites del inventario antes de restaurarlas. Los elementos activos se conservarán. La copia de recuperación está guardada en este navegador; no borres sus datos si quieres conservarla.`}
           </p>
+          {recoverOpen && (
+            <div className="recovery-list">
+              <label>
+                <input
+                  type="checkbox"
+                  aria-label="Seleccionar todos los eliminados"
+                  checked={
+                    deleted.length > 0 &&
+                    recoverySelection.size === deleted.length
+                  }
+                  onChange={(e) =>
+                    setRecoverySelection(
+                      e.target.checked
+                        ? new Set(deleted.map((row) => row.id))
+                        : new Set(),
+                    )
+                  }
+                />
+                Seleccionar todos los eliminados
+              </label>
+              {deleted.map((row) => (
+                <label key={row.id}>
+                  <input
+                    type="checkbox"
+                    aria-label={`Recuperar ${row.name} · ${row.location || "Sin hotel asignado"}`}
+                    checked={recoverySelection.has(row.id)}
+                    onChange={(e) =>
+                      setRecoverySelection((current) => {
+                        const next = new Set(current);
+                        if (e.target.checked) next.add(row.id);
+                        else next.delete(row.id);
+                        return next;
+                      })
+                    }
+                  />
+                  {row.image && <img src={imageUrl(row.image)} alt="" />}
+                  <span>
+                    {row.name}
+                    <small>
+                      {row.location || "Sin hotel asignado"} · Inventario:{" "}
+                      {displayCount(row.quantity)} · Necesarias:{" "}
+                      {displayCount(row.allocatedQuantity ?? null)}
+                    </small>
+                  </span>
+                </label>
+              ))}
+              <p>
+                {recoverySelection.size} seleccionados de {deleted.length}
+              </p>
+            </div>
+          )}
           {error && (
             <p role="alert" className="error">
               {error}
@@ -957,9 +1078,12 @@ function App() {
             </button>
             <button
               className={deleteOpen ? "danger-button" : ""}
+              disabled={recoverOpen && !recoverySelection.size}
               onClick={deleteOpen ? deleteFurniture : recoverFurniture}
             >
-              {deleteOpen ? "Sí, eliminar mobiliario" : "Sí, recuperar todos"}
+              {deleteOpen
+                ? "Sí, eliminar mobiliario"
+                : "Recuperar seleccionados"}
             </button>
           </div>
         </dialog>

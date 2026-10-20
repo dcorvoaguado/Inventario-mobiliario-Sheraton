@@ -1243,3 +1243,34 @@ main {
   line-height: 1.6 !important;
   margin-top: 7px !important;
 }
+.shared-stock {
+  font-size: 9px;
+  line-height: 1.35;
+}
+.recovery-list {
+  max-height: 45vh;
+  overflow-y: auto;
+  margin: 16px 0;
+}
+.recovery-list label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+.recovery-list input {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+.recovery-list img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+.recovery-list small {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+}

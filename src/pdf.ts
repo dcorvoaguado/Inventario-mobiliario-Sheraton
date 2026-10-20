@@ -7,6 +7,7 @@ import {
   inventoryTotal,
   type Item,
 } from "./inventory";
+import { productRows } from "./allocation";
 type Picture = { bytes: Uint8Array; width: number; height: number };
 const unassigned = "Sin destino asignado";
 export const hotelName = (item: Item) => item.location || unassigned;
@@ -114,7 +115,7 @@ function render(items: Item[], title: string, photos: Map<string, Picture>) {
       rowPageBreak: "avoid",
       head: [
         [
-          { content: "Información original", colSpan: 5 },
+          { content: "Información original", colSpan: 6 },
           { content: "Hotel origen · Sheraton", colSpan: 3 },
           { content: "Hotel destino", colSpan: 2 },
           { content: "Común", colSpan: 1 },
@@ -125,6 +126,7 @@ function render(items: Item[], title: string, photos: Map<string, Picture>) {
           "Origen",
           "Destino",
           "Inventario\noriginal",
+          "Cantidades\nnecesarias",
           "Inventario\ncorregido",
           "Enviadas",
           "Rotura\nenvío",
@@ -138,7 +140,11 @@ function render(items: Item[], title: string, photos: Map<string, Picture>) {
         `${i.name}${i.notes ? "\n" + i.notes : ""}${i.recycled !== null ? "\nRotura anterior sin responsable: " + i.recycled : ""}`,
         i.origin || "Pendiente",
         hotel,
-        amount(i.quantity),
+        amount(i.quantity) +
+          (productRows(items, i).length > 1
+            ? "\n(Total a repartir entre hoteles)"
+            : ""),
+        amount(i.allocatedQuantity ?? null),
         i.correctedQuantity == null
           ? "Sin corrección"
           : String(i.correctedQuantity),
@@ -168,21 +174,22 @@ function render(items: Item[], title: string, photos: Map<string, Picture>) {
       },
       alternateRowStyles: { fillColor: "#faf9f6" },
       columnStyles: {
-        0: { cellWidth: 20 },
-        1: { cellWidth: 47 },
-        2: { cellWidth: 22 },
-        3: { cellWidth: 31 },
-        4: { cellWidth: 17 },
-        5: { cellWidth: 17 },
-        6: { cellWidth: 32 },
-        7: { cellWidth: 18 },
-        8: { cellWidth: 32 },
-        9: { cellWidth: 18 },
-        10: { cellWidth: 23 },
+        0: { cellWidth: 18 },
+        1: { cellWidth: 42 },
+        2: { cellWidth: 19 },
+        3: { cellWidth: 28 },
+        4: { cellWidth: 23 },
+        5: { cellWidth: 18 },
+        6: { cellWidth: 18 },
+        7: { cellWidth: 29 },
+        8: { cellWidth: 18 },
+        9: { cellWidth: 29 },
+        10: { cellWidth: 18 },
+        11: { cellWidth: 17 },
       },
       didParseCell: (data) => {
         const index = data.column.index;
-        const group = index < 5 ? 0 : index < 8 ? 1 : index < 10 ? 2 : 3;
+        const group = index < 6 ? 0 : index < 9 ? 1 : index < 11 ? 2 : 3;
         const colors =
           data.section === "head"
             ? ["#f3eee7", "#dce5ea", "#e8dce1", "#e3e3e3"]
@@ -192,7 +199,7 @@ function render(items: Item[], title: string, photos: Map<string, Picture>) {
           data.cell.styles.minCellHeight = data.row.index === 0 ? 8 : 13;
       },
       didDrawCell: (data) => {
-        if ([5, 8, 10].includes(data.column.index)) {
+        if ([6, 9, 11].includes(data.column.index)) {
           doc.setDrawColor("#b7b4b2");
           doc.setLineWidth(0.5);
           doc.line(

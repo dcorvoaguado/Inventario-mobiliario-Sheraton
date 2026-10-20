@@ -42,6 +42,21 @@ export function allocation(items: Item[], item: Item) {
 }
 export function allocationError(items: Item[], item: Item) {
   const a = allocation(items, item);
+  const assigned = a.rows.filter((row) => !row.isRemainder && row.location);
+  const planned = assigned.reduce(
+    (sum, row) => sum + (row.allocatedQuantity ?? 0),
+    0,
+  );
+  if (a.limit !== null && planned > a.limit)
+    return `Las cantidades necesarias suman ${planned} y superan el inventario disponible de ${a.limit}.`;
+  if (a.limit === null && planned > 0)
+    return "Indica el inventario corregido antes de repartir cantidades.";
+  const overPlan = assigned.find(
+    (row) =>
+      row.allocatedQuantity != null && (row.sent ?? 0) > row.allocatedQuantity,
+  );
+  if (overPlan)
+    return `Las enviadas de ${overPlan.location} no pueden superar las ${overPlan.allocatedQuantity} unidades necesarias asignadas.`;
   if (a.conflict)
     return "Hay inventarios corregidos diferentes para este mueble. Introduce una cantidad común antes de repartirlo.";
   if (a.limit === null && (a.sent > 0 || a.received > 0))
@@ -76,7 +91,9 @@ export function replaceDestinations(
     throw Error(
       "Unifica el inventario corregido antes de seleccionar destinos.",
     );
-  const removed = a.rows.filter((i) => !hotels.includes(i.location));
+  const removed = a.rows.filter(
+    (i) => !i.isRemainder && !hotels.includes(i.location),
+  );
   if (removed.some(hasMovement))
     throw Error(
       "No se puede quitar un destino con envíos, recepción o roturas registrados. Retira primero esos datos.",
@@ -98,6 +115,8 @@ export function replaceDestinations(
         id: reusableRow?.id ?? crypto.randomUUID(),
         distributionOf:
           reusableRow?.distributionOf ?? item.distributionOf ?? item.id,
+        allocatedQuantity: null,
+        isRemainder: false,
         sent: null,
         received: null,
         recycled: null,
@@ -166,6 +185,55 @@ export function resetAllocationSelection(items: Item[], selected: Set<string>) {
             ]
           : [];
       });
+    }
+  }
+  return next;
+}
+
+// A remainder is calculated from the shared stock, never copied as another lot.
+export function syncRemainders(items: Item[]): Item[] {
+  let next = items.filter((row) => !row.isRemainder);
+  for (const key of new Set(next.map(productKey))) {
+    const rows = next.filter((row) => productKey(row) === key);
+    if (!rows.some((row) => row.allocatedQuantity != null)) continue;
+    const named = rows.filter((row) => row.location);
+    const a = allocation(next, rows[0]);
+    if (a.limit === null) continue;
+    const remaining = Math.max(
+      0,
+      a.limit -
+        named.reduce((sum, row) => sum + (row.allocatedQuantity ?? 0), 0),
+    );
+    const unassigned = rows.find((row) => !row.location);
+    if (unassigned) {
+      next = next.map((row) =>
+        row.id === unassigned.id
+          ? { ...row, allocatedQuantity: remaining }
+          : row,
+      );
+    } else if (remaining > 0) {
+      const base = rows[0];
+      const remainder: Item = {
+        ...base,
+        id: `remainder:${key}`,
+        inventoryGroup: key,
+        distributionOf: base.distributionOf ?? base.id,
+        isRemainder: true,
+        location: "",
+        allocatedQuantity: remaining,
+        sent: null,
+        received: null,
+        damageSent: null,
+        damageReceived: null,
+        damageSentMode: "pending",
+        damageReceivedMode: "pending",
+        sentBy: null,
+        receivedBy: null,
+        recycled: null,
+        notes: "",
+      };
+      const last = next.map(productKey).lastIndexOf(key);
+      next.splice(last + 1, 0, remainder);
     }
   }
   return next;

@@ -3,6 +3,7 @@ import { destinations, sender, type Item } from "./inventory";
 import { hasMovement } from "./allocation";
 export type Editable =
   | "location"
+  | "allocatedQuantity"
   | "correctedQuantity"
   | "sent"
   | "received"
@@ -138,7 +139,9 @@ export function Destination({
         disabled={disabled || hasMovement(item)}
         onChange={(e) => change("location", e.target.value)}
       >
-        <option value="">Sin destino asignado</option>
+        <option value="">
+          {item.isRemainder ? "Sin hotel asignado" : "Sin destino asignado"}
+        </option>
         {item.location && !destinations.includes(item.location) && (
           <option value={item.location} disabled>
             {item.location} · original

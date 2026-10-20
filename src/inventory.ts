@@ -6,6 +6,8 @@ export type Item = {
   location: string;
   category: string;
   quantity: number | null;
+  allocatedQuantity?: number | null;
+  isRemainder?: boolean;
   inventoryGroup?: string;
   distributionOf?: string;
   sent: number | null;
@@ -60,6 +62,7 @@ export function read(): Item[] {
           "received",
           "recycled",
           "correctedQuantity",
+          "allocatedQuantity",
           "damageSent",
           "damageReceived",
         ].every((k) => i[k] === undefined || validCount(i[k])) &&
@@ -148,6 +151,7 @@ export const destinations = [
   "Elba Sara",
   "Elba Lucía",
   "Elba Palace",
+  "Elba San Jorge",
 ];
 export const sender = "Hotel Sheraton";
 export function transferStatus(item: Item) {

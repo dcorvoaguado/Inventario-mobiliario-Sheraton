@@ -44,7 +44,10 @@ test("delete cancels safely, persists removed rows and recovers all saved data",
       exact: true,
     })
     .click();
-  await page.getByRole("button", { name: "Sí, recuperar todos" }).click();
+  await page.getByLabel("Seleccionar todos los eliminados").check();
+  await page
+    .getByRole("button", { name: "Recuperar seleccionados", exact: true })
+    .click();
   await expect(row(page)).toHaveCount(1);
   await expect(corrected).toHaveValue("60");
   await expect(sent).toHaveValue("35");
@@ -93,7 +96,10 @@ test("deleting one repeated Excel row does not return through reset and recover 
       exact: true,
     })
     .click();
-  await page.getByRole("button", { name: "Sí, recuperar todos" }).click();
+  await page.getByLabel("Seleccionar todos los eliminados").check();
+  await page
+    .getByRole("button", { name: "Recuperar seleccionados", exact: true })
+    .click();
   await expect(page.getByRole("dialog")).toContainText("superan el inventario");
   await expect(row(page, "excel-row-22")).toHaveCount(0);
   await page
@@ -115,7 +121,10 @@ test("deleting one repeated Excel row does not return through reset and recover 
       exact: true,
     })
     .click();
-  await page.getByRole("button", { name: "Sí, recuperar todos" }).click();
+  await page.getByLabel("Seleccionar todos los eliminados").check();
+  await page
+    .getByRole("button", { name: "Recuperar seleccionados", exact: true })
+    .click();
   await expect(
     row(page, "excel-row-22").getByLabel("Enviadas", { exact: true }),
   ).toHaveValue("20");
