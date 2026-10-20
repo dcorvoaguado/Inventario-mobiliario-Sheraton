@@ -22,6 +22,11 @@ import {
   type Editable,
 } from "./InlineFields";
 import summary from "./data/import-summary.json";
+import "@fontsource/inter/latin-400.css";
+import "@fontsource/inter/latin-500.css";
+import "@fontsource/inter/latin-600.css";
+import "@fontsource/cormorant-garamond/latin-400.css";
+import "@fontsource/cormorant-garamond/latin-500.css";
 import "./style.css";
 function downloadFile(contents: string, type: string, name: string) {
   const url = URL.createObjectURL(new Blob([contents], { type }));
@@ -254,16 +259,16 @@ function App() {
         <a className="brand" href="./">
           <span className="seal">S</span>
           <span>
-            SHERATON<small>GESTIÓN DE MOBILIARIO</small>
+            SHERATON<small>FUERTEVENTURA</small>
           </span>
         </a>
         <span className="workspace">Distribución entre hoteles</span>
       </header>
       <main>
-        <div className="eyebrow">OPERACIONES · INVENTARIO Y DISTRIBUCIÓN</div>
+        <div className="eyebrow">SHERATON FUERTEVENTURA · OPERACIONES</div>
         <div className="heading">
           <div>
-            <h1>Cada pieza, en su lugar.</h1>
+            <h1>Inventario y distribución</h1>
             <p>Fotografías, destinos y seguimiento de los traslados.</p>
           </div>
           <button
