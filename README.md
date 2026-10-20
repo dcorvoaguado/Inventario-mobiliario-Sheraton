@@ -36,3 +36,7 @@ En Settings → Pages del repositorio, selecciona **GitHub Actions** como Source
 Dirección prevista tras completar el despliegue: https://dcorvoaguado.github.io/Inventario-mobiliario-Sheraton/
 
 La aplicación y sus archivos serán accesibles públicamente. El inventario sigue guardándose solo en el navegador de cada usuario; el despliegue no publica los datos guardados localmente.
+
+## Preparar un Excel grande
+
+`public/preparar-excel.html` es una herramienta independiente que puede descargarse y abrirse directamente en un navegador. No requiere conexión ni sube el archivo a un servidor. Reduce las fotografías PNG/JPEG del XLSX, conserva las hojas y actualiza las referencias a las imágenes. Genera una copia y no modifica el original. Conserva el original porque las fotos de la copia pierden resolución y transparencia. Si no consigue bajar del límite de 32 MB, lo indica sin eliminar hojas ni imágenes.
