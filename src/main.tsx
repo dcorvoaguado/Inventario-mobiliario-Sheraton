@@ -34,6 +34,7 @@ import {
   resetAllocationSelection,
 } from "./allocation";
 import PdfExport from "./PdfExport";
+import { deletedKey, readDeleted } from "./deleted";
 import "@fontsource/inter/latin-400.css";
 import "@fontsource/inter/latin-500.css";
 import "@fontsource/inter/latin-600.css";
@@ -65,6 +66,7 @@ function App() {
   const [loadError] = useState(() => {
     try {
       read();
+      readDeleted();
       return false;
     } catch {
       return true;
@@ -90,6 +92,18 @@ function App() {
   const [imageBusy, setImageBusy] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [resetOpen, setResetOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [recoverOpen, setRecoverOpen] = useState(false);
+  const [archive, setArchive] = useState<Item[]>(() => {
+    try {
+      return readDeleted();
+    } catch {
+      return [];
+    }
+  });
+  const deleted = archive.filter(
+    (row) => !items.some((active) => active.id === row.id),
+  );
   const [actor, setActor] = useState(sender);
   const [view, setView] = useState<"table" | "gallery">("table");
   const visible = items.filter(
@@ -129,7 +143,9 @@ function App() {
   }
   function resetSelected() {
     if (actor !== sender || !selected.size) return;
-    const next = resetAllocationSelection(items, selected);
+    const next = resetAllocationSelection(items, selected).filter(
+      (row) => !deleted.some((removed) => removed.id === row.id),
+    );
     if (persist(next)) {
       setSelected(new Set());
       setResetOpen(false);
@@ -137,6 +153,51 @@ function App() {
         "Datos de los registros seleccionados borrados. Se conserva el inventario original del Excel.",
       );
     }
+  }
+  function deleteFurniture() {
+    if (loadError || actor !== sender || !selected.size) return;
+    const removed = items.filter((row) => selected.has(row.id));
+    const nextArchive = [
+      ...archive.filter((row) => !selected.has(row.id)),
+      ...removed,
+    ];
+    try {
+      // Archive first: a failed second write never destroys the only copy.
+      localStorage.setItem(deletedKey, JSON.stringify(nextArchive));
+      setArchive(nextArchive);
+      if (!persist(items.filter((row) => !selected.has(row.id)))) return;
+      setSelected(new Set());
+      setDeleteOpen(false);
+      setMessage(
+        `${removed.length} elementos eliminados. Puedes recuperarlos con «Recuperar mobiliario eliminado».`,
+      );
+    } catch {
+      setError(
+        "No se pudo guardar la copia de recuperación. No se ha eliminado ningún mobiliario.",
+      );
+    }
+  }
+  function recoverFurniture() {
+    if (loadError || actor !== sender || !deleted.length) return;
+    const next = [...items, ...structuredClone(deleted)];
+    // Restore the saved rows exactly; never overwrite current movements or
+    // silently reinstate a distribution exceeding its shared stock.
+    for (const row of deleted) {
+      const problem = allocationError(next, row);
+      if (problem) {
+        setError(
+          `No se puede recuperar «${row.name}»: ${problem} Ajusta los datos activos antes de recuperar. La copia eliminada se conserva.`,
+        );
+        return;
+      }
+    }
+    if (!persist(next)) return;
+    // Keep archived snapshots for crash safety. Active ids are excluded from
+    // the recovery list; subsequent deletion replaces their snapshots.
+    setRecoverOpen(false);
+    setMessage(
+      `${deleted.length} elementos recuperados con sus fotografías y datos guardados.`,
+    );
   }
   function save(e: FormEvent) {
     e.preventDefault();
@@ -261,8 +322,11 @@ function App() {
     }
   }
   function covered(original: Item) {
-    return items.some(
-      (i) => i.id === original.id || productKey(i) === productKey(original),
+    return (
+      deleted.some((i) => i.id === original.id) ||
+      items.some(
+        (i) => i.id === original.id || productKey(i) === productKey(original),
+      )
     );
   }
   function csv() {
@@ -475,6 +539,26 @@ function App() {
               }}
             >
               Borrar datos seleccionados
+            </button>
+            <button
+              className="danger-button"
+              disabled={loadError || !selected.size || actor !== sender}
+              onClick={() => {
+                setError("");
+                setDeleteOpen(true);
+              }}
+            >
+              Borrar mobiliario
+            </button>
+            <button
+              className="secondary"
+              disabled={loadError || !deleted.length || actor !== sender}
+              onClick={() => {
+                setError("");
+                setRecoverOpen(true);
+              }}
+            >
+              Recuperar mobiliario eliminado ({deleted.length})
             </button>
           </div>
           <div className="filters">
@@ -833,6 +917,52 @@ function App() {
           onClose={() => setDestinationItem(null)}
           onApply={(hotels) => manageDestinations(destinationItem, hotels)}
         />
+      )}
+      {(deleteOpen || recoverOpen) && (
+        <dialog
+          ref={(node) => {
+            if (node && !node.open) node.showModal();
+          }}
+          onCancel={() => {
+            setDeleteOpen(false);
+            setRecoverOpen(false);
+          }}
+          aria-labelledby="furniture-action-title"
+        >
+          <h2 id="furniture-action-title">
+            {deleteOpen
+              ? "¿Eliminar el mobiliario seleccionado?"
+              : "¿Recuperar todo el mobiliario eliminado?"}
+          </h2>
+          <p>
+            {deleteOpen
+              ? `Vas a eliminar ${selected.size} filas de mobiliario, incluidas las seleccionadas fuera del filtro. Esta acción puede afectar al inventario y al reparto entre hoteles. Las filas desaparecerán de la tabla y de las exportaciones. Se guardará una copia con sus fotografías y datos para recuperarlas posteriormente en este navegador.`
+              : `Se recuperarán ${deleted.length} filas con sus fotografías, destinos y cantidades guardadas. Se comprobarán los límites del inventario antes de restaurarlas. Los elementos activos se conservarán. La copia de recuperación está guardada en este navegador; no borres sus datos si quieres conservarla.`}
+          </p>
+          {error && (
+            <p role="alert" className="error">
+              {error}
+            </p>
+          )}
+          <div className="form-actions">
+            <button
+              autoFocus
+              className="secondary"
+              onClick={() => {
+                setDeleteOpen(false);
+                setRecoverOpen(false);
+              }}
+            >
+              No
+            </button>
+            <button
+              className={deleteOpen ? "danger-button" : ""}
+              onClick={deleteOpen ? deleteFurniture : recoverFurniture}
+            >
+              {deleteOpen ? "Sí, eliminar mobiliario" : "Sí, recuperar todos"}
+            </button>
+          </div>
+        </dialog>
       )}
       {resetOpen && (
         <dialog

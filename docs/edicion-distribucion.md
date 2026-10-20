@@ -62,3 +62,11 @@ El inventario corregido es común: cambiarlo en una fila actualiza las demás de
 El reparto se conserva al recargar y se incluye en las exportaciones por hotel. «Cargar Excel» no vuelve a añadir destinos retirados de un producto ya distribuido. Al borrar todas las filas de un mueble se recupera su distribución original; al borrar solo algunas, se conservan el inventario corregido compartido y los movimientos de las filas no seleccionadas. Estos controles se aplican a los datos del navegador actual, sin sincronización entre dispositivos.
 
 Cada hotel solo puede registrar recibidas iguales o inferiores a las enviadas a ese destino. Sin envío registrado no se aceptan recepciones positivas. Tampoco se permite reducir un envío por debajo de su recepción ya registrada. El inventario corregido puede ser mayor o menor que el original, siempre que cubra las cantidades ya registradas.
+
+## Eliminar mobiliario y recuperarlo
+
+«Borrar mobiliario», en rojo junto a «Borrar datos seleccionados», retira las filas marcadas del inventario activo y de las exportaciones. Solo está disponible con Hotel Sheraton seleccionado. La confirmación indica cuántas filas se eliminarán, incluye las ocultas por filtros y advierte de que puede afectar al inventario y al reparto. Cancelar no modifica nada. Antes de retirar una fila se guarda una copia local de todos sus datos, incluida la fotografía; si falla ese guardado, no se elimina.
+
+«Recuperar mobiliario eliminado (N)» permite recuperar todas las filas retiradas con sus datos guardados. No sobrescribe las filas activas. Si los movimientos recuperados superan el inventario compartido, las correcciones difieren o una recepción supera su envío, la recuperación se detiene sin cambios y mantiene la copia para reintentar tras ajustar los datos activos. Las eliminaciones no se revierten mediante «Cargar datos del Excel» ni mediante el restablecimiento de otros registros del mismo grupo.
+
+Las copias de recuperación se guardan exclusivamente en este navegador, igual que el inventario activo. Borrar los datos del navegador elimina también esa recuperación; las exportaciones del inventario activo no incluyen la copia de eliminados. «Borrar datos seleccionados» conserva su función de restablecer datos y es diferente de eliminar mobiliario.
