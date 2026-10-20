@@ -51,9 +51,10 @@ export default function PdfExport({
         </button>
       </div>
       <p>
-        Documentos con fotografías, inventario original y corregido, envíos,
-        recepciones, roturas y estado. Se usan todos los registros guardados del
-        destino, independientemente de los filtros de pantalla.
+        Documentos con fotografías, inventario original, total real disponible,
+        unidades asignadas, envíos, recepciones, roturas y estado. Se usan todos
+        los registros guardados del destino, independientemente de los filtros
+        de pantalla.
       </p>
       <label className="pdf-hotel">
         Hotel destino

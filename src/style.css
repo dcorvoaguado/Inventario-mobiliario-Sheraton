@@ -1274,3 +1274,312 @@ main {
   font-size: 11px;
   color: var(--muted);
 }
+/* Grouped distribution workspace */
+header {
+  padding-block: 14px;
+}
+main {
+  padding-top: 22px;
+}
+.eyebrow {
+  margin-bottom: 8px;
+}
+.heading {
+  margin-bottom: 22px;
+}
+h1 {
+  font-size: clamp(32px, 3vw, 46px);
+}
+.notice {
+  position: fixed;
+  z-index: 15;
+  right: 20px;
+  bottom: 20px;
+  max-width: min(460px, calc(100vw - 40px));
+  margin: 0;
+  padding: 14px 20px;
+  box-shadow: 0 4px 20px #25232320;
+}
+.more-options {
+  position: relative;
+}
+.more-options summary {
+  cursor: pointer;
+  padding: 14px 18px;
+  border: 1px solid var(--border);
+  list-style: none;
+  font-size: 13px;
+}
+.more-options summary::after {
+  content: " ▾";
+}
+.more-options-menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 12;
+  display: grid;
+  padding: 8px;
+  min-width: 245px;
+  background: white;
+  box-shadow: 0 6px 24px #25232324;
+  border: 1px solid var(--border);
+  gap: 6px;
+}
+.grouped-scroll {
+  max-height: none;
+  overflow: visible;
+}
+.grouped-table {
+  font-size: 13px;
+}
+.grouped-table thead {
+  position: static;
+}
+.grouped-table th {
+  font-size: 11px;
+}
+.grouped-table td {
+  padding: 14px 10px;
+}
+.grouped-table td small {
+  font-size: 11px;
+  line-height: 1.5;
+}
+.grouped-table .product-heading td {
+  padding: 18px 14px;
+  border-top: 12px solid var(--canvas);
+  background: #f7f5f0;
+}
+.product-overview {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.product-overview .photo-button {
+  width: 70px;
+  height: 70px;
+  flex-shrink: 0;
+}
+.product-overview img {
+  object-fit: contain;
+}
+.product-title {
+  min-width: 120px;
+  flex: 1;
+}
+.product-title h3 {
+  font: 600 17px var(--font-body);
+  margin: 0 0 5px;
+}
+.shared-total {
+  display: grid;
+  gap: 5px;
+  padding-inline: 18px;
+  border-inline: 1px solid var(--border);
+}
+.shared-total > span {
+  font-size: 12px;
+  font-weight: 600;
+}
+.product-progress {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  gap: 7px 18px;
+  font-size: 12px;
+}
+.product-progress strong {
+  margin-left: 5px;
+}
+.product-progress small {
+  grid-column: 1 / -1;
+}
+.distribute-button {
+  padding: 12px 16px;
+  font-size: 12px;
+}
+.grouped-table .inline-number {
+  max-width: 76px;
+}
+.grouped-table .remainder-row td {
+  font-style: italic;
+}
+.field-error {
+  color: #9a302e !important;
+}
+.field-saved {
+  color: #3b6a49 !important;
+}
+.inline-number[aria-invalid="true"] {
+  border-color: #9a302e;
+  background: #fff3f1;
+}
+.disabled-reason {
+  color: var(--muted);
+}
+.distribution-totals {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  margin: 16px 0;
+  background: #f3eee7;
+  flex-wrap: wrap;
+}
+.distribution-totals span {
+  display: grid;
+  flex: 1;
+  font-size: 12px;
+}
+.distribution-totals strong {
+  font-size: 22px;
+}
+.destination-choices .distribution-choice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+  padding: 8px 0;
+}
+.destination-choices .distribution-choice > label {
+  border: 0;
+  padding: 8px;
+}
+.destination-choices .hotel-quantity {
+  display: grid;
+  gap: 4px;
+  font-size: 11px;
+}
+.hotel-quantity input {
+  width: 95px;
+  padding: 9px;
+}
+@media (max-width: 1000px) {
+  .grouped-table tbody {
+    display: block;
+    padding: 10px;
+  }
+  .grouped-table tbody tr.product-heading {
+    display: block;
+    border: 0;
+    padding: 0;
+  }
+  .grouped-table tbody tr.product-heading td {
+    display: block;
+    padding: 14px;
+  }
+  .grouped-table tbody tr.product-heading td::before {
+    display: none;
+  }
+  .grouped-table tbody tr:not(.product-heading) {
+    margin-bottom: 12px;
+  }
+  .grouped-table tbody td:nth-child(n) {
+    border-right: 0;
+  }
+  .grouped-table tbody td.block-start {
+    border-top: 2px solid #b7b4b2;
+  }
+  .product-overview {
+    gap: 14px;
+  }
+  .product-title {
+    min-width: 160px;
+  }
+  .shared-total {
+    padding-inline: 0;
+    border: 0;
+  }
+  .product-progress {
+    flex: 1;
+  }
+  .distribute-button {
+    width: 100%;
+  }
+}
+@media (max-width: 600px) {
+  .product-progress {
+    flex-basis: 100%;
+  }
+  .toolbar {
+    width: auto;
+  }
+  .responsible {
+    align-items: stretch;
+  }
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+@media (max-width: 1000px) {
+  .grouped-table thead {
+    display: none;
+  }
+  .grouped-table tbody td[data-label="Seleccionar"] {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+  }
+  .grouped-table tbody td[data-label="Seleccionar"]::after {
+    content: "Seleccionar fila";
+    font-size: 12px;
+  }
+  .grouped-table tbody td[data-label="Seleccionar"]::before {
+    display: none;
+  }
+}
+.destination-choices .hotel-quantity input {
+  height: auto;
+  min-height: 42px;
+  font-size: 14px;
+}
+.distribution-choice > label:first-child {
+  flex: 1;
+  min-width: 0;
+}
+.distribution-choice .hotel-quantity {
+  flex-shrink: 0;
+}
+@media (max-width: 600px) {
+  .destination-dialog {
+    padding: 20px;
+  }
+  .destination-dialog h2 {
+    font-size: 27px;
+  }
+  .distribution-choice > label:first-child {
+    gap: 6px;
+  }
+  .destination-choices .distribution-choice {
+    gap: 4px;
+  }
+  .hotel-quantity input {
+    width: 88px;
+  }
+}
+.notice {
+  top: 16px;
+  bottom: auto;
+}
+.destination-dialog .section-title {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  gap: 12px;
+}
+.destination-dialog .section-title h2 {
+  flex: 1;
+  min-width: 0;
+}
+.destination-dialog .section-title > button {
+  flex-shrink: 0;
+}

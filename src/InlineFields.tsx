@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
-import { destinations, sender, type Item } from "./inventory";
-import { hasMovement } from "./allocation";
+import { useState, useEffect, useId } from "react";
+import { sender, type Item } from "./inventory";
 export type Editable =
   | "location"
   | "allocatedQuantity"
@@ -20,17 +19,27 @@ export function Count({
   label,
   disabled,
   onSave,
+  max,
+  error,
+  disabledReason,
 }: {
   value: number | null;
   label: string;
   disabled: boolean;
   onSave: (value: number | null) => boolean;
+  max?: number;
+  error?: string;
+  disabledReason?: string;
 }) {
+  const feedbackId = useId();
   const [text, setText] = useState(value === null ? "" : String(value));
   const [invalid, setInvalid] = useState(false);
+  const [rejected, setRejected] = useState(false);
+  const [saved, setSaved] = useState(false);
   useEffect(() => {
     setText(value === null ? "" : String(value));
     setInvalid(false);
+    setRejected(false);
   }, [value]);
   function save(input: HTMLInputElement) {
     const parsed = text.trim() === "" ? null : Number(text);
@@ -39,12 +48,17 @@ export function Count({
       !input.validity.valid ||
       (parsed !== null && (!Number.isSafeInteger(parsed) || parsed < 0))
     ) {
+      setSaved(false);
       setInvalid(true);
       return;
     }
     setInvalid(false);
-    if (parsed !== value && !onSave(parsed))
-      setText(value === null ? "" : String(value));
+    if (parsed !== value) {
+      const success = onSave(parsed);
+      setRejected(!success);
+      setSaved(success);
+      if (!success) setText(value === null ? "" : String(value));
+    }
   }
   return (
     <div>
@@ -53,13 +67,20 @@ export function Count({
         type="number"
         min="0"
         step="1"
+        max={max}
         aria-label={label}
-        aria-invalid={invalid}
+        aria-describedby={feedbackId}
+        aria-invalid={invalid || rejected}
         disabled={disabled}
         value={text}
         placeholder="—"
         title={value === null ? "Pendiente de registrar" : String(value)}
-        onChange={(e) => setText(e.target.value)}
+        onChange={(e) => {
+          setText(e.target.value);
+          setRejected(false);
+          setInvalid(false);
+          setSaved(false);
+        }}
         onBlur={(e) => save(e.currentTarget)}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
@@ -69,10 +90,33 @@ export function Count({
           if (e.key === "Escape") {
             setText(value === null ? "" : String(value));
             setInvalid(false);
+            setRejected(false);
+            setSaved(false);
           }
         }}
       />
-      {invalid && <small role="alert">Solo enteros de 0 en adelante.</small>}
+      <div id={feedbackId}>
+        {invalid && (
+          <small role="alert" className="field-error">
+            {max !== undefined && Number(text) > max
+              ? `Máximo: ${max} unidades.`
+              : "Solo enteros de 0 en adelante."}
+          </small>
+        )}
+        {rejected && (
+          <small role="alert" className="field-error">
+            {error || "No se pudo guardar este valor."}
+          </small>
+        )}
+        {saved && !invalid && !rejected && (
+          <small className="field-saved" role="status">
+            Guardado ✓
+          </small>
+        )}
+        {disabled && disabledReason && (
+          <small className="disabled-reason">{disabledReason}</small>
+        )}
+      </div>
     </div>
   );
 }
@@ -115,54 +159,6 @@ export function Damage({
         />
       )}
     </div>
-  );
-}
-export function Destination({
-  item,
-  disabled,
-  change,
-  onManage,
-  count,
-}: {
-  item: Item;
-  disabled: boolean;
-  change: Change;
-  onManage: () => void;
-  count: number;
-}) {
-  return (
-    <>
-      <select
-        className="inline-destination"
-        aria-label="Destino"
-        value={item.location}
-        disabled={disabled || hasMovement(item)}
-        onChange={(e) => change("location", e.target.value)}
-      >
-        <option value="">
-          {item.isRemainder ? "Sin hotel asignado" : "Sin destino asignado"}
-        </option>
-        {item.location && !destinations.includes(item.location) && (
-          <option value={item.location} disabled>
-            {item.location} · original
-          </option>
-        )}
-        {destinations.map((h) => (
-          <option key={h} value={h}>
-            {h}
-          </option>
-        ))}
-      </select>
-      <button
-        type="button"
-        className="link manage-destinations"
-        disabled={disabled}
-        onClick={onManage}
-      >
-        Seleccionar varios hoteles ({count})
-      </button>
-      {hasMovement(item) && <small>Destino con movimientos registrados.</small>}
-    </>
   );
 }
 export function canEdit(field: Editable, item: Item, actor: string) {

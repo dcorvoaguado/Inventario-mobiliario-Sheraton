@@ -3,7 +3,7 @@ const row = (page: import("@playwright/test").Page, id = "excel-row-2") =>
   page.locator(`tbody tr[data-record-id="${id}"]`);
 async function remove(page: import("@playwright/test").Page) {
   await page
-    .getByRole("button", { name: "Borrar mobiliario", exact: true })
+    .getByRole("button", { name: "Eliminar mobiliario", exact: true })
     .click();
   await expect(page.getByRole("dialog")).toContainText(
     "puede afectar al inventario",
@@ -14,9 +14,11 @@ test("delete cancels safely, persists removed rows and recovers all saved data",
   page,
 }) => {
   await page.goto("/");
-  const corrected = row(page).getByLabel("Inventario corregido", {
-    exact: true,
-  });
+  const corrected = row(page)
+    .locator("xpath=ancestor::tbody")
+    .getByLabel("Total real disponible", {
+      exact: true,
+    });
   await corrected.fill("60");
   await corrected.press("Enter");
   const sent = row(page).getByLabel("Enviadas", { exact: true });
@@ -24,7 +26,7 @@ test("delete cancels safely, persists removed rows and recovers all saved data",
   await sent.press("Enter");
   await row(page).getByRole("checkbox").check();
   await page
-    .getByRole("button", { name: "Borrar mobiliario", exact: true })
+    .getByRole("button", { name: "Eliminar mobiliario", exact: true })
     .click();
   await page
     .getByRole("dialog")
@@ -35,6 +37,7 @@ test("delete cancels safely, persists removed rows and recovers all saved data",
   await expect(row(page)).toHaveCount(0);
   await page.reload();
   await expect(row(page)).toHaveCount(0);
+  await page.getByText("Más opciones", { exact: true }).click();
   await expect(
     page.getByRole("button", { name: "Cargar datos del Excel" }),
   ).toBeDisabled();
@@ -51,10 +54,9 @@ test("delete cancels safely, persists removed rows and recovers all saved data",
   await expect(row(page)).toHaveCount(1);
   await expect(corrected).toHaveValue("60");
   await expect(sent).toHaveValue("35");
-  await expect(row(page).getByRole("img")).toHaveAttribute(
-    "src",
-    /sheraton_reduced_0.jpg/,
-  );
+  await expect(
+    row(page).locator("xpath=ancestor::tbody").getByRole("img"),
+  ).toHaveAttribute("src", /sheraton_reduced_0.jpg/);
   await page.reload();
   await expect(
     page.getByRole("button", {
@@ -100,7 +102,9 @@ test("deleting one repeated Excel row does not return through reset and recover 
   await page
     .getByRole("button", { name: "Recuperar seleccionados", exact: true })
     .click();
-  await expect(page.getByRole("dialog")).toContainText("superan el inventario");
+  await expect(page.getByRole("dialog")).toContainText(
+    "superan el total disponible",
+  );
   await expect(row(page, "excel-row-22")).toHaveCount(0);
   await page
     .getByRole("dialog")
@@ -108,7 +112,7 @@ test("deleting one repeated Excel row does not return through reset and recover 
     .click();
   await row(page, "excel-row-21").getByRole("checkbox").check();
   await page
-    .getByRole("button", { name: "Borrar datos seleccionados", exact: true })
+    .getByRole("button", { name: "Restablecer datos", exact: true })
     .click();
   await page
     .getByRole("dialog")

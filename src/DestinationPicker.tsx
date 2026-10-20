@@ -9,7 +9,10 @@ export default function DestinationPicker({
 }: {
   item: Item;
   items: Item[];
-  onApply: (hotels: string[]) => string | null;
+  onApply: (
+    hotels: string[],
+    quantities: Record<string, number | null>,
+  ) => string | null;
   onClose: () => void;
 }) {
   const a = allocation(items, item);
@@ -17,6 +20,20 @@ export default function DestinationPicker({
   const options = [...new Set([...destinations, ...current])];
   const [selected, setSelected] = useState(new Set(current)),
     [error, setError] = useState("");
+  const [quantities, setQuantities] = useState<Record<string, string>>(() =>
+    Object.fromEntries(
+      options.map((h) => {
+        const row = a.rows.find(
+          (row) => row.location === h && !row.isRemainder,
+        );
+        return [h, String(row?.allocatedQuantity ?? row?.sent ?? "")];
+      }),
+    ),
+  );
+  const assigned = options
+    .filter((h) => selected.has(h))
+    .reduce((sum, h) => sum + (Number(quantities[h]) || 0), 0);
+  const remaining = a.limit === null ? null : a.limit - assigned;
   return (
     <dialog
       className="destination-dialog"
@@ -27,42 +44,83 @@ export default function DestinationPicker({
       aria-labelledby="destinations-title"
     >
       <div className="section-title">
-        <h2 id="destinations-title">Destinos de {item.name}</h2>
+        <h2 id="destinations-title">Repartir {item.name} entre hoteles</h2>
         <button className="link" onClick={onClose} aria-label="Cerrar destinos">
           ✕
         </button>
       </div>
       <p>
-        Selecciona los hoteles. Se creará una fila por destino y se conservarán
-        las cantidades ya registradas.
+        Marca los hoteles e indica cuántas unidades corresponden a cada uno. Los
+        movimientos registrados se conservan.
       </p>
-      <p className="destination-stock">
-        Inventario disponible: <strong>{displayCount(a.limit)}</strong> ·
-        Enviadas: <strong>{a.sent}</strong>
-      </p>
+      <div className="distribution-totals">
+        <span>
+          Total disponible <strong>{displayCount(a.limit)}</strong>
+        </span>
+        <span>
+          Asignadas <strong>{assigned}</strong>
+        </span>
+        <span
+          className={remaining !== null && remaining < 0 ? "field-error" : ""}
+        >
+          Sin asignar <strong>{displayCount(remaining)}</strong>
+        </span>
+      </div>
       <div className="destination-choices">
         {options.map((h) => {
           const locked = a.rows.some((i) => i.location === h && hasMovement(i));
           return (
-            <label key={h}>
-              <input
-                type="checkbox"
-                checked={selected.has(h)}
-                disabled={locked}
-                onChange={(e) => {
-                  const next = new Set(selected);
-                  if (e.target.checked) next.add(h);
-                  else next.delete(h);
-                  setSelected(next);
-                  setError("");
-                }}
-              />
-              {h}
-              {locked && <small>Con movimientos registrados</small>}
-            </label>
+            <div className="distribution-choice" key={h}>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={selected.has(h)}
+                  disabled={locked}
+                  onChange={(e) => {
+                    const next = new Set(selected);
+                    if (e.target.checked) next.add(h);
+                    else next.delete(h);
+                    setSelected(next);
+                    setError("");
+                  }}
+                />
+                {h}
+                {locked && <small>Con movimientos registrados</small>}
+              </label>
+              <label className="hotel-quantity">
+                <span>Unidades</span>
+                <input
+                  type="number"
+                  min={Math.max(
+                    0,
+                    ...a.rows
+                      .filter((row) => row.location === h)
+                      .map((row) => row.sent ?? 0),
+                  )}
+                  step="1"
+                  aria-label={`Unidades para ${h}`}
+                  disabled={!selected.has(h)}
+                  value={quantities[h] ?? ""}
+                  placeholder="Pendiente"
+                  onChange={(e) => {
+                    setQuantities({ ...quantities, [h]: e.target.value });
+                    setError("");
+                  }}
+                />
+              </label>
+            </div>
           );
         })}
       </div>
+      {remaining !== null && remaining < 0 && (
+        <p className="field-error" role="alert">
+          El reparto supera el total disponible en {-remaining} unidades.
+        </p>
+      )}
+      <p className="field-help">
+        Las unidades sin asignar aparecerán en una fila propia. Un campo vacío
+        significa pendiente; cero significa ninguna unidad.
+      </p>
       {error && (
         <p role="alert" className="error">
           {error}
@@ -73,13 +131,28 @@ export default function DestinationPicker({
           Cancelar
         </button>
         <button
-          disabled={!selected.size}
+          disabled={!selected.size || (remaining !== null && remaining < 0)}
           onClick={() => {
-            const issue = onApply(options.filter((h) => selected.has(h)));
+            const hotels = options.filter((h) => selected.has(h));
+            const values = Object.fromEntries(
+              hotels.map((h) => [
+                h,
+                quantities[h]?.trim() ? Number(quantities[h]) : null,
+              ]),
+            );
+            if (
+              Object.values(values).some(
+                (n) => n !== null && (!Number.isSafeInteger(n) || n < 0),
+              )
+            ) {
+              setError("Indica cantidades enteras de 0 en adelante.");
+              return;
+            }
+            const issue = onApply(hotels, values);
             if (issue) setError(issue);
           }}
         >
-          Aplicar destinos
+          Guardar reparto
         </button>
       </div>
     </dialog>

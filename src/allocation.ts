@@ -48,28 +48,28 @@ export function allocationError(items: Item[], item: Item) {
     0,
   );
   if (a.limit !== null && planned > a.limit)
-    return `Las cantidades necesarias suman ${planned} y superan el inventario disponible de ${a.limit}.`;
+    return `Las unidades asignadas suman ${planned} y superan el total disponible de ${a.limit}.`;
   if (a.limit === null && planned > 0)
-    return "Indica el inventario corregido antes de repartir cantidades.";
+    return "Indica el total real disponible antes de repartir cantidades.";
   const overPlan = assigned.find(
     (row) =>
       row.allocatedQuantity != null && (row.sent ?? 0) > row.allocatedQuantity,
   );
   if (overPlan)
-    return `Las enviadas de ${overPlan.location} no pueden superar las ${overPlan.allocatedQuantity} unidades necesarias asignadas.`;
+    return `Las enviadas de ${overPlan.location} no pueden superar las ${overPlan.allocatedQuantity} unidades asignadas.`;
   if (a.conflict)
-    return "Hay inventarios corregidos diferentes para este mueble. Introduce una cantidad común antes de repartirlo.";
+    return "Hay totales reales disponibles diferentes para este mueble. Introduce una cantidad común antes de repartirlo.";
   if (a.limit === null && (a.sent > 0 || a.received > 0))
-    return "Indica el inventario corregido antes de registrar cantidades para este mueble.";
+    return "Indica el total real disponible antes de registrar cantidades para este mueble.";
   if (a.limit !== null && a.sent > a.limit)
-    return `Las enviadas entre todos los hoteles suman ${a.sent} y superan el inventario disponible de ${a.limit}.`;
+    return `Las enviadas entre todos los hoteles suman ${a.sent} y superan el total disponible de ${a.limit}.`;
   const excessiveReceipt = a.rows.find(
     (row) => (row.received ?? 0) > (row.sent ?? 0),
   );
   if (excessiveReceipt)
     return `Las recibidas de ${excessiveReceipt.location} no pueden superar las ${excessiveReceipt.sent ?? 0} unidades enviadas a ese hotel.`;
   if (a.limit !== null && a.received > a.limit)
-    return `Las recibidas entre todos los hoteles suman ${a.received} y superan el inventario disponible de ${a.limit}.`;
+    return `Las recibidas entre todos los hoteles suman ${a.received} y superan el total disponible de ${a.limit}.`;
   return null;
 }
 export function replaceDestinations(
@@ -89,7 +89,7 @@ export function replaceDestinations(
     throw Error("Elige uno de los hoteles permitidos.");
   if (a.conflict)
     throw Error(
-      "Unifica el inventario corregido antes de seleccionar destinos.",
+      "Unifica el total real disponible antes de seleccionar destinos.",
     );
   const removed = a.rows.filter(
     (i) => !i.isRemainder && !hotels.includes(i.location),

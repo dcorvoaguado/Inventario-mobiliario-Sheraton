@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 import { createRoot } from "react-dom/client";
 import {
   read,
@@ -15,15 +15,10 @@ import {
   normalizeSearch,
   type Item,
 } from "./inventory";
-import {
-  Count,
-  Damage,
-  Destination,
-  canEdit,
-  type Editable,
-} from "./InlineFields";
+import { canEdit, type Editable } from "./InlineFields";
 import ImagePicker from "./ImagePicker";
 import DestinationPicker from "./DestinationPicker";
+import InventoryTable from "./InventoryTable";
 import {
   allocation,
   allocationError,
@@ -87,6 +82,7 @@ function App() {
   const [draft, setDraft] = useState<Item | null>(null),
     [error, setError] = useState(""),
     [message, setMessage] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [detail, setDetail] = useState<Item | null>(null);
   const [destinationItem, setDestinationItem] = useState<Item | null>(null);
   const [pdfOpen, setPdfOpen] = useState(false);
@@ -109,6 +105,11 @@ function App() {
     (row) => !items.some((active) => active.id === row.id),
   );
   const [actor, setActor] = useState(sender);
+  useEffect(() => {
+    if (!message) return;
+    const timer = setTimeout(() => setMessage(""), 6000);
+    return () => clearTimeout(timer);
+  }, [message]);
   const [view, setView] = useState<"table" | "gallery">("table");
   const selectable = items.filter((row) => !row.isRemainder);
   const visible = items.filter(
@@ -242,6 +243,7 @@ function App() {
     }
   }
   function update(item: Item, field: Editable, value: string | number | null) {
+    setFieldErrors((current) => ({ ...current, [`${item.id}:${field}`]: "" }));
     if (!canEdit(field, item, actor)) {
       setError("Selecciona el hotel responsable de este campo.");
       return false;
@@ -309,22 +311,42 @@ function App() {
     ) {
       const issue = allocationError(proposed, next);
       if (issue) {
-        setError(issue);
+        setFieldErrors((current) => ({
+          ...current,
+          [`${item.id}:${field}`]: issue,
+        }));
         return false;
       }
     }
     if (persist(proposed)) {
-      setMessage("Cambios guardados en este navegador.");
+      setError("");
       return true;
     }
 
     return false;
   }
-  function manageDestinations(item: Item, hotels: string[]) {
+  function manageDestinations(
+    item: Item,
+    hotels: string[],
+    quantities: Record<string, number | null>,
+  ) {
     if (actor !== sender)
       return "Solo Hotel Sheraton puede organizar los destinos.";
     try {
-      const next = replaceDestinations(items, item, hotels);
+      // Apply quantities and destinations as one transaction, including valid
+      // transfers between hotels which would temporarily exceed stock otherwise.
+      const working = items.map((row) =>
+        productKey(row) === productKey(item) && hotels.includes(row.location)
+          ? { ...row, allocatedQuantity: quantities[row.location] ?? null }
+          : row,
+      );
+      const next = replaceDestinations(working, item, hotels).map((row) =>
+        productKey(row) === productKey(item)
+          ? { ...row, allocatedQuantity: quantities[row.location] ?? null }
+          : row,
+      );
+      const problem = allocationError(next, item);
+      if (problem) return problem;
       if (!persist(next))
         return "No se han podido guardar los destinos. Comprueba el almacenamiento del navegador.";
       setSelected(
@@ -368,8 +390,8 @@ function App() {
         "Hotel destino",
         "Sección",
         "Inventariadas originales",
-        "Cantidades necesarias",
-        "Inventario corregido",
+        "Unidades asignadas",
+        "Total real disponible",
         "Enviadas",
         "Rotura envío",
         "Recibidas",
@@ -462,7 +484,14 @@ function App() {
         <section className="inventory">
           <div className="section-title">
             <h2>
-              Mobiliario <span>{items.length} registros</span>
+              Mobiliario{" "}
+              <span>
+                {new Set(items.map(productKey)).size}{" "}
+                {new Set(items.map(productKey)).size === 1
+                  ? "mueble"
+                  : "muebles"}{" "}
+                · {items.length} filas de reparto
+              </span>
             </h2>
             <div className="toolbar">
               <button
@@ -471,38 +500,43 @@ function App() {
               >
                 Exportar PDF
               </button>
-              <button
-                className="secondary"
-                onClick={loadExcel}
-                disabled={loadError || initialInventory.every(covered)}
-              >
-                Cargar datos del Excel
-              </button>
-              <button
-                className="secondary"
-                disabled={loadError}
-                onClick={() =>
-                  downloadFile(
-                    JSON.stringify(items, null, 2),
-                    "application/json",
-                    "inventario-sheraton-respaldo.json",
-                  )
-                }
-              >
-                Copia JSON
-              </button>
-              <button
-                className="secondary"
-                onClick={csv}
-                disabled={!visible.length}
-              >
-                ↓ Exportar CSV
-              </button>
+              <details className="more-options">
+                <summary>Más opciones</summary>
+                <div className="more-options-menu">
+                  <button
+                    className="secondary"
+                    onClick={loadExcel}
+                    disabled={loadError || initialInventory.every(covered)}
+                  >
+                    Cargar datos del Excel
+                  </button>
+                  <button
+                    className="secondary"
+                    disabled={loadError}
+                    onClick={() =>
+                      downloadFile(
+                        JSON.stringify(items, null, 2),
+                        "application/json",
+                        "inventario-sheraton-respaldo.json",
+                      )
+                    }
+                  >
+                    Descargar copia de seguridad
+                  </button>
+                  <button
+                    className="secondary"
+                    onClick={csv}
+                    disabled={!visible.length}
+                  >
+                    Exportar CSV
+                  </button>
+                </div>
+              </details>
             </div>
           </div>
           <div className="responsible">
             <label>
-              Responsable de esta revisión
+              Hotel que registra
               <select
                 aria-label="Hotel que registra"
                 value={actor}
@@ -514,8 +548,9 @@ function App() {
               </select>
             </label>
             <p>
-              Los números se guardan al salir del campo o pulsar Intro. El hotel
-              de origen registra envío; cada destino registra su recepción.
+              {actor === sender
+                ? "Puedes repartir el mobiliario y registrar los envíos. Cada hotel destino completa su recepción."
+                : `Estás registrando la recepción de ${actor}. Sheraton organiza el reparto y los envíos.`}
             </p>
           </div>
           <div className="selection-bar">
@@ -556,14 +591,14 @@ function App() {
               Quitar selección
             </button>
             <button
-              className="danger-button"
+              className="secondary"
               disabled={loadError || !selected.size || actor !== sender}
               onClick={() => {
                 setError("");
                 setResetOpen(true);
               }}
             >
-              Borrar datos seleccionados
+              Restablecer datos
             </button>
             <button
               className="danger-button"
@@ -573,7 +608,7 @@ function App() {
                 setDeleteOpen(true);
               }}
             >
-              Borrar mobiliario
+              Eliminar mobiliario
             </button>
             <button
               className="secondary"
@@ -646,317 +681,101 @@ function App() {
             </button>
           </div>
           {view === "table" ? (
-            <div className="table-scroll">
-              <table className="editable-table">
-                <colgroup>
-                  {[19, 7, 15, 8, 6, 7, 6, 9, 6, 9, 8].map((width, index) => (
-                    <col key={index} style={{ width: width + "%" }} />
-                  ))}
-                </colgroup>
-                <thead>
-                  <tr className="block-headings">
-                    <th colSpan={5} className="block-base">
-                      Información original
-                    </th>
-                    <th colSpan={3} className="block-sender block-start">
-                      Hotel origen · Sheraton
-                    </th>
-                    <th colSpan={2} className="block-receiver block-start">
-                      Hotel destino
-                    </th>
-                    <th className="block-status block-start">Común</th>
-                  </tr>
-                  <tr>
-                    <th className="block-base">Mobiliario</th>
-                    <th className="block-base">Origen</th>
-                    <th className="block-base">Destino</th>
-                    <th className="block-base">
-                      Inventario
-                      <br />
-                      original
-                    </th>
-                    <th className="block-base">
-                      Cantidades
-                      <br />
-                      necesarias
-                    </th>
-                    <th className="block-sender block-start">
-                      Inventario
-                      <br />
-                      corregido
-                    </th>
-                    <th className="block-sender">
-                      Enviadas
-                      <br />
-                      <small>Hotel Sheraton</small>
-                    </th>
-                    <th className="block-sender">
-                      Rotura envío
-                      <br />
-                      <small>Hotel Sheraton</small>
-                    </th>
-                    <th className="block-receiver block-start">
-                      Recibidas
-                      <br />
-                      <small>Hotel destino</small>
-                    </th>
-                    <th className="block-receiver">
-                      Rotura recepción
-                      <br />
-                      <small>Hotel destino</small>
-                    </th>
-                    <th className="block-status block-start">Estado</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {visible.map((i) => (
-                    <tr
-                      key={i.id}
-                      data-record-id={i.id}
-                      data-product-id={productKey(i)}
-                      className={selected.has(i.id) ? "selected-item" : ""}
-                    >
-                      <td data-label="Mobiliario" className="block-base">
-                        <div className="item-cell">
-                          <input
-                            className="item-selection"
-                            type="checkbox"
-                            aria-label={"Seleccionar " + i.name}
-                            checked={selected.has(i.id)}
-                            disabled={loadError || !!i.isRemainder}
-                            onChange={() => selectItem(i.id)}
-                          />
-                          <Photo item={i} onOpen={() => setDetail(i)} />
-                          <div>
-                            <strong>{i.name}</strong>
-                            <small>{i.category}</small>
-                          </div>
-                        </div>
-                      </td>
-                      <td data-label="Origen" className="block-base">
-                        {i.origin || "Origen pendiente"}
-                      </td>
-                      <td data-label="Destino" className="block-base">
-                        <Destination
-                          item={i}
-                          disabled={loadError || actor !== sender}
-                          change={(f, v) => update(i, f, v)}
-                          onManage={() => setDestinationItem(i)}
-                          count={
-                            new Set(
-                              productRows(items, i)
-                                .map((r) => r.location)
-                                .filter(Boolean),
-                            ).size
-                          }
-                        />
-                      </td>
-                      <td
-                        data-label="Inventariadas originales"
-                        className="block-base"
-                      >
-                        <strong>{displayCount(i.quantity)}</strong>
-                        {productRows(items, i).length > 1 && (
-                          <small className="shared-stock">
-                            (Total mobiliario a repartir entre hoteles)
-                          </small>
-                        )}
-                      </td>
-                      <td
-                        data-label="Cantidades necesarias"
-                        className="block-base"
-                      >
-                        {i.isRemainder || !i.location ? (
-                          <>
-                            <strong>
-                              {displayCount(i.allocatedQuantity ?? null)}
-                            </strong>
-                            <small>Sin hotel asignado</small>
-                          </>
-                        ) : (
-                          <Count
-                            value={i.allocatedQuantity ?? null}
-                            label="Cantidades necesarias"
-                            disabled={loadError || actor !== sender}
-                            onSave={(v) => update(i, "allocatedQuantity", v)}
-                          />
-                        )}
-                      </td>
-                      <td
-                        data-label="Inventario corregido"
-                        className="block-sender block-start"
-                      >
-                        <Count
-                          value={i.correctedQuantity ?? null}
-                          label="Inventario corregido"
-                          disabled={
-                            loadError || actor !== sender || !!i.isRemainder
-                          }
-                          onSave={(v) => update(i, "correctedQuantity", v)}
-                        />
-                        <small className="allocation-summary">
-                          Enviadas: {allocation(items, i).sent} /{" "}
-                          {displayCount(allocation(items, i).limit)}
-                          <br />
-                          Disponibles:{" "}
-                          {allocation(items, i).limit === null
-                            ? "Pendiente"
-                            : Math.max(
-                                0,
-                                allocation(items, i).limit! -
-                                  allocation(items, i).sent,
-                              )}
-                          {allocation(items, i).conflict && (
-                            <>
-                              <br />
-                              Revisa los inventarios corregidos.
-                            </>
-                          )}
-                        </small>
-                      </td>
-                      <td
-                        data-label="Enviadas · Sheraton"
-                        className="block-sender"
-                      >
-                        <Count
-                          value={i.sent}
-                          label="Enviadas"
-                          disabled={
-                            loadError || actor !== sender || !!i.isRemainder
-                          }
-                          onSave={(v) => update(i, "sent", v)}
-                        />
-                        {i.sent !== null && (
-                          <small>
-                            {i.sentBy
-                              ? "Comprobado por " + i.sentBy
-                              : "Registro anterior · responsable sin identificar"}
-                          </small>
-                        )}
-                      </td>
-                      <td data-label="Rotura envío" className="block-sender">
-                        <Damage
-                          item={i}
-                          side="Sent"
-                          disabled={
-                            loadError || actor !== sender || !!i.isRemainder
-                          }
-                          change={(f, v) => update(i, f, v)}
-                        />
-                        {i.recycled !== null && (
-                          <small>
-                            Rotura anterior sin responsable: {i.recycled}
-                          </small>
-                        )}
-                      </td>
-                      <td
-                        data-label="Recibidas · destino"
-                        className="block-receiver block-start"
-                      >
-                        <Count
-                          value={i.received}
-                          label="Recibidas"
-                          disabled={loadError || !canEdit("received", i, actor)}
-                          onSave={(v) => update(i, "received", v)}
-                        />
-                        <small>
-                          {i.receivedBy
-                            ? "Comprobado por " + i.receivedBy
-                            : "A completar por " +
-                              (i.location || "hotel destino")}
-                        </small>
-                      </td>
-                      <td
-                        data-label="Rotura recepción"
-                        className="block-receiver"
-                      >
-                        <Damage
-                          item={i}
-                          side="Received"
-                          disabled={
-                            loadError || !canEdit("damageReceived", i, actor)
-                          }
-                          change={(f, v) => update(i, f, v)}
-                        />
-                      </td>
-                      <td
-                        data-label="Estado"
-                        className="block-status block-start"
-                      >
-                        <span
-                          className={
-                            "badge transfer-" + transferStatus(i).toLowerCase()
-                          }
-                        >
-                          {transferStatus(i)}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <InventoryTable
+              items={items}
+              visible={visible}
+              actor={actor}
+              loadError={loadError}
+              selected={selected}
+              onSelect={selectItem}
+              onChange={update}
+              onManage={setDestinationItem}
+              onPhoto={setDetail}
+              errors={fieldErrors}
+            />
           ) : (
             <div className="gallery">
-              {visible.map((i) => (
-                <article
-                  key={i.id}
-                  data-record-id={i.id}
-                  data-product-id={productKey(i)}
-                  className={selected.has(i.id) ? "selected-item" : ""}
-                >
-                  <label className="gallery-selection">
-                    <input
-                      type="checkbox"
-                      aria-label={"Seleccionar " + i.name}
-                      checked={selected.has(i.id)}
-                      disabled={loadError || !!i.isRemainder}
-                      onChange={() => selectItem(i.id)}
-                    />
-                    Seleccionar
-                  </label>
-                  <Photo item={i} onOpen={() => setDetail(i)} />
-                  <div className="card-content">
-                    <small>{i.category}</small>
-                    <h3>{i.name}</h3>
-                    <p>
-                      {i.origin || "Origen pendiente"} →{" "}
-                      {i.location || "Sin destino"}
-                    </p>
-                    <p>
-                      <strong>{displayCount(i.quantity)}</strong> inventariadas
-                      originales
-                      {productRows(items, i).length > 1 && (
-                        <small>
-                          (Total mobiliario a repartir entre hoteles)
-                        </small>
-                      )}
-                      <br />
-                      Cantidades necesarias:{" "}
-                      {displayCount(i.allocatedQuantity ?? null)}
-                      {i.correctedQuantity != null && (
-                        <>
-                          <br />
-                          Inventario corregido:{" "}
-                          <strong>{displayCount(i.correctedQuantity)}</strong>
-                        </>
-                      )}
-                    </p>
-                    <button className="link" onClick={() => setDetail(i)}>
-                      Ver detalle
-                    </button>
-                    <button
-                      className="link"
-                      onClick={() => {
-                        setView("table");
-                        setQuery(i.name);
-                      }}
-                    >
-                      Ver en tabla
-                    </button>
-                  </div>
-                </article>
-              ))}
+              {visible
+                .filter(
+                  (i, index, rows) =>
+                    rows.findIndex(
+                      (row) => productKey(row) === productKey(i),
+                    ) === index,
+                )
+                .map((i) => (
+                  <article
+                    key={i.id}
+                    data-record-id={i.id}
+                    data-product-id={productKey(i)}
+                    className={selected.has(i.id) ? "selected-item" : ""}
+                  >
+                    <label className="gallery-selection">
+                      <input
+                        type="checkbox"
+                        aria-label={"Seleccionar " + i.name}
+                        checked={productRows(items, i)
+                          .filter((row) => !row.isRemainder)
+                          .every((row) => selected.has(row.id))}
+                        disabled={loadError}
+                        onChange={(e) =>
+                          setSelected((current) => {
+                            const next = new Set(current);
+                            for (const row of productRows(items, i).filter(
+                              (row) => !row.isRemainder,
+                            )) {
+                              if (e.target.checked) next.add(row.id);
+                              else next.delete(row.id);
+                            }
+                            return next;
+                          })
+                        }
+                      />
+                      Seleccionar
+                    </label>
+                    <Photo item={i} onOpen={() => setDetail(i)} />
+                    <div className="card-content">
+                      <small>{i.category}</small>
+                      <h3>{i.name}</h3>
+                      <p>
+                        {i.origin || "Origen pendiente"} →{" "}
+                        {[
+                          ...new Set(
+                            productRows(items, i).map(
+                              (row) => row.location || "Sin hotel asignado",
+                            ),
+                          ),
+                        ].join(", ")}
+                      </p>
+                      <p>
+                        <strong>{displayCount(i.quantity)}</strong>{" "}
+                        inventariadas originales
+                        <br />
+                        Total real disponible:{" "}
+                        <strong>
+                          {displayCount(allocation(items, i).limit)}
+                        </strong>
+                      </p>
+                      <button
+                        disabled={loadError || actor !== sender}
+                        onClick={() => setDestinationItem(i)}
+                      >
+                        Repartir entre hoteles
+                      </button>
+                      <button className="link" onClick={() => setDetail(i)}>
+                        Ver detalle
+                      </button>
+                      <button
+                        className="link"
+                        onClick={() => {
+                          setView("table");
+                          setQuery(i.name);
+                        }}
+                      >
+                        Ver en tabla
+                      </button>
+                    </div>
+                  </article>
+                ))}
             </div>
           )}
           {!visible.length && (
@@ -985,7 +804,9 @@ function App() {
           item={destinationItem}
           items={items}
           onClose={() => setDestinationItem(null)}
-          onApply={(hotels) => manageDestinations(destinationItem, hotels)}
+          onApply={(hotels, quantities) =>
+            manageDestinations(destinationItem, hotels, quantities)
+          }
         />
       )}
       {(deleteOpen || recoverOpen) && (
@@ -1049,7 +870,7 @@ function App() {
                     {row.name}
                     <small>
                       {row.location || "Sin hotel asignado"} · Inventario:{" "}
-                      {displayCount(row.quantity)} · Necesarias:{" "}
+                      {displayCount(row.quantity)} · Asignadas:{" "}
                       {displayCount(row.allocatedQuantity ?? null)}
                     </small>
                   </span>
@@ -1097,9 +918,7 @@ function App() {
           aria-labelledby="reset-title"
           aria-describedby="reset-description"
         >
-          <h2 id="reset-title">
-            Estás a punto de borrar todos los datos, ¿estás seguro?
-          </h2>
+          <h2 id="reset-title">¿Restablecer los datos seleccionados?</h2>
           <p id="reset-description">
             Esta acción afecta a {selected.size} registros seleccionados,
             incluidos los que no se ven por los filtros. Se borrarán las
@@ -1317,7 +1136,7 @@ function App() {
           </p>
           {detail.correctedQuantity != null && (
             <p>
-              Inventario corregido: {displayCount(detail.correctedQuantity)}
+              Total real disponible: {displayCount(detail.correctedQuantity)}
             </p>
           )}
           <p>{detail.notes}</p>

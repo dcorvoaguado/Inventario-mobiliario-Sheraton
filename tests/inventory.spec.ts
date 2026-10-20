@@ -16,13 +16,23 @@ test("new records keep immutable identity, support search and export transfer fi
   await page.getByLabel("Unidades", { exact: true }).fill("4");
   await page.getByRole("button", { name: "Guardar mobiliario" }).click();
   await page.reload();
-  const row = page.locator("tbody tr");
-  await expect(row.getByText("Sillón lobby", { exact: true })).toBeVisible();
+  const row = page.locator("tbody tr[data-record-id]");
+  await expect(
+    row
+      .locator("xpath=ancestor::tbody")
+      .getByText("Sillón lobby", { exact: true }),
+  ).toBeVisible();
   await expect(
     row.getByRole("button", { name: /Editar|Eliminar/ }),
   ).toHaveCount(0);
-  await row.getByLabel("Inventario corregido", { exact: true }).fill("6");
-  await row.getByLabel("Inventario corregido", { exact: true }).press("Enter");
+  await row
+    .locator("xpath=ancestor::tbody")
+    .getByLabel("Total real disponible", { exact: true })
+    .fill("6");
+  await row
+    .locator("xpath=ancestor::tbody")
+    .getByLabel("Total real disponible", { exact: true })
+    .press("Enter");
   await row.getByLabel("Enviadas", { exact: true }).fill("2");
   await row.getByLabel("Enviadas", { exact: true }).press("Enter");
   await page.getByLabel("Buscar mobiliario").fill("mesa");
@@ -31,11 +41,12 @@ test("new records keep immutable identity, support search and export transfer fi
   await page.getByLabel("Filtrar estado").selectOption("Enviado");
   await expect(row).toHaveCount(1);
   const pending = page.waitForEvent("download");
+  await page.getByText("Más opciones", { exact: true }).click();
   await page.getByRole("button", { name: "Exportar CSV" }).click();
   const download = await pending;
   const csv = await readFile((await download.path())!, "utf8");
   expect(csv).toContain("Inventariadas originales");
-  expect(csv).toContain("Inventario corregido");
+  expect(csv).toContain("Total real disponible");
   expect(csv).toContain("Hotel Sheraton");
   const values = await page.evaluate(() =>
     JSON.parse(localStorage.getItem("sheraton-inventory-v1")!),

@@ -10,11 +10,11 @@ test("repeated inventory uses the previous amount and spreadsheet coordinates st
     ["excel-row-61", "100"],
   ]) {
     const row = page.locator(`tbody tr[data-record-id="${id}"]`);
-    await expect(row.locator("td").nth(3).locator("strong")).toHaveText(
-      quantity,
+    await expect(row.locator("xpath=ancestor::tbody")).toContainText(
+      `Inventario original: ${quantity}`,
     );
   }
-  await expect(page.locator("tbody")).not.toContainText(
+  await expect(page.locator(".grouped-table")).not.toContainText(
     /Fila \d|Fórmula original/,
   );
   await page.getByRole("button", { name: "Galería de fotos" }).click();
@@ -50,10 +50,14 @@ test("existing local corrections and transfer fields survive the updated baselin
     );
   });
   await page.reload();
-  const row = page.locator("tbody tr");
-  await expect(row.locator("td").nth(3).locator("strong")).toHaveText("60");
+  const row = page.locator("tbody tr[data-record-id]");
+  await expect(row.locator("xpath=ancestor::tbody")).toContainText(
+    "Inventario original: 60",
+  );
   await expect(
-    row.getByLabel("Inventario corregido", { exact: true }),
+    row
+      .locator("xpath=ancestor::tbody")
+      .getByLabel("Total real disponible", { exact: true }),
   ).toHaveValue("58");
   await expect(row.getByLabel("Enviadas", { exact: true })).toHaveValue("55");
   await expect(row).not.toContainText("Fila");

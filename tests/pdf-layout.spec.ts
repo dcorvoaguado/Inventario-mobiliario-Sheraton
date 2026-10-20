@@ -7,10 +7,10 @@ test("editing fields fit desktop and narrow screens without horizontal scrolling
   for (const width of [1440, 1280, 1024, 768, 390]) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/");
-    await expect(page.locator("tbody tr")).toHaveCount(73);
+    await expect(page.locator("tbody tr[data-record-id]")).toHaveCount(73);
     const geometry = await page.evaluate(() => {
       const table = document.querySelector(".table-scroll")!;
-      const first = document.querySelector("tbody tr")!;
+      const first = document.querySelector("tbody tr[data-record-id]")!;
       return {
         document: document.documentElement.scrollWidth <= innerWidth,
         table: table.scrollWidth <= table.clientWidth + 1,

@@ -48,7 +48,7 @@ test("uploads a device photo, preserves it on reload and exports it to PDF", asy
   await page.getByRole("button", { name: "Guardar mobiliario" }).click();
   await page.reload();
   const row = page
-    .locator("tbody tr")
+    .locator(".product-heading")
     .filter({ has: page.getByText("Nuevo con foto", { exact: true }) });
   await expect(row.getByRole("img")).toHaveAttribute(
     "src",
@@ -73,13 +73,11 @@ test("invalid images show an error and an existing inventory photo can be reused
 }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Añadir mobiliario" }).click();
-  await page
-    .getByLabel("Subir foto del mobiliario")
-    .setInputFiles({
-      name: "falsa.png",
-      mimeType: "image/png",
-      buffer: Buffer.from("not an image"),
-    });
+  await page.getByLabel("Subir foto del mobiliario").setInputFiles({
+    name: "falsa.png",
+    mimeType: "image/png",
+    buffer: Buffer.from("not an image"),
+  });
   await expect(page.getByRole("dialog").getByRole("alert")).toContainText(
     "No se puede abrir",
   );
@@ -103,37 +101,34 @@ test("confirmation cancels safely and resetting selected records preserves unsel
 }) => {
   await seeded(page);
   await page
-    .getByRole("checkbox", { name: "Seleccionar Sillón tapizado", exact: true })
+    .getByRole("checkbox", { name: /^Seleccionar Sillón tapizado ·/ })
     .check();
   await page
-    .getByRole("checkbox", { name: "Seleccionar Mueble nuevo", exact: true })
+    .getByRole("checkbox", { name: /^Seleccionar Mueble nuevo ·/ })
     .check();
-  await page
-    .getByRole("button", { name: "Borrar datos seleccionados" })
-    .click();
+  await page.getByRole("button", { name: "Restablecer datos" }).click();
   await expect(page.getByRole("dialog")).toContainText(
     "2 registros seleccionados",
   );
   await page.getByRole("button", { name: "No", exact: true }).click();
-  await expect(page.locator("tbody tr")).toHaveCount(74);
+  await expect(page.locator("tbody tr[data-record-id]")).toHaveCount(74);
   const first = page.locator('[data-record-id="excel-row-2"]');
   await expect(first.getByLabel("Enviadas", { exact: true })).toHaveValue("50");
-  await page
-    .getByRole("button", { name: "Borrar datos seleccionados" })
-    .click();
+  await page.getByRole("button", { name: "Restablecer datos" }).click();
   await page.getByRole("button", { name: "Sí", exact: true }).click();
-  await expect(page.locator("tbody tr")).toHaveCount(73);
-  await expect(first.getByLabel("Destino", { exact: true })).toHaveValue(
+  await expect(page.locator("tbody tr[data-record-id]")).toHaveCount(73);
+  await expect(first.locator('td[data-label="Destino"]')).toHaveText(
     "Elba Carlota",
   );
   await expect(
-    first.getByLabel("Inventario corregido", { exact: true }),
-  ).toHaveValue("");
+    first
+      .locator("xpath=ancestor::tbody")
+      .getByLabel("Total real disponible", { exact: true }),
+  ).toHaveValue("51");
   await expect(first.getByLabel("Enviadas", { exact: true })).toHaveValue("");
-  await expect(first.getByRole("img")).toHaveAttribute(
-    "src",
-    "/images/excel/sheraton_reduced_0.jpg",
-  );
+  await expect(
+    first.locator("xpath=ancestor::tbody").getByRole("img"),
+  ).toHaveAttribute("src", "/images/excel/sheraton_reduced_0.jpg");
   await expect(
     page
       .locator('[data-record-id="excel-row-3"]')
@@ -154,20 +149,16 @@ test("select all covers hidden records and reset restores the full original inve
     })
     .check();
   await expect(page.getByText(/74 de 74 seleccionados/)).toBeVisible();
-  await page
-    .getByRole("button", { name: "Borrar datos seleccionados" })
-    .click();
+  await page.getByRole("button", { name: "Restablecer datos" }).click();
   await expect(page.getByRole("dialog")).toContainText(
     "74 registros seleccionados",
   );
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).toHaveCount(0);
-  await page
-    .getByRole("button", { name: "Borrar datos seleccionados" })
-    .click();
+  await page.getByRole("button", { name: "Restablecer datos" }).click();
   await page.getByRole("button", { name: "Sí", exact: true }).click();
   await page.getByLabel("Filtrar ubicación").selectOption("");
-  await expect(page.locator("tbody tr")).toHaveCount(73);
+  await expect(page.locator("tbody tr[data-record-id]")).toHaveCount(73);
   const data = await page.evaluate(() =>
     JSON.parse(localStorage.getItem("sheraton-inventory-v1")!),
   );
