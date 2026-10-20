@@ -21,6 +21,7 @@ import {
   canEdit,
   type Editable,
 } from "./InlineFields";
+import PdfExport from "./PdfExport";
 import summary from "./data/import-summary.json";
 import "@fontsource/inter/latin-400.css";
 import "@fontsource/inter/latin-500.css";
@@ -77,6 +78,7 @@ function App() {
     [error, setError] = useState(""),
     [message, setMessage] = useState("");
   const [detail, setDetail] = useState<Item | null>(null);
+  const [pdfOpen, setPdfOpen] = useState(false);
   const [actor, setActor] = useState(sender);
   const [view, setView] = useState<"table" | "gallery">("table");
   const visible = items.filter(
@@ -341,6 +343,12 @@ function App() {
             </h2>
             <div className="toolbar">
               <button
+                disabled={loadError || !items.length}
+                onClick={() => setPdfOpen(true)}
+              >
+                Exportar PDF
+              </button>
+              <button
                 className="secondary"
                 onClick={loadExcel}
                 disabled={
@@ -452,16 +460,21 @@ function App() {
           </div>
           {view === "table" ? (
             <div className="table-scroll">
-              <table>
+              <table className="editable-table">
+                <colgroup>
+                  {[19, 7, 13, 6, 8, 9, 9, 10, 10, 9].map((width, index) => (
+                    <col key={index} style={{ width: width + "%" }} />
+                  ))}
+                </colgroup>
                 <thead>
                   <tr>
                     <th>Mobiliario</th>
                     <th>Origen</th>
                     <th>Destino</th>
                     <th>
-                      Inventariadas
+                      Inventario
                       <br />
-                      originales
+                      original
                     </th>
                     <th>
                       Inventario
@@ -494,7 +507,7 @@ function App() {
                 <tbody>
                   {visible.map((i) => (
                     <tr key={i.id}>
-                      <td>
+                      <td data-label="Mobiliario">
                         <div className="item-cell">
                           <Photo item={i} onOpen={() => setDetail(i)} />
                           <div>
@@ -506,15 +519,17 @@ function App() {
                           </div>
                         </div>
                       </td>
-                      <td>{i.origin || "Origen pendiente"}</td>
-                      <td>
+                      <td data-label="Origen">
+                        {i.origin || "Origen pendiente"}
+                      </td>
+                      <td data-label="Destino">
                         <Destination
                           item={i}
                           disabled={loadError || actor !== sender}
                           change={(f, v) => update(i, f, v)}
                         />
                       </td>
-                      <td>
+                      <td data-label="Inventariadas originales">
                         <strong>{displayCount(i.quantity)}</strong>
                         {i.source?.formulas.F && (
                           <small title={i.source.formulas.F}>
@@ -522,7 +537,7 @@ function App() {
                           </small>
                         )}
                       </td>
-                      <td>
+                      <td data-label="Inventario corregido">
                         <Count
                           value={i.correctedQuantity ?? null}
                           label="Inventario corregido"
@@ -530,7 +545,7 @@ function App() {
                           onSave={(v) => update(i, "correctedQuantity", v)}
                         />
                       </td>
-                      <td>
+                      <td data-label="Enviadas · Sheraton">
                         <Count
                           value={i.sent}
                           label="Enviadas"
@@ -545,7 +560,7 @@ function App() {
                           </small>
                         )}
                       </td>
-                      <td>
+                      <td data-label="Recibidas · destino">
                         <Count
                           value={i.received}
                           label="Recibidas"
@@ -559,7 +574,7 @@ function App() {
                               (i.location || "hotel destino")}
                         </small>
                       </td>
-                      <td>
+                      <td data-label="Rotura envío">
                         <Damage
                           item={i}
                           side="Sent"
@@ -572,7 +587,7 @@ function App() {
                           </small>
                         )}
                       </td>
-                      <td>
+                      <td data-label="Rotura recepción">
                         <Damage
                           item={i}
                           side="Received"
@@ -582,7 +597,7 @@ function App() {
                           change={(f, v) => update(i, f, v)}
                         />
                       </td>
-                      <td>
+                      <td data-label="Estado">
                         <span
                           className={
                             "badge transfer-" + transferStatus(i).toLowerCase()
@@ -662,6 +677,7 @@ function App() {
           </footer>
         </section>
       </main>
+      {pdfOpen && <PdfExport items={items} onClose={() => setPdfOpen(false)} />}
       {draft && (
         <dialog
           ref={(node) => {

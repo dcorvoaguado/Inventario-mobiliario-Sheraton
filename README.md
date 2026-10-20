@@ -50,3 +50,7 @@ Consulta [el informe de importación](docs/importacion-excel.md) para los totale
 ## Edición de la distribución
 
 La tabla principal permite elegir destino, registrar inventario corregido, enviadas, recibidas y roturas independientes de envío y recepción. Se mantienen visibles los valores originales del Excel y se bloquean foto, nombre y origen. El estado Pendiente / Enviado / Recibido se calcula a partir de las cantidades registradas. La selección «Responsable de esta revisión» habilita los campos correspondientes al hotel seleccionado. No es autenticación y los cambios siguen siendo locales al navegador. Consulta [el funcionamiento y los límites](docs/edicion-distribucion.md).
+
+## Informes PDF y vista adaptable
+
+«Exportar PDF» genera un informe visual con fotografías de todos los destinos o de un hotel elegido. «PDF por hotel (.zip)» descarga todos los informes individuales juntos, incluyendo un documento de los registros sin destino. Los PDF usan todos los registros guardados del destino, aunque la pantalla tenga otros filtros. La tabla se adapta al ancho disponible y se presenta como fichas en pantallas estrechas. Consulta [el contenido de los informes y las opciones](docs/exportacion-pdf.md).
