@@ -9,7 +9,7 @@ La tabla principal es el único lugar donde se actualizan los registros existent
 | Foto, nombre y origen    | Bloqueados después del alta. Para las filas del Excel se recuperan siempre los valores originales.                                                                                          |
 | Destino                  | Hotel Sheraton elige Elba Carlota, Elba Sara, Elba Lucía o Elba Palace. Se conservan los destinos históricos fuera de la lista como valores originales, sin ofrecerlos como nueva elección. |
 | Inventariadas originales | Valor inalterable de la fila del Excel. Las fórmulas no resueltas conservan cantidad pendiente.                                                                                             |
-| Inventario corregido     | Cantidad independiente, editable por Hotel Sheraton. Vacío significa sin corrección; cero es una corrección válida.                                                                         |
+| Inventario corregido     | Cantidad común a todos los destinos del mismo mueble, editable por Hotel Sheraton. Vacío significa sin corrección; cero es una corrección válida.                                                                         |
 | Enviadas                 | Hotel Sheraton registra el número y queda el texto «Comprobado por Hotel Sheraton».                                                                                                         |
 | Recibidas                | El hotel seleccionado debe coincidir con el destino de la fila. El registro indica el hotel que lo completó.                                                                                |
 | Rotura envío             | Hotel Sheraton selecciona Pendiente, Sin roturas o Con roturas. Con roturas permite indicar unidades.                                                                                       |
@@ -18,7 +18,7 @@ La tabla principal es el único lugar donde se actualizan los registros existent
 
 Los números se guardan al salir del campo o pulsar Intro. Se rechazan negativos, decimales y enteros fuera del rango seguro. Escape descarta el texto aún no guardado. Los desplegables se guardan al elegir una opción. Sin roturas registra cero; Pendiente deja la cantidad vacía. Con roturas no inventa ninguna cantidad.
 
-Una recepción registrada fija el destino para conservar a quién pertenece. Para cambiarlo, el destino actual debe retirar primero su recepción dejando Recibidas vacío. El estado se recalcula al retirar las cantidades. Las roturas anteriores que no tenían responsable se conservan y se muestran por separado; no se asignan a envío ni recepción por suposición.
+Un destino con envíos, recepción o roturas registrados queda fijado para conservar sus movimientos. Para retirarlo o cambiarlo hay que vaciar primero esos datos con el responsable correspondiente. El estado se recalcula al retirar las cantidades. Las roturas anteriores que no tenían responsable se conservan y se muestran por separado; no se asignan a envío ni recepción por suposición.
 
 ## Compatibilidad con datos anteriores
 
@@ -52,3 +52,11 @@ La tabla y los PDF agrupan los datos en este orden:
 4. **Gris neutro:** estado común del traslado.
 
 Los encabezados de grupo y las líneas divisorias acompañan al color para identificar el responsable. Los controles numéricos de la tabla miden como máximo 64 px en escritorio y 72 px en pantallas estrechas. Se mantiene la vista sin desplazamiento horizontal. En móvil, los bloques conservan color y separadores al reorganizarse como fichas. El CSV sigue el mismo orden de campos de envío y recepción.
+
+## Varios destinos por mobiliario
+
+En Destino, «Seleccionar varios hoteles» permite marcar los hoteles y aplicar el reparto. Se crea una fila por hotel, con la misma foto, procedencia e inventario. Las cantidades de envío, recepción y roturas pertenecen a cada destino. Los movimientos existentes se conservan y no se permite desmarcar un hotel que los tenga.
+
+El inventario corregido es común: cambiarlo en una fila actualiza las demás del mismo mueble. La suma de enviadas de todos sus destinos no puede superarlo; se comprueba también la suma de recibidas, por separado. Sin corrección se utiliza el inventario original; si tampoco existe, hay que indicar una corrección antes de registrar cantidades positivas. No se permite reducir el inventario por debajo de los movimientos registrados. El resumen muestra las enviadas y las unidades disponibles, incluyendo filas ocultas por filtros.
+
+El reparto se conserva al recargar y se incluye en las exportaciones por hotel. «Cargar Excel» no vuelve a añadir destinos retirados de un producto ya distribuido. Al borrar todas las filas de un mueble se recupera su distribución original; al borrar solo algunas, se conservan el inventario corregido compartido y los movimientos de las filas no seleccionadas. Estos controles se aplican a los datos del navegador actual, sin sincronización entre dispositivos.

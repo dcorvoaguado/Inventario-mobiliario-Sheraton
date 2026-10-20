@@ -7,6 +7,7 @@ export type Item = {
   category: string;
   quantity: number | null;
   inventoryGroup?: string;
+  distributionOf?: string;
   sent: number | null;
   received: number | null;
   recycled: number | null;
@@ -76,8 +77,10 @@ export function read(): Item[] {
     throw Error("Invalid inventory");
   if (new Set(data.map((i) => i.id)).size !== data.length)
     throw Error("Duplicate record identifiers");
-  return data.map((i) => {
-    const original = initialInventory.find((row) => row.id === i.id);
+  const restored: Item[] = data.map((i) => {
+    const original = initialInventory.find(
+      (row) => row.id === (i.distributionOf ?? i.id),
+    );
     return {
       ...i,
       quantity: original ? original.quantity : i.quantity,
@@ -98,6 +101,26 @@ export function read(): Item[] {
       damageSent: i.damageSent ?? null,
       damageReceived: i.damageReceived ?? null,
     };
+  });
+  const groups = new Map<string, Item[]>();
+  for (const item of restored) {
+    const id = item.inventoryGroup ?? item.distributionOf ?? item.id;
+    groups.set(id, [...(groups.get(id) ?? []), item]);
+  }
+  return restored.map((item) => {
+    const group = groups.get(
+      item.inventoryGroup ?? item.distributionOf ?? item.id,
+    )!;
+    const corrections = [
+      ...new Set(
+        group
+          .map((i) => i.correctedQuantity)
+          .filter((n): n is number => n != null),
+      ),
+    ];
+    return corrections.length === 1
+      ? { ...item, correctedQuantity: corrections[0] }
+      : item;
   });
 }
 export const empty = (): Item => ({
@@ -141,7 +164,10 @@ export function effectiveQuantity(item: Item) {
 export function inventoryTotal(items: Item[]) {
   return [
     ...new Map(
-      items.map((i) => [i.inventoryGroup ?? i.id, i.quantity]),
+      items.map((i) => [
+        i.inventoryGroup ?? i.distributionOf ?? i.id,
+        i.quantity,
+      ]),
     ).values(),
   ].reduce<number>((sum, quantity) => sum + (quantity ?? 0), 0);
 }

@@ -23,6 +23,16 @@ import {
   type Editable,
 } from "./InlineFields";
 import ImagePicker from "./ImagePicker";
+import DestinationPicker from "./DestinationPicker";
+import {
+  allocation,
+  allocationError,
+  hasMovement,
+  productKey,
+  productRows,
+  replaceDestinations,
+  resetAllocationSelection,
+} from "./allocation";
 import PdfExport from "./PdfExport";
 import "@fontsource/inter/latin-400.css";
 import "@fontsource/inter/latin-500.css";
@@ -75,6 +85,7 @@ function App() {
     [error, setError] = useState(""),
     [message, setMessage] = useState("");
   const [detail, setDetail] = useState<Item | null>(null);
+  const [destinationItem, setDestinationItem] = useState<Item | null>(null);
   const [pdfOpen, setPdfOpen] = useState(false);
   const [imageBusy, setImageBusy] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -118,15 +129,7 @@ function App() {
   }
   function resetSelected() {
     if (actor !== sender || !selected.size) return;
-    const next: Item[] = [];
-    for (const item of items) {
-      if (!selected.has(item.id)) {
-        next.push(item);
-        continue;
-      }
-      const original = initialInventory.find((i) => i.id === item.id);
-      if (original) next.push(structuredClone(original));
-    }
+    const next = resetAllocationSelection(items, selected);
     if (persist(next)) {
       setSelected(new Set());
       setResetOpen(false);
@@ -177,10 +180,10 @@ function App() {
       field === "location" &&
       (typeof value !== "string" ||
         (value !== "" && !destinations.includes(value)) ||
-        item.received !== null)
+        hasMovement(item))
     ) {
       setError(
-        "Elige un destino permitido. Para cambiar un destino recibido, retira primero su recepción.",
+        "Elige un destino permitido. No se puede cambiar una fila con movimientos registrados; puedes añadir otros hoteles con el selector múltiple.",
       );
       return false;
     }
@@ -202,11 +205,65 @@ function App() {
       next.damageSentMode = value === 0 ? "none" : "damaged";
     if (field === "damageReceived")
       next.damageReceivedMode = value === 0 ? "none" : "damaged";
-    if (persist(items.map((i) => (i.id === item.id ? next : i)))) {
+    const group = productRows(items, item);
+    if (
+      field === "location" &&
+      value !== "" &&
+      group.some((i) => i.id !== item.id && i.location === value)
+    ) {
+      setError(
+        "Este hotel ya tiene una fila para el mismo mueble. Usa la selección de varios hoteles.",
+      );
+      return false;
+    }
+    const proposed =
+      field === "correctedQuantity"
+        ? items.map((i) =>
+            productKey(i) === productKey(item)
+              ? { ...i, correctedQuantity: value as number | null }
+              : i,
+          )
+        : items.map((i) => (i.id === item.id ? next : i));
+    if (["correctedQuantity", "sent", "received"].includes(field)) {
+      const issue = allocationError(proposed, next);
+      if (issue) {
+        setError(issue);
+        return false;
+      }
+    }
+    if (persist(proposed)) {
       setMessage("Cambios guardados en este navegador.");
       return true;
     }
+
     return false;
+  }
+  function manageDestinations(item: Item, hotels: string[]) {
+    if (actor !== sender)
+      return "Solo Hotel Sheraton puede organizar los destinos.";
+    try {
+      const next = replaceDestinations(items, item, hotels);
+      if (!persist(next))
+        return "No se han podido guardar los destinos. Comprueba el almacenamiento del navegador.";
+      setSelected(
+        (current) =>
+          new Set([...current].filter((id) => next.some((i) => i.id === id))),
+      );
+      setDestinationItem(null);
+      setMessage(
+        "Destinos actualizados. Cada fila comparte el mismo inventario del producto.",
+      );
+      return null;
+    } catch (e) {
+      return e instanceof Error
+        ? e.message
+        : "No se pudieron actualizar los destinos.";
+    }
+  }
+  function covered(original: Item) {
+    return items.some(
+      (i) => i.id === original.id || productKey(i) === productKey(original),
+    );
   }
   function csv() {
     const cell = (value: string | number | null) =>
@@ -264,8 +321,7 @@ function App() {
     );
   }
   function loadExcel() {
-    const ids = new Set(items.map((i) => i.id));
-    const added = initialInventory.filter((i) => !ids.has(i.id));
+    const added = initialInventory.filter((i) => !covered(i));
     if (persist([...items, ...structuredClone(added)]))
       setMessage(
         `${added.length} registros del Excel añadidos. Tus registros existentes se conservan.`,
@@ -331,12 +387,7 @@ function App() {
               <button
                 className="secondary"
                 onClick={loadExcel}
-                disabled={
-                  loadError ||
-                  initialInventory.every((i) =>
-                    items.some((j) => i.id === j.id),
-                  )
-                }
+                disabled={loadError || initialInventory.every(covered)}
               >
                 Cargar datos del Excel
               </button>
@@ -547,6 +598,7 @@ function App() {
                     <tr
                       key={i.id}
                       data-record-id={i.id}
+                      data-product-id={productKey(i)}
                       className={selected.has(i.id) ? "selected-item" : ""}
                     >
                       <td data-label="Mobiliario" className="block-base">
@@ -574,6 +626,14 @@ function App() {
                           item={i}
                           disabled={loadError || actor !== sender}
                           change={(f, v) => update(i, f, v)}
+                          onManage={() => setDestinationItem(i)}
+                          count={
+                            new Set(
+                              productRows(items, i)
+                                .map((r) => r.location)
+                                .filter(Boolean),
+                            ).size
+                          }
                         />
                       </td>
                       <td
@@ -592,6 +652,25 @@ function App() {
                           disabled={loadError || actor !== sender}
                           onSave={(v) => update(i, "correctedQuantity", v)}
                         />
+                        <small className="allocation-summary">
+                          Enviadas: {allocation(items, i).sent} /{" "}
+                          {displayCount(allocation(items, i).limit)}
+                          <br />
+                          Disponibles:{" "}
+                          {allocation(items, i).limit === null
+                            ? "Pendiente"
+                            : Math.max(
+                                0,
+                                allocation(items, i).limit! -
+                                  allocation(items, i).sent,
+                              )}
+                          {allocation(items, i).conflict && (
+                            <>
+                              <br />
+                              Revisa los inventarios corregidos.
+                            </>
+                          )}
+                        </small>
                       </td>
                       <td
                         data-label="Enviadas · Sheraton"
@@ -677,6 +756,7 @@ function App() {
                 <article
                   key={i.id}
                   data-record-id={i.id}
+                  data-product-id={productKey(i)}
                   className={selected.has(i.id) ? "selected-item" : ""}
                 >
                   <label className="gallery-selection">
@@ -746,6 +826,14 @@ function App() {
           </footer>
         </section>
       </main>
+      {destinationItem && (
+        <DestinationPicker
+          item={destinationItem}
+          items={items}
+          onClose={() => setDestinationItem(null)}
+          onApply={(hotels) => manageDestinations(destinationItem, hotels)}
+        />
+      )}
       {resetOpen && (
         <dialog
           ref={(node) => {
@@ -762,9 +850,12 @@ function App() {
             Esta acción afecta a {selected.size} registros seleccionados,
             incluidos los que no se ven por los filtros. Se borrarán las
             correcciones, envíos, recepciones, roturas y comentarios añadidos;
-            los destinos del Excel se restablecerán. El mobiliario, las
-            fotografías y el inventario original del Excel se conservan. Los
-            muebles nuevos seleccionados se eliminarán junto con sus fotos.
+            si seleccionas todas las filas de un producto, se restablecerán sus
+            destinos e inventario corregido. Si seleccionas solo algunas filas,
+            se mantendrán el reparto y el inventario corregido compartidos. El
+            mobiliario, las fotografías y el inventario original del Excel se
+            conservan. Los muebles nuevos seleccionados se eliminarán junto con
+            sus fotos.
           </p>
           {error && (
             <p role="alert" className="error">

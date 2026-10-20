@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { destinations, sender, type Item } from "./inventory";
+import { hasMovement } from "./allocation";
 export type Editable =
   | "location"
   | "correctedQuantity"
@@ -119,10 +120,14 @@ export function Destination({
   item,
   disabled,
   change,
+  onManage,
+  count,
 }: {
   item: Item;
   disabled: boolean;
   change: Change;
+  onManage: () => void;
+  count: number;
 }) {
   return (
     <>
@@ -130,7 +135,7 @@ export function Destination({
         className="inline-destination"
         aria-label="Destino"
         value={item.location}
-        disabled={disabled || item.received !== null}
+        disabled={disabled || hasMovement(item)}
         onChange={(e) => change("location", e.target.value)}
       >
         <option value="">Sin destino asignado</option>
@@ -140,12 +145,20 @@ export function Destination({
           </option>
         )}
         {destinations.map((h) => (
-          <option key={h}>{h}</option>
+          <option key={h} value={h}>
+            {h}
+          </option>
         ))}
       </select>
-      {item.received !== null && (
-        <small>Destino fijado por la recepción.</small>
-      )}
+      <button
+        type="button"
+        className="link manage-destinations"
+        disabled={disabled}
+        onClick={onManage}
+      >
+        Seleccionar varios hoteles ({count})
+      </button>
+      {hasMovement(item) && <small>Destino con movimientos registrados.</small>}
     </>
   );
 }

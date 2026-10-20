@@ -1199,3 +1199,47 @@ main {
   background: #e4e4e4;
   color: #4f4f4f;
 }
+.manage-destinations {
+  display: block;
+  text-align: left;
+  font-size: 10px !important;
+  padding: 6px 0 !important;
+  line-height: 1.4;
+  white-space: normal;
+  color: var(--bronze-dark);
+}
+.destination-stock {
+  margin: 16px 0;
+  padding: 12px;
+  background: var(--warm);
+  font-size: 13px;
+}
+.destination-choices {
+  display: grid;
+  gap: 8px;
+  margin: 16px 0;
+}
+.destination-choices label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0;
+  padding: 12px;
+  border: 1px solid var(--border);
+  font-size: 13px;
+}
+.destination-choices input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--bronze-dark);
+}
+.destination-choices small {
+  font-size: 10px;
+  color: var(--muted);
+}
+.allocation-summary {
+  line-height: 1.6 !important;
+  margin-top: 7px !important;
+}
