@@ -3,6 +3,10 @@ test("create, persist, search, edit, export and delete inventory", async ({
   page,
 }) => {
   await page.goto("/");
+  await page.evaluate(() =>
+    localStorage.setItem("sheraton-inventory-v1", "[]"),
+  );
+  await page.reload();
   await page.getByRole("button", { name: "Añadir mobiliario" }).click();
   await page.getByLabel("Nombre", { exact: true }).fill("Sillón lobby");
   await page.getByLabel("Ubicación", { exact: true }).fill("Lobby");
@@ -10,7 +14,7 @@ test("create, persist, search, edit, export and delete inventory", async ({
   await page.getByRole("button", { name: "Guardar mobiliario" }).click();
   await page.reload();
   await expect(
-    page.getByRole("cell", { name: "Sillón lobby Asientos" }),
+    page.getByRole("cell", { name: /Sillón lobby Asientos/ }),
   ).toBeVisible();
   await page.getByLabel("Buscar mobiliario").fill("mesa");
   await expect(page.getByText("No hay coincidencias")).toBeVisible();

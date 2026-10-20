@@ -1,0 +1,45 @@
+{
+  "file": "Distribucción mobiliario Sheraton rellenable - reducido.xlsx",
+  "sha256": "1b7cf9b2dfaa43f309265bf37c36223c558eac685a312879f9f8bef6f86feb45",
+  "records": 73,
+  "uniqueImages": 63,
+  "recordsWithImages": 70,
+  "knownUnits": 6250,
+  "unknownQuantities": [
+    22,
+    38,
+    57,
+    61
+  ],
+  "missingDestinations": [
+    5,
+    13,
+    17,
+    51,
+    53,
+    69,
+    70,
+    71,
+    72,
+    73,
+    74,
+    76,
+    77
+  ],
+  "missingOrigins": [
+    56,
+    57
+  ],
+  "missingImages": [
+    46,
+    47,
+    48
+  ],
+  "notes": [
+    "No se fusionan filas con nombres repetidos.",
+    "Fórmulas que apuntan a celdas vacías: cantidad desconocida; se conserva fórmula y valor en caché.",
+    "Elba Lucia se muestra como Elba Lucía; el texto original se conserva en source.cells.",
+    "Enviadas, recibidas y roturas vacías se conservan como null.",
+    "No se infiere estado de conservación."
+  ]
+}

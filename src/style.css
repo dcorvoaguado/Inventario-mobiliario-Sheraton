@@ -390,3 +390,165 @@ textarea {
     display: none;
   }
 }
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.item-cell {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.item-cell > div {
+  max-width: 230px;
+  white-space: normal;
+  min-width: 110px;
+}
+.photo-button {
+  padding: 0;
+  border: 1px solid #e0e6dc;
+  background: #fff;
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+  width: 72px;
+  height: 72px;
+}
+.photo-button img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.no-photo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 72px;
+  height: 72px;
+  font-size: 10px;
+  background: #f3f5ef;
+  color: #7a8576;
+  flex-shrink: 0;
+  border-radius: 6px;
+}
+.view-switch {
+  padding: 0 24px 20px;
+  display: flex;
+  gap: 8px;
+}
+.view-switch [aria-pressed="true"] {
+  background: #214e41;
+  color: white;
+}
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 20px;
+  padding: 0 24px 24px;
+}
+.gallery article {
+  border: 1px solid #e0e5dc;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.gallery .photo-button,
+.gallery .no-photo {
+  width: 100%;
+  height: 210px;
+  border: 0;
+  border-radius: 0;
+  background: #fff;
+}
+.gallery .photo-button img {
+  padding: 12px;
+}
+.card-content {
+  padding: 16px;
+}
+.card-content > small {
+  font-size: 10px;
+  letter-spacing: 0.4px;
+  color: #78836f;
+}
+.card-content h3 {
+  margin: 10px 0;
+}
+.card-content p {
+  font-size: 12px;
+}
+.field-help {
+  font-size: 11px;
+  margin: -4px 0 18px;
+}
+.photo-dialog[open] {
+  width: min(800px, calc(100% - 24px));
+}
+.full-photo {
+  display: block;
+  width: 100%;
+  max-height: 60vh;
+  object-fit: contain;
+  margin-bottom: 16px;
+}
+.photo-dialog p {
+  margin-bottom: 10px;
+}
+.status0 {
+  color: #687264;
+  background: #f0f2ec;
+}
+.status1 {
+  color: #396d50;
+  background: #edf4ec;
+}
+.status2 {
+  color: #8d6823;
+  background: #fbf2de;
+}
+.status3 {
+  color: #a24f45;
+  background: #f9ece8;
+}
+td > small {
+  margin: 0 0 6px;
+}
+.filters {
+  flex-wrap: wrap;
+}
+.filters input {
+  flex-basis: 260px;
+}
+dialog::backdrop {
+  background: #11291eaa;
+}
+@media (max-width: 750px) {
+  .section-title {
+    flex-wrap: wrap;
+  }
+  .toolbar {
+    width: 100%;
+  }
+  .toolbar button {
+    flex: 1;
+    white-space: nowrap;
+    padding: 10px 8px;
+    font-size: 11px;
+  }
+  .gallery {
+    padding: 0 14px 18px;
+    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+  .gallery .photo-button,
+  .gallery .no-photo {
+    height: 170px;
+  }
+  .view-switch {
+    padding: 0 14px 18px;
+  }
+  .filters select {
+    flex-basis: 40%;
+  }
+}

@@ -1,0 +1,2127 @@
+[
+  {
+    "id": "excel-row-2",
+    "name": "Sillón tapizado",
+    "origin": "SHERATON",
+    "location": "Elba Carlota",
+    "category": "Distribución inicial",
+    "quantity": 51,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_0.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 2,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Carlota",
+        "D": "Sillón tapizado",
+        "F": 51,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-3",
+    "name": "Mesa bar",
+    "origin": "SHERATON",
+    "location": "Elba Carlota",
+    "category": "Distribución inicial",
+    "quantity": 35,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_1.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 3,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Carlota",
+        "D": "Mesa bar",
+        "F": 35,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-4",
+    "name": "Chaiselongue",
+    "origin": "SHERATON",
+    "location": "Elba Vecindario",
+    "category": "Distribución inicial",
+    "quantity": 4,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_2.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 4,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Vecindario",
+        "D": "Chaiselongue",
+        "F": 4,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-5",
+    "name": "Mesa bar",
+    "origin": "SHERATON",
+    "location": "",
+    "category": "Distribución inicial",
+    "quantity": 3,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_3.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 5,
+      "cells": {
+        "B": "SHERATON",
+        "C": null,
+        "D": "Mesa bar",
+        "F": 3,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-6",
+    "name": "Espejos",
+    "origin": "SHERATON",
+    "location": "Elba Sara",
+    "category": "Distribución inicial",
+    "quantity": 4,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_4.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 6,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Sara",
+        "D": "Espejos",
+        "F": 4,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-7",
+    "name": "Sillones",
+    "origin": "SHERATON",
+    "location": "Elba Lucía",
+    "category": "Distribución inicial",
+    "quantity": 8,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_5.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 7,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Lucía",
+        "D": "Sillones ",
+        "F": 8,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-8",
+    "name": "Sofá",
+    "origin": "SHERATON",
+    "location": "Elba Vecindario",
+    "category": "Distribución inicial",
+    "quantity": 4,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_6.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 8,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Vecindario",
+        "D": "Sofá",
+        "F": 4,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-9",
+    "name": "Mesa centro",
+    "origin": "SHERATON",
+    "location": "Elba Sara",
+    "category": "Distribución inicial",
+    "quantity": 3,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_7.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 9,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Sara",
+        "D": "Mesa centro",
+        "F": 3,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-10",
+    "name": "Mesa auxiliar",
+    "origin": "SHERATON",
+    "location": "Elba Palace",
+    "category": "Distribución inicial",
+    "quantity": 4,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_8.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 10,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Palace",
+        "D": "Mesa auxiliar",
+        "F": 4,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-11",
+    "name": "Consola",
+    "origin": "SHERATON",
+    "location": "Elba Sara",
+    "category": "Distribución inicial",
+    "quantity": 10,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_9.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 11,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Sara",
+        "D": "Consola",
+        "F": 10,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-12",
+    "name": "Consola",
+    "origin": "SHERATON",
+    "location": "Elba Lucía",
+    "category": "Distribución inicial",
+    "quantity": 10,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_9.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 12,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Lucía",
+        "D": "Consola",
+        "F": 10,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-13",
+    "name": "Sillón ratán",
+    "origin": "SHERATON",
+    "location": "",
+    "category": "Distribución inicial",
+    "quantity": 10,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_10.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 13,
+      "cells": {
+        "B": "SHERATON",
+        "C": null,
+        "D": "Sillón ratán",
+        "F": 10,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-14",
+    "name": "Mesa centro",
+    "origin": "SHERATON",
+    "location": "Elba Sara",
+    "category": "Distribución inicial",
+    "quantity": 6,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_11.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 14,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Sara",
+        "D": "Mesa centro",
+        "F": 6,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-15",
+    "name": "Vitrina",
+    "origin": "SHERATON",
+    "location": "Elba Lucía",
+    "category": "Distribución inicial",
+    "quantity": 6,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_12.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 15,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Lucía",
+        "D": "Vitrina",
+        "F": 6,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-16",
+    "name": "Escritorio operadores",
+    "origin": "SHERATON",
+    "location": "Elba Sara",
+    "category": "Distribución inicial",
+    "quantity": 3,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_13.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 16,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Sara",
+        "D": "Escritorio operadores",
+        "F": 3,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-17",
+    "name": "Silla operadores",
+    "origin": "SHERATON",
+    "location": "",
+    "category": "Distribución inicial",
+    "quantity": 6,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_14.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 17,
+      "cells": {
+        "B": "SHERATON",
+        "C": null,
+        "D": "Silla operadores",
+        "F": 6,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-18",
+    "name": "Mesa redonda",
+    "origin": "SHERATON",
+    "location": "Elba Palace",
+    "category": "Distribución inicial",
+    "quantity": 12,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_15.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 18,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Palace",
+        "D": "Mesa redonda",
+        "F": 12,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-19",
+    "name": "Silla teca",
+    "origin": "SHERATON",
+    "location": "Elba Palace",
+    "category": "Distribución inicial",
+    "quantity": 82,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_16.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 19,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Palace",
+        "D": "Silla teca",
+        "F": 82,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-20",
+    "name": "Silla teca",
+    "origin": "SHERATON",
+    "location": "Elba Lucía",
+    "category": "Distribución inicial",
+    "quantity": 82,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_16.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 20,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Lucía",
+        "D": "Silla teca",
+        "F": 82,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-21",
+    "name": "Silla ratán",
+    "origin": "SHERATON",
+    "location": "Elba Sara",
+    "category": "Distribución inicial",
+    "quantity": 60,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_17.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 21,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Sara",
+        "D": "Silla ratán",
+        "F": 60,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-22",
+    "name": "Silla ratán",
+    "origin": "SHERATON",
+    "location": "Elba Lucía",
+    "category": "Distribución inicial",
+    "quantity": null,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_17.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 22,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Lucía",
+        "D": "Silla ratán",
+        "F": 0,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {
+        "F": "=I21"
+      }
+    }
+  },
+  {
+    "id": "excel-row-23",
+    "name": "Mesa baja",
+    "origin": "SHERATON",
+    "location": "Elba Sara",
+    "category": "Distribución inicial",
+    "quantity": 10,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_18.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 23,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Sara",
+        "D": "Mesa baja",
+        "F": 10,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-24",
+    "name": "Mesa baja",
+    "origin": "SHERATON",
+    "location": "Elba Lucía",
+    "category": "Distribución inicial",
+    "quantity": 2,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_18.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 24,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Lucía",
+        "D": "Mesa baja",
+        "F": 2,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-25",
+    "name": "Silla ratán",
+    "origin": "SHERATON",
+    "location": "Elba San Jorge",
+    "category": "Distribución inicial",
+    "quantity": 90,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_19.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 25,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba San Jorge",
+        "D": "Silla ratán",
+        "F": 90,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-26",
+    "name": "Cuadros",
+    "origin": "SHERATON",
+    "location": "Elba Sara",
+    "category": "Distribución inicial",
+    "quantity": 2,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_20.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 26,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Sara",
+        "D": "Cuadros",
+        "F": 2,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-27",
+    "name": "Consola",
+    "origin": "SHERATON",
+    "location": "Elba San Jorge",
+    "category": "Distribución inicial",
+    "quantity": 58,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_21.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 27,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba San Jorge",
+        "D": "Consola",
+        "F": 58,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-28",
+    "name": "Lámpara",
+    "origin": "SHERATON",
+    "location": "Elba Lucía",
+    "category": "Distribución inicial",
+    "quantity": 2,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_22.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 28,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Lucía",
+        "D": "Lámpara",
+        "F": 2,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-29",
+    "name": "Lámparas colgantes",
+    "origin": "SHERATON",
+    "location": "Elba Sara",
+    "category": "Distribución inicial",
+    "quantity": 8,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_23.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 29,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Sara",
+        "D": "Lámparas colgantes",
+        "F": 8,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-30",
+    "name": "Jarrones",
+    "origin": "SHERATON",
+    "location": "Elba Sara",
+    "category": "Distribución inicial",
+    "quantity": 4,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_24.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 30,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Sara",
+        "D": "Jarrones",
+        "F": 4,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-31",
+    "name": "Sillas",
+    "origin": "SHERATON",
+    "location": "Elba Lucía",
+    "category": "Distribución inicial",
+    "quantity": 225,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_25.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 31,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Lucía",
+        "D": "Sillas",
+        "F": 225,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-32",
+    "name": "Sofá forja",
+    "origin": "SHERATON",
+    "location": "Elba San Jorge",
+    "category": "Distribución inicial",
+    "quantity": 215,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_26.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 32,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba San Jorge",
+        "D": "Sofá forja",
+        "F": 215,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-33",
+    "name": "Banco maletero",
+    "origin": "SHERATON",
+    "location": "Elba San Jorge",
+    "category": "Distribución inicial",
+    "quantity": 460,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_27.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 33,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba San Jorge",
+        "D": "Banco maletero",
+        "F": 460,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-34",
+    "name": "TV",
+    "origin": "SHERATON",
+    "location": "Elba San Jorge",
+    "category": "Distribución inicial",
+    "quantity": 230,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_28.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 34,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba San Jorge",
+        "D": "TV",
+        "F": 230,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-35",
+    "name": "Mueble tv",
+    "origin": "SHERATON",
+    "location": "Elba San Jorge",
+    "category": "Distribución inicial",
+    "quantity": 266,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_29.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 35,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba San Jorge",
+        "D": "Mueble tv",
+        "F": 266,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-36",
+    "name": "Mueble media luna",
+    "origin": "SHERATON",
+    "location": "Elba San Jorge",
+    "category": "Distribución inicial",
+    "quantity": 240,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_30.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 36,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba San Jorge",
+        "D": "Mueble media luna",
+        "F": 240,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-37",
+    "name": "Mesa de salón",
+    "origin": "SHERATON",
+    "location": "Elba San Jorge",
+    "category": "Distribución inicial",
+    "quantity": 260,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_31.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 37,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba San Jorge",
+        "D": "Mesa de salón",
+        "F": 260,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-38",
+    "name": "Mesa de salón",
+    "origin": "SHERATON",
+    "location": "Elba Sara",
+    "category": "Distribución inicial",
+    "quantity": null,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_31.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 38,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Sara",
+        "D": "Mesa de salón",
+        "F": 0,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {
+        "F": "=I37"
+      }
+    }
+  },
+  {
+    "id": "excel-row-39",
+    "name": "Mesa amenities",
+    "origin": "SHERATON",
+    "location": "Elba San Jorge",
+    "category": "Distribución inicial",
+    "quantity": 40,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_32.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 39,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba San Jorge",
+        "D": "Mesa amenities",
+        "F": 40,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-40",
+    "name": "Lámpara araña",
+    "origin": "SHERATON",
+    "location": "Elba San Jorge",
+    "category": "Distribución inicial",
+    "quantity": 40,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_33.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 40,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba San Jorge",
+        "D": "Lámpara araña",
+        "F": 40,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-41",
+    "name": "Ventilador techo",
+    "origin": "SHERATON",
+    "location": "Elba San Jorge",
+    "category": "Distribución inicial",
+    "quantity": 266,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_34.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 41,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba San Jorge",
+        "D": "Ventilador techo",
+        "F": 266,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-42",
+    "name": "Mesas de noche",
+    "origin": "SHERATON",
+    "location": "Elba San Jorge",
+    "category": "Distribución inicial",
+    "quantity": 532,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_35.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 42,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba San Jorge",
+        "D": "Mesas de noche",
+        "F": 532,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-43",
+    "name": "Cabeceros",
+    "origin": "SHERATON",
+    "location": "Elba San Jorge",
+    "category": "Distribución inicial",
+    "quantity": 250,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_36.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 43,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba San Jorge",
+        "D": "Cabeceros",
+        "F": 250,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-44",
+    "name": "Apliques luz",
+    "origin": "SHERATON",
+    "location": "Elba San Jorge",
+    "category": "Distribución inicial",
+    "quantity": 532,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_37.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 44,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba San Jorge",
+        "D": "Apliques luz",
+        "F": 532,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-45",
+    "name": "Sillas",
+    "origin": "SHERATON",
+    "location": "Elba San Jorge",
+    "category": "Distribución inicial",
+    "quantity": 260,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_38.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 45,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba San Jorge",
+        "D": "Sillas",
+        "F": 260,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-46",
+    "name": "Muebles de baño",
+    "origin": "SHERATON",
+    "location": "Elba San Jorge",
+    "category": "Distribución inicial",
+    "quantity": 260,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": null,
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 46,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba San Jorge",
+        "D": "Muebles de baño",
+        "F": 260,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-47",
+    "name": "Tabla de planchar",
+    "origin": "SHERATON",
+    "location": "Elba San Jorge",
+    "category": "Distribución inicial",
+    "quantity": 266,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": null,
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 47,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba San Jorge",
+        "D": "Tabla de planchar",
+        "F": 266,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-48",
+    "name": "Plancha",
+    "origin": "SHERATON",
+    "location": "Elba San Jorge",
+    "category": "Distribución inicial",
+    "quantity": 266,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": null,
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 48,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba San Jorge",
+        "D": "Plancha",
+        "F": 266,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-49",
+    "name": "Espejo dormitorio",
+    "origin": "SHERATON",
+    "location": "Elba San Jorge",
+    "category": "Distribución inicial",
+    "quantity": 255,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_39.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 49,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba San Jorge",
+        "D": "Espejo dormitorio",
+        "F": 255,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-51",
+    "name": "Lámpara grande",
+    "origin": "SHERATON",
+    "location": "",
+    "category": "NOVEDADES",
+    "quantity": 1,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_40.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 51,
+      "cells": {
+        "B": "SHERATON",
+        "C": null,
+        "D": "Lámpara grande",
+        "F": 1,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-52",
+    "name": "Lámpara mediana",
+    "origin": "SHERATON",
+    "location": "Elba Lucía",
+    "category": "NOVEDADES",
+    "quantity": 4,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_41.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 52,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Lucía",
+        "D": "Lámpara mediana",
+        "F": 4,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-53",
+    "name": "Lámpara pequeña",
+    "origin": "SHERATON",
+    "location": "",
+    "category": "NOVEDADES",
+    "quantity": 4,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_42.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 53,
+      "cells": {
+        "B": "SHERATON",
+        "C": null,
+        "D": "Lámpara pequeña",
+        "F": 4,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-54",
+    "name": "Aplique pared",
+    "origin": "SHERATON",
+    "location": "Elba Lucía",
+    "category": "NOVEDADES",
+    "quantity": 20,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_43.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 54,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Lucía",
+        "D": "Aplique pared",
+        "F": 20,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-55",
+    "name": "Aplique pared",
+    "origin": "SHERATON",
+    "location": "Elba Lucía",
+    "category": "NOVEDADES",
+    "quantity": 6,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_44.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 55,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Lucía",
+        "D": "Aplique pared",
+        "F": 6,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-56",
+    "name": "Sillón giratorio",
+    "origin": "",
+    "location": "Elba Carlota",
+    "category": "NOVEDADES",
+    "quantity": 50,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_45.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 56,
+      "cells": {
+        "B": null,
+        "C": "Elba Carlota",
+        "D": "Sillón giratorio",
+        "F": 50,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-57",
+    "name": "Sillón giratorio",
+    "origin": "",
+    "location": "Elba San Jorge",
+    "category": "NOVEDADES",
+    "quantity": null,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_45.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 57,
+      "cells": {
+        "B": null,
+        "C": "Elba San Jorge",
+        "D": "Sillón giratorio",
+        "F": 0,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {
+        "F": "=I56"
+      }
+    }
+  },
+  {
+    "id": "excel-row-58",
+    "name": "Mesa",
+    "origin": "SHERATON",
+    "location": "Elba Sara",
+    "category": "NOVEDADES",
+    "quantity": 3,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_46.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 58,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Sara",
+        "D": "Mesa",
+        "F": 3,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-59",
+    "name": "Lámpara de pie",
+    "origin": "SHERATON",
+    "location": "Elba Lucía",
+    "category": "NOVEDADES",
+    "quantity": 48,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_47.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 59,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Lucía",
+        "D": "Lámpara de pie",
+        "F": 48,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-60",
+    "name": "Sillón",
+    "origin": "SHERATON",
+    "location": "Elba Sara",
+    "category": "NOVEDADES",
+    "quantity": 100,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_48.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 60,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Sara",
+        "D": "Sillón",
+        "F": 100,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-61",
+    "name": "Sillón",
+    "origin": "SHERATON",
+    "location": "Elba Sara",
+    "category": "NOVEDADES",
+    "quantity": null,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_48.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 61,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Sara",
+        "D": "Sillón",
+        "F": 0,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {
+        "F": "=I60"
+      }
+    }
+  },
+  {
+    "id": "excel-row-63",
+    "name": "Mesa exterior",
+    "origin": "PALACE",
+    "location": "Elba San Jorge",
+    "category": "MOBILIARIO RESIDUAL OTROS HOTELES",
+    "quantity": 13,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_49.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 63,
+      "cells": {
+        "B": "PALACE",
+        "C": "Elba San Jorge",
+        "D": "Mesa exterior",
+        "F": 13,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-64",
+    "name": "Silla exterior",
+    "origin": "PALACE",
+    "location": "Elba San Jorge",
+    "category": "MOBILIARIO RESIDUAL OTROS HOTELES",
+    "quantity": 40,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_50.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 64,
+      "cells": {
+        "B": "PALACE",
+        "C": "Elba San Jorge",
+        "D": "Silla exterior",
+        "F": 40,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-66",
+    "name": "Cuadros",
+    "origin": "SHERATON",
+    "location": "Elba Lucía",
+    "category": "CUADROS SHERATON",
+    "quantity": 200,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_51.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 66,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Lucia",
+        "D": "Cuadros",
+        "F": 200,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-67",
+    "name": "Cuadros",
+    "origin": "SHERATON",
+    "location": "Elba Lucía",
+    "category": "CUADROS SHERATON",
+    "quantity": 200,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_52.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 67,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Lucia",
+        "D": "Cuadros",
+        "F": 200,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-68",
+    "name": "Cuadros",
+    "origin": "SHERATON",
+    "location": "Elba Sara",
+    "category": "CUADROS SHERATON",
+    "quantity": 100,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_53.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 68,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Sara",
+        "D": "Cuadros",
+        "F": 100,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-69",
+    "name": "Cuadro",
+    "origin": "SHERATON",
+    "location": "",
+    "category": "CUADROS SHERATON",
+    "quantity": 1,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_54.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 69,
+      "cells": {
+        "B": "SHERATON",
+        "C": null,
+        "D": "Cuadro",
+        "F": 1,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-70",
+    "name": "Cuadro",
+    "origin": "SHERATON",
+    "location": "",
+    "category": "CUADROS SHERATON",
+    "quantity": 1,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_62.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 70,
+      "cells": {
+        "B": "SHERATON",
+        "C": null,
+        "D": "Cuadro",
+        "F": 1,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-71",
+    "name": "Cuadro",
+    "origin": "SHERATON",
+    "location": "",
+    "category": "CUADROS SHERATON",
+    "quantity": 1,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_55.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 71,
+      "cells": {
+        "B": "SHERATON",
+        "C": null,
+        "D": "Cuadro",
+        "F": 1,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-72",
+    "name": "Cuadro",
+    "origin": "SHERATON",
+    "location": "",
+    "category": "CUADROS SHERATON",
+    "quantity": 1,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_56.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 72,
+      "cells": {
+        "B": "SHERATON",
+        "C": null,
+        "D": "Cuadro",
+        "F": 1,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-73",
+    "name": "Cuadro",
+    "origin": "SHERATON",
+    "location": "",
+    "category": "CUADROS SHERATON",
+    "quantity": 1,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_57.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 73,
+      "cells": {
+        "B": "SHERATON",
+        "C": null,
+        "D": "Cuadro",
+        "F": 1,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-74",
+    "name": "Cuadro",
+    "origin": "SHERATON",
+    "location": "",
+    "category": "CUADROS SHERATON",
+    "quantity": 1,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_58.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 74,
+      "cells": {
+        "B": "SHERATON",
+        "C": null,
+        "D": "Cuadro",
+        "F": 1,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-75",
+    "name": "Cuadros",
+    "origin": "SHERATON",
+    "location": "Elba Lucía",
+    "category": "CUADROS SHERATON",
+    "quantity": 4,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_59.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 75,
+      "cells": {
+        "B": "SHERATON",
+        "C": "Elba Lucía",
+        "D": "Cuadros",
+        "F": 4,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-76",
+    "name": "Cuadros",
+    "origin": "SHERATON",
+    "location": "",
+    "category": "CUADROS SHERATON",
+    "quantity": 7,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_60.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 76,
+      "cells": {
+        "B": "SHERATON",
+        "C": null,
+        "D": "Cuadros",
+        "F": 7,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  },
+  {
+    "id": "excel-row-77",
+    "name": "Cuadros",
+    "origin": "SHERATON",
+    "location": "",
+    "category": "CUADROS SHERATON",
+    "quantity": 2,
+    "sent": null,
+    "received": null,
+    "recycled": null,
+    "condition": "Sin evaluar",
+    "notes": "",
+    "image": "images/excel/sheraton_reduced_61.jpg",
+    "source": {
+      "sheet": "Hoja1 (2)",
+      "row": 77,
+      "cells": {
+        "B": "SHERATON",
+        "C": null,
+        "D": "Cuadros",
+        "F": 2,
+        "G": null,
+        "H": null,
+        "I": null,
+        "J": null
+      },
+      "formulas": {}
+    }
+  }
+]
