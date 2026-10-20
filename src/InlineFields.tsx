@@ -55,7 +55,8 @@ export function Count({
         aria-invalid={invalid}
         disabled={disabled}
         value={text}
-        placeholder="Pendiente"
+        placeholder="—"
+        title={value === null ? "Pendiente de registrar" : String(value)}
         onChange={(e) => setText(e.target.value)}
         onBlur={(e) => save(e.currentTarget)}
         onKeyDown={(e) => {

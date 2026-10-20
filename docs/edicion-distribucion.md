@@ -41,3 +41,14 @@ Con Hotel Sheraton seleccionado, «Borrar datos seleccionados» muestra «Estás
 ## Búsqueda flexible
 
 La búsqueda ignora mayúsculas, tildes, espacios y signos de puntuación tanto en los datos como en la consulta. «SOFA», «sofá» y «S.O.F.A.» encuentran los mismos registros. Se aplica a nombre, categoría, origen y destino sin modificar el texto que se muestra o se exporta.
+
+## Bloques visuales por responsabilidad
+
+La tabla y los PDF agrupan los datos en este orden:
+
+1. **Beige:** mobiliario, origen, destino e inventario original.
+2. **Azul grisáceo pastel:** inventario corregido, enviadas de Hotel Sheraton y rotura de envío.
+3. **Burdeos grisáceo pastel:** recibidas del hotel destino y rotura de recepción.
+4. **Gris neutro:** estado común del traslado.
+
+Los encabezados de grupo y las líneas divisorias acompañan al color para identificar el responsable. Los controles numéricos de la tabla miden como máximo 64 px en escritorio y 72 px en pantallas estrechas. Se mantiene la vista sin desplazamiento horizontal. En móvil, los bloques conservan color y separadores al reorganizarse como fichas. El CSV sigue el mismo orden de campos de envío y recepción.

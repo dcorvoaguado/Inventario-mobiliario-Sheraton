@@ -228,8 +228,8 @@ function App() {
         "Inventariadas originales",
         "Inventario corregido",
         "Enviadas",
-        "Recibidas",
         "Rotura envío",
+        "Recibidas",
         "Rotura recepción",
         "Rotura anterior sin responsable",
         "Comprobado envío por",
@@ -246,8 +246,8 @@ function App() {
         i.quantity,
         i.correctedQuantity ?? null,
         i.sent,
-        i.received,
         i.damageSent ?? null,
+        i.received,
         i.damageReceived ?? null,
         i.recycled,
         i.sentBy ?? "",
@@ -488,46 +488,58 @@ function App() {
             <div className="table-scroll">
               <table className="editable-table">
                 <colgroup>
-                  {[19, 7, 13, 6, 8, 9, 9, 10, 10, 9].map((width, index) => (
+                  {[22, 8, 17, 7, 6, 6, 10, 6, 10, 8].map((width, index) => (
                     <col key={index} style={{ width: width + "%" }} />
                   ))}
                 </colgroup>
                 <thead>
+                  <tr className="block-headings">
+                    <th colSpan={4} className="block-base">
+                      Información original
+                    </th>
+                    <th colSpan={3} className="block-sender block-start">
+                      Hotel origen · Sheraton
+                    </th>
+                    <th colSpan={2} className="block-receiver block-start">
+                      Hotel destino
+                    </th>
+                    <th className="block-status block-start">Común</th>
+                  </tr>
                   <tr>
-                    <th>Mobiliario</th>
-                    <th>Origen</th>
-                    <th>Destino</th>
-                    <th>
+                    <th className="block-base">Mobiliario</th>
+                    <th className="block-base">Origen</th>
+                    <th className="block-base">Destino</th>
+                    <th className="block-base">
                       Inventario
                       <br />
                       original
                     </th>
-                    <th>
+                    <th className="block-sender block-start">
                       Inventario
                       <br />
                       corregido
                     </th>
-                    <th>
+                    <th className="block-sender">
                       Enviadas
                       <br />
                       <small>Hotel Sheraton</small>
                     </th>
-                    <th>
-                      Recibidas
-                      <br />
-                      <small>Hotel destino</small>
-                    </th>
-                    <th>
+                    <th className="block-sender">
                       Rotura envío
                       <br />
                       <small>Hotel Sheraton</small>
                     </th>
-                    <th>
+                    <th className="block-receiver block-start">
+                      Recibidas
+                      <br />
+                      <small>Hotel destino</small>
+                    </th>
+                    <th className="block-receiver">
                       Rotura recepción
                       <br />
                       <small>Hotel destino</small>
                     </th>
-                    <th>Estado</th>
+                    <th className="block-status block-start">Estado</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -537,7 +549,7 @@ function App() {
                       data-record-id={i.id}
                       className={selected.has(i.id) ? "selected-item" : ""}
                     >
-                      <td data-label="Mobiliario">
+                      <td data-label="Mobiliario" className="block-base">
                         <div className="item-cell">
                           <input
                             className="item-selection"
@@ -554,20 +566,26 @@ function App() {
                           </div>
                         </div>
                       </td>
-                      <td data-label="Origen">
+                      <td data-label="Origen" className="block-base">
                         {i.origin || "Origen pendiente"}
                       </td>
-                      <td data-label="Destino">
+                      <td data-label="Destino" className="block-base">
                         <Destination
                           item={i}
                           disabled={loadError || actor !== sender}
                           change={(f, v) => update(i, f, v)}
                         />
                       </td>
-                      <td data-label="Inventariadas originales">
+                      <td
+                        data-label="Inventariadas originales"
+                        className="block-base"
+                      >
                         <strong>{displayCount(i.quantity)}</strong>
                       </td>
-                      <td data-label="Inventario corregido">
+                      <td
+                        data-label="Inventario corregido"
+                        className="block-sender block-start"
+                      >
                         <Count
                           value={i.correctedQuantity ?? null}
                           label="Inventario corregido"
@@ -575,7 +593,10 @@ function App() {
                           onSave={(v) => update(i, "correctedQuantity", v)}
                         />
                       </td>
-                      <td data-label="Enviadas · Sheraton">
+                      <td
+                        data-label="Enviadas · Sheraton"
+                        className="block-sender"
+                      >
                         <Count
                           value={i.sent}
                           label="Enviadas"
@@ -590,7 +611,23 @@ function App() {
                           </small>
                         )}
                       </td>
-                      <td data-label="Recibidas · destino">
+                      <td data-label="Rotura envío" className="block-sender">
+                        <Damage
+                          item={i}
+                          side="Sent"
+                          disabled={loadError || actor !== sender}
+                          change={(f, v) => update(i, f, v)}
+                        />
+                        {i.recycled !== null && (
+                          <small>
+                            Rotura anterior sin responsable: {i.recycled}
+                          </small>
+                        )}
+                      </td>
+                      <td
+                        data-label="Recibidas · destino"
+                        className="block-receiver block-start"
+                      >
                         <Count
                           value={i.received}
                           label="Recibidas"
@@ -604,20 +641,10 @@ function App() {
                               (i.location || "hotel destino")}
                         </small>
                       </td>
-                      <td data-label="Rotura envío">
-                        <Damage
-                          item={i}
-                          side="Sent"
-                          disabled={loadError || actor !== sender}
-                          change={(f, v) => update(i, f, v)}
-                        />
-                        {i.recycled !== null && (
-                          <small>
-                            Rotura anterior sin responsable: {i.recycled}
-                          </small>
-                        )}
-                      </td>
-                      <td data-label="Rotura recepción">
+                      <td
+                        data-label="Rotura recepción"
+                        className="block-receiver"
+                      >
                         <Damage
                           item={i}
                           side="Received"
@@ -627,7 +654,10 @@ function App() {
                           change={(f, v) => update(i, f, v)}
                         />
                       </td>
-                      <td data-label="Estado">
+                      <td
+                        data-label="Estado"
+                        className="block-status block-start"
+                      >
                         <span
                           className={
                             "badge transfer-" + transferStatus(i).toLowerCase()

@@ -114,6 +114,12 @@ function render(items: Item[], title: string, photos: Map<string, Picture>) {
       rowPageBreak: "avoid",
       head: [
         [
+          { content: "Información original", colSpan: 5 },
+          { content: "Hotel origen · Sheraton", colSpan: 3 },
+          { content: "Hotel destino", colSpan: 2 },
+          { content: "Común", colSpan: 1 },
+        ],
+        [
           "Foto",
           "Mobiliario / observaciones",
           "Origen",
@@ -121,8 +127,8 @@ function render(items: Item[], title: string, photos: Map<string, Picture>) {
           "Inventario\noriginal",
           "Inventario\ncorregido",
           "Enviadas",
-          "Recibidas",
           "Rotura\nenvío",
+          "Recibidas",
           "Rotura\nrecepción",
           "Estado",
         ],
@@ -137,9 +143,9 @@ function render(items: Item[], title: string, photos: Map<string, Picture>) {
           ? "Sin corrección"
           : String(i.correctedQuantity),
         amount(i.sent) + (i.sentBy ? "\nComprobado por " + i.sentBy : ""),
+        damage(i, "Sent"),
         amount(i.received) +
           (i.receivedBy ? "\nComprobado por " + i.receivedBy : ""),
-        damage(i, "Sent"),
         damage(i, "Received"),
         transferStatus(i),
       ]),
@@ -169,12 +175,33 @@ function render(items: Item[], title: string, photos: Map<string, Picture>) {
         4: { cellWidth: 17 },
         5: { cellWidth: 17 },
         6: { cellWidth: 32 },
-        7: { cellWidth: 32 },
-        8: { cellWidth: 18 },
+        7: { cellWidth: 18 },
+        8: { cellWidth: 32 },
         9: { cellWidth: 18 },
         10: { cellWidth: 23 },
       },
+      didParseCell: (data) => {
+        const index = data.column.index;
+        const group = index < 5 ? 0 : index < 8 ? 1 : index < 10 ? 2 : 3;
+        const colors =
+          data.section === "head"
+            ? ["#f3eee7", "#dce5ea", "#e8dce1", "#e3e3e3"]
+            : ["#fcfaf7", "#eff4f6", "#f7f0f3", "#f3f3f3"];
+        data.cell.styles.fillColor = colors[group];
+        if (data.section === "head")
+          data.cell.styles.minCellHeight = data.row.index === 0 ? 8 : 13;
+      },
       didDrawCell: (data) => {
+        if ([5, 8, 10].includes(data.column.index)) {
+          doc.setDrawColor("#b7b4b2");
+          doc.setLineWidth(0.5);
+          doc.line(
+            data.cell.x,
+            data.cell.y,
+            data.cell.x,
+            data.cell.y + data.cell.height,
+          );
+        }
         if (data.section !== "body" || data.column.index !== 0) return;
         const item = entries[data.row.index];
         const p = item.image ? photos.get(item.image) : undefined;
