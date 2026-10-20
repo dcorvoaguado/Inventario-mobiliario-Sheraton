@@ -8,9 +8,9 @@ test("loads every record, applies repeated quantities and shows the matching pho
   await page.goto("/");
   await expect(page.locator("tbody tr[data-record-id]")).toHaveCount(73);
   const row = page.locator('tbody tr[data-record-id="excel-row-22"]');
-  await expect(row.locator("xpath=ancestor::tbody")).toContainText(
-    "Inventario original: 60",
-  );
+  await expect(
+    row.locator('td[data-label="Inventario original"]'),
+  ).toContainText("60");
   await page
     .getByRole("button", {
       name: "Ver foto de Sillón tapizado",
@@ -38,17 +38,15 @@ test("edits transfer quantities without replacing unknowns with zero", async ({
   await page.goto("/");
   const row = page.locator('tbody tr[data-record-id="excel-row-22"]');
   await expect(
-    row
-      .locator("xpath=ancestor::tbody")
-      .getByLabel("Total real disponible", { exact: true }),
+    row.getByLabel("Total real disponible", { exact: true }),
   ).toHaveValue("60");
   await expect(row).not.toContainText("=I21");
   await row.getByLabel("Enviadas", { exact: true }).fill("0");
   await row.getByLabel("Enviadas", { exact: true }).press("Enter");
   await page.reload();
-  await expect(row.locator("xpath=ancestor::tbody")).toContainText(
-    "Inventario original: 60",
-  );
+  await expect(
+    row.locator('td[data-label="Inventario original"]'),
+  ).toContainText("60");
   await expect(row.getByLabel("Enviadas", { exact: true })).toHaveValue("0");
   await expect(row.getByLabel("Recibidas", { exact: true })).toHaveValue("");
   const d = page.waitForEvent("download");

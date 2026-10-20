@@ -10,9 +10,11 @@ test("one distribution window plans quantities, computes remainder and rejects o
   await expect(
     remainder.locator('td[data-label="Unidades asignadas"]'),
   ).toHaveText("1");
-  await expect(group(row(page))).toContainText("Asignadas 9");
-  await expect(group(row(page))).toContainText("Sin asignar 1");
-  await group(row(page))
+  await expect(
+    row(page).getByLabel("Unidades asignadas", { exact: true }),
+  ).toHaveValue("5");
+  await expect(group(row(page))).toContainText("Sin asignar: 1");
+  await row(page)
     .getByRole("button", { name: "Repartir entre hoteles", exact: true })
     .click();
   const dialog = page.getByRole("dialog");
@@ -37,7 +39,7 @@ test("one distribution window plans quantities, computes remainder and rejects o
   await expect(group(row(page)).locator("tr[data-record-id]")).toHaveCount(2);
   await expect(
     group(row(page)).getByLabel("Total real disponible", { exact: true }),
-  ).toHaveCount(1);
+  ).toHaveCount(2);
 });
 test("recovery restores only checked rows and leaves other deleted furniture available", async ({
   page,

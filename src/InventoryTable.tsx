@@ -40,19 +40,19 @@ export default function InventoryTable({
   const senderReason =
     actor !== sender ? "Selecciona Hotel Sheraton para editar." : undefined;
   return (
-    <div className="table-scroll grouped-scroll">
-      <table className="editable-table grouped-table">
+    <div className="table-scroll linear-scroll">
+      <table className="editable-table linear-table">
         <colgroup>
-          {[5, 20, 11, 12, 13, 12, 15, 12].map((width, index) => (
+          {[18, 7, 15, 7, 7, 8, 7, 9, 7, 9, 6].map((width, index) => (
             <col key={index} style={{ width: `${width}%` }} />
           ))}
         </colgroup>
         <thead>
           <tr className="block-headings">
-            <th colSpan={3} className="block-base">
-              Reparto por hotel
+            <th colSpan={5} className="block-base">
+              Información y reparto
             </th>
-            <th colSpan={2} className="block-sender block-start">
+            <th colSpan={3} className="block-sender block-start">
               Hotel origen · Sheraton
             </th>
             <th colSpan={2} className="block-receiver block-start">
@@ -61,12 +61,13 @@ export default function InventoryTable({
             <th className="block-status block-start">Común</th>
           </tr>
           <tr>
-            <th className="block-base">
-              <span className="sr-only">Seleccionar</span>
-            </th>
+            <th className="block-base">Mobiliario</th>
+            <th className="block-base">Origen</th>
             <th className="block-base">Destino</th>
+            <th className="block-base">Inventario original</th>
             <th className="block-base">Unidades asignadas</th>
-            <th className="block-sender block-start">Enviadas</th>
+            <th className="block-sender block-start">Total real disponible</th>
+            <th className="block-sender">Enviadas</th>
             <th className="block-sender">Rotura envío</th>
             <th className="block-receiver block-start">Recibidas</th>
             <th className="block-receiver">Rotura recepción</th>
@@ -90,81 +91,6 @@ export default function InventoryTable({
             a.limit === null ? null : Math.max(0, a.limit - assigned);
           return (
             <tbody key={productKey(base)} data-product-group={productKey(base)}>
-              <tr className="product-heading">
-                <td colSpan={8}>
-                  <div className="product-overview">
-                    <button
-                      className="photo-button"
-                      onClick={() => onPhoto(base)}
-                      aria-label={`Ver foto de ${base.name}`}
-                    >
-                      {base.image ? (
-                        <img src={imageUrl(base.image)} alt={base.name} />
-                      ) : (
-                        <span>Sin imagen</span>
-                      )}
-                    </button>
-                    <div className="product-title">
-                      <h3>{base.name}</h3>
-                      <small>
-                        Origen: {base.origin || "Pendiente"} · Inventario
-                        original: {displayCount(base.quantity)}
-                      </small>
-                    </div>
-                    <div className="shared-total">
-                      <span>Total real disponible</span>
-                      <Count
-                        label="Total real disponible"
-                        value={a.limit}
-                        disabled={loadError || actor !== sender}
-                        disabledReason={senderReason}
-                        error={errors[`${base.id}:correctedQuantity`]}
-                        onSave={(value) =>
-                          onChange(base, "correctedQuantity", value)
-                        }
-                      />
-                      <small>Compartido entre todos los hoteles</small>
-                    </div>
-                    <div className="product-progress">
-                      <span>
-                        Asignadas <strong>{assigned}</strong>
-                      </span>
-                      <span>
-                        Sin asignar <strong>{displayCount(remaining)}</strong>
-                      </span>
-                      <span>
-                        Enviadas <strong>{a.sent}</strong>
-                      </span>
-                      <span>
-                        Pendientes de enviar{" "}
-                        <strong>
-                          {pending > 0
-                            ? "Por completar"
-                            : Math.max(0, assigned - a.sent)}
-                        </strong>
-                      </span>
-                      {pending > 0 && (
-                        <small>
-                          Reparto por completar: {pending}{" "}
-                          {pending === 1 ? "hotel" : "hoteles"}
-                        </small>
-                      )}
-                      {a.conflict && (
-                        <small className="field-error">
-                          Unifica el total real disponible para este mueble.
-                        </small>
-                      )}
-                    </div>
-                    <button
-                      className="distribute-button"
-                      disabled={loadError || actor !== sender}
-                      onClick={() => onManage(base)}
-                    >
-                      Repartir entre hoteles
-                    </button>
-                  </div>
-                </td>
-              </tr>
               {visibleRows.map((i) => {
                 const receiverReason = !i.location
                   ? "Asigna un hotel para registrar la recepción."
@@ -195,22 +121,56 @@ export default function InventoryTable({
                     data-product-id={productKey(i)}
                     className={`${selected.has(i.id) ? "selected-item" : ""} ${i.isRemainder ? "remainder-row" : ""}`}
                   >
-                    <td className="block-base" data-label="Seleccionar">
-                      <input
-                        type="checkbox"
-                        className="item-selection"
-                        aria-label={`Seleccionar ${i.name} · ${i.location || "Sin hotel asignado"}`}
-                        disabled={loadError || !!i.isRemainder}
-                        checked={selected.has(i.id)}
-                        onChange={() => onSelect(i.id)}
-                      />
+                    <td className="block-base" data-label="Mobiliario">
+                      <div className="item-cell">
+                        <input
+                          type="checkbox"
+                          className="item-selection"
+                          aria-label={`Seleccionar ${i.name} · ${i.location || "Sin hotel asignado"}`}
+                          disabled={loadError || !!i.isRemainder}
+                          checked={selected.has(i.id)}
+                          onChange={() => onSelect(i.id)}
+                        />
+                        <button
+                          className="photo-button"
+                          onClick={() => onPhoto(i)}
+                          aria-label={`Ver foto de ${i.name}`}
+                        >
+                          {i.image ? (
+                            <img
+                              src={imageUrl(i.image)}
+                              alt={i.name}
+                              loading="lazy"
+                            />
+                          ) : (
+                            <span>Sin imagen</span>
+                          )}
+                        </button>
+                        <strong>{i.name}</strong>
+                      </div>
+                    </td>
+                    <td className="block-base" data-label="Origen">
+                      {i.origin || "Pendiente"}
                     </td>
                     <td className="block-base" data-label="Destino">
                       <strong>{i.location || "Sin hotel asignado"}</strong>
+                      <button
+                        className="link linear-distribute"
+                        disabled={loadError || actor !== sender}
+                        onClick={() => onManage(i)}
+                      >
+                        Repartir entre hoteles
+                      </button>
                       {i.isRemainder && (
                         <small>
                           Se calcula con las unidades que quedan por repartir.
                         </small>
+                      )}
+                    </td>
+                    <td className="block-base" data-label="Inventario original">
+                      <strong>{displayCount(i.quantity)}</strong>
+                      {a.rows.length > 1 && (
+                        <small>(Total a repartir entre hoteles)</small>
                       )}
                     </td>
                     <td className="block-base" data-label="Unidades asignadas">
@@ -234,6 +194,30 @@ export default function InventoryTable({
                     </td>
                     <td
                       className="block-sender block-start"
+                      data-label="Total real disponible"
+                    >
+                      <Count
+                        label="Total real disponible"
+                        value={a.limit}
+                        disabled={
+                          loadError || actor !== sender || !!i.isRemainder
+                        }
+                        disabledReason={senderReason}
+                        error={errors[`${i.id}:correctedQuantity`]}
+                        onSave={(value) =>
+                          onChange(i, "correctedQuantity", value)
+                        }
+                      />
+                      <small>Sin asignar: {displayCount(remaining)}</small>
+                      {a.rows.length > 1 && <small>Total compartido</small>}
+                      {a.conflict && (
+                        <small className="field-error">
+                          Unifica el total disponible.
+                        </small>
+                      )}
+                    </td>
+                    <td
+                      className="block-sender"
                       data-label="Enviadas · Sheraton"
                     >
                       <Count

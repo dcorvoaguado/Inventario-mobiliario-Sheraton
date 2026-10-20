@@ -25,14 +25,8 @@ test("new records keep immutable identity, support search and export transfer fi
   await expect(
     row.getByRole("button", { name: /Editar|Eliminar/ }),
   ).toHaveCount(0);
-  await row
-    .locator("xpath=ancestor::tbody")
-    .getByLabel("Total real disponible", { exact: true })
-    .fill("6");
-  await row
-    .locator("xpath=ancestor::tbody")
-    .getByLabel("Total real disponible", { exact: true })
-    .press("Enter");
+  await row.getByLabel("Total real disponible", { exact: true }).fill("6");
+  await row.getByLabel("Total real disponible", { exact: true }).press("Enter");
   await row.getByLabel("Enviadas", { exact: true }).fill("2");
   await row.getByLabel("Enviadas", { exact: true }).press("Enter");
   await page.getByLabel("Buscar mobiliario").fill("mesa");

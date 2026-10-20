@@ -9,28 +9,31 @@ test("repartition is atomic, grouped and persists with a shared stock ceiling", 
   await expect(
     page.locator('tbody[data-product-group="excel-row-2"]'),
   ).toHaveCount(1);
-  await expect(group(row(page)).locator(".product-heading")).toHaveCount(1);
+  await expect(group(row(page)).locator(".product-heading")).toHaveCount(0);
   const sara = destinationRow(page, "Elba Sara")
     .filter({ has: page.getByLabel("Unidades asignadas", { exact: true }) })
     .filter({ has: page.locator('input[value="20"]') });
   const carlota = row(page);
   await number(carlota, "Enviadas", "40");
   await number(sara, "Enviadas", "20");
-  await expect(group(carlota)).toContainText("Sin asignar 0");
+  await expect(group(carlota)).toContainText("Sin asignar: 0");
   await number(sara, "Enviadas", "21");
   await expect(sara.getByRole("alert")).toContainText("Máximo: 20");
   await number(carlota, "Total real disponible", "59");
   await expect(
-    group(carlota).locator(".shared-total").getByRole("alert"),
+    group(carlota)
+      .locator('td[data-label="Total real disponible"]')
+      .first()
+      .getByRole("alert"),
   ).toContainText("superan");
   await page.reload();
   await expect(
-    group(row(page)).getByLabel("Total real disponible", { exact: true }),
+    row(page).getByLabel("Total real disponible", { exact: true }),
   ).toHaveValue("60");
   await expect(row(page).getByLabel("Enviadas", { exact: true })).toHaveValue(
     "40",
   );
-  await expect(group(row(page)).getByRole("img")).toHaveCount(1);
+  await expect(row(page).getByRole("img")).toHaveCount(1);
 });
 test("hotel with movements stays selected and shipments cap each receipt", async ({
   page,
@@ -38,7 +41,7 @@ test("hotel with movements stays selected and shipments cap each receipt", async
   await page.goto("/");
   await distribute(row(page), { "Elba Carlota": "35" });
   await number(row(page), "Enviadas", "35");
-  await group(row(page))
+  await row(page)
     .getByRole("button", { name: "Repartir entre hoteles", exact: true })
     .click();
   await expect(
@@ -70,11 +73,11 @@ test("shared limits include repeated source rows outside the filter and correcti
   await page.goto("/");
   await number(row(page), "Total real disponible", "40");
   await expect(
-    group(row(page)).getByLabel("Total real disponible", { exact: true }),
+    row(page).getByLabel("Total real disponible", { exact: true }),
   ).toHaveValue("40");
   await number(row(page), "Total real disponible", "70");
   await expect(
-    group(row(page)).getByLabel("Total real disponible", { exact: true }),
+    row(page).getByLabel("Total real disponible", { exact: true }),
   ).toHaveValue("70");
   await number(row(page, "excel-row-21"), "Enviadas", "40");
   await page.getByLabel("Filtrar ubicación").selectOption("Elba Lucía");
@@ -93,7 +96,7 @@ test("reassigning reservations is atomic and cancellation keeps previous values"
   await expect(
     row(page).getByLabel("Unidades asignadas", { exact: true }),
   ).toHaveValue("4");
-  await group(row(page))
+  await row(page)
     .getByRole("button", { name: "Repartir entre hoteles", exact: true })
     .click();
   await page

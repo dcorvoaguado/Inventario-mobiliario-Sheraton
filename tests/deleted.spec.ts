@@ -14,11 +14,9 @@ test("delete cancels safely, persists removed rows and recovers all saved data",
   page,
 }) => {
   await page.goto("/");
-  const corrected = row(page)
-    .locator("xpath=ancestor::tbody")
-    .getByLabel("Total real disponible", {
-      exact: true,
-    });
+  const corrected = row(page).getByLabel("Total real disponible", {
+    exact: true,
+  });
   await corrected.fill("60");
   await corrected.press("Enter");
   const sent = row(page).getByLabel("Enviadas", { exact: true });
@@ -54,9 +52,10 @@ test("delete cancels safely, persists removed rows and recovers all saved data",
   await expect(row(page)).toHaveCount(1);
   await expect(corrected).toHaveValue("60");
   await expect(sent).toHaveValue("35");
-  await expect(
-    row(page).locator("xpath=ancestor::tbody").getByRole("img"),
-  ).toHaveAttribute("src", /sheraton_reduced_0.jpg/);
+  await expect(row(page).getByRole("img")).toHaveAttribute(
+    "src",
+    /sheraton_reduced_0.jpg/,
+  );
   await page.reload();
   await expect(
     page.getByRole("button", {

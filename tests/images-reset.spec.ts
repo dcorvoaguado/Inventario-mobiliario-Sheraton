@@ -48,7 +48,7 @@ test("uploads a device photo, preserves it on reload and exports it to PDF", asy
   await page.getByRole("button", { name: "Guardar mobiliario" }).click();
   await page.reload();
   const row = page
-    .locator(".product-heading")
+    .locator("tbody tr[data-record-id]")
     .filter({ has: page.getByText("Nuevo con foto", { exact: true }) });
   await expect(row.getByRole("img")).toHaveAttribute(
     "src",
@@ -121,9 +121,7 @@ test("confirmation cancels safely and resetting selected records preserves unsel
     "Elba Carlota",
   );
   await expect(
-    first
-      .locator("xpath=ancestor::tbody")
-      .getByLabel("Total real disponible", { exact: true }),
+    first.getByLabel("Total real disponible", { exact: true }),
   ).toHaveValue("51");
   await expect(first.getByLabel("Enviadas", { exact: true })).toHaveValue("");
   await expect(

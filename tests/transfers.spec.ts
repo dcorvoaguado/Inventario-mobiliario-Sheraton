@@ -7,7 +7,9 @@ test("sender and receiver workflow preserves immutable identity, original counts
   await number(row(page), "Total real disponible", "52");
   await distribute(row(page), { "Elba Sara": "50" });
   const target = row(page);
-  await expect(group(target)).toContainText("Inventario original: 51");
+  await expect(
+    target.locator('td[data-label="Inventario original"]'),
+  ).toContainText("51");
   await number(target, "Enviadas", "50");
   await target
     .getByLabel("Rotura envío", { exact: true })
@@ -19,7 +21,7 @@ test("sender and receiver workflow preserves immutable identity, original counts
     .selectOption("Elba Sara");
   await expect(target.getByLabel("Enviadas", { exact: true })).toBeDisabled();
   await expect(
-    group(target).getByLabel("Total real disponible", { exact: true }),
+    target.getByLabel("Total real disponible", { exact: true }),
   ).toBeDisabled();
   await number(target, "Recibidas", "48");
   await target

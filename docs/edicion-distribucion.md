@@ -88,3 +88,7 @@ Cada mueble se presenta en una cabecera con fotografía, nombre, origen e invent
 La cabecera distingue unidades asignadas, sin asignar, enviadas y pendientes de enviar; avisa cuando faltan cantidades por completar. Los controles numéricos muestran validaciones y límites junto al campo y «Guardado ✓» después de una modificación aceptada. Los campos de recepción bloqueados indican qué hotel debe seleccionarse. «Restablecer datos» y «Eliminar mobiliario» conservan funciones diferentes y confirmaciones independientes.
 
 La galería muestra una tarjeta por grupo, con los destinos del producto y acceso al mismo reparto. «Más opciones» contiene la carga del Excel, la descarga de copia de seguridad y el CSV; el PDF permanece visible. Los avisos generales de acciones se muestran flotantes para evitar desplazar el formulario mientras se trabaja. El almacenamiento sigue siendo local, sin autenticación ni sincronización entre hoteles.
+
+## Vista lineal
+
+La tabla vuelve a mostrar el mobiliario y sus datos en una misma fila, sin cabeceras independientes por producto. Cada destino conserva foto, nombre, origen, inventario original, unidades asignadas, total real disponible, envío, roturas, recepción y estado en horizontal. Los totales repetidos se identifican como compartidos. Se mantienen la ventana única de reparto, las validaciones locales, las acciones simplificadas y todos los datos guardados. En pantallas estrechas cada fila se reorganiza como ficha sin desplazamiento horizontal.

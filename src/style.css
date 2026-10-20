@@ -1583,3 +1583,61 @@ h1 {
 .destination-dialog .section-title > button {
   flex-shrink: 0;
 }
+/* Linear editing: each furniture allocation is self-contained in one row. */
+.linear-scroll {
+  max-height: none;
+  overflow: visible;
+}
+.linear-table {
+  font-size: 12px;
+}
+.linear-table th {
+  font-size: 10px;
+}
+.linear-table td {
+  padding: 14px 7px;
+}
+.linear-table .item-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.linear-table .item-cell strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.linear-table .photo-button {
+  width: 44px;
+  height: 54px;
+  flex-shrink: 0;
+}
+.linear-table .item-selection {
+  flex-shrink: 0;
+}
+.linear-table td small {
+  font-size: 10px;
+  line-height: 1.4;
+}
+.linear-table .inline-number {
+  max-width: 64px;
+}
+.linear-distribute {
+  display: block;
+  padding: 6px 0;
+  font-size: 11px;
+  text-align: left;
+}
+@media (max-width: 1000px) {
+  .linear-table thead {
+    display: none;
+  }
+  .linear-table tbody td:nth-child(n) {
+    border-right: 0;
+  }
+  .linear-table tbody td.block-start {
+    border-top: 2px solid #b7b4b2;
+  }
+  .linear-table tbody td[data-label="Mobiliario"] {
+    grid-column: 1 / -1;
+  }
+}

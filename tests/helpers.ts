@@ -3,17 +3,13 @@ export const row = (page: Page, id = "excel-row-2") =>
   page.locator(`tr[data-record-id="${id}"]`);
 export const group = (row: Locator) => row.locator("xpath=ancestor::tbody");
 export const destinationRow = (page: Page, hotel: string) =>
-  page
-    .locator("tr[data-record-id]")
-    .filter({
-      has: page
-        .locator('td[data-label="Destino"]')
-        .getByText(hotel, { exact: true }),
-    });
+  page.locator("tr[data-record-id]").filter({
+    has: page
+      .locator('td[data-label="Destino"]')
+      .getByText(hotel, { exact: true }),
+  });
 export async function number(target: Locator, label: string, value: string) {
-  const input = (
-    label === "Total real disponible" ? group(target) : target
-  ).getByLabel(label, { exact: true });
+  const input = target.getByLabel(label, { exact: true });
   await input.fill(value);
   await input.press("Enter");
 }
@@ -21,7 +17,7 @@ export async function distribute(
   target: Locator,
   values: Record<string, string | null>,
 ) {
-  await group(target)
+  await target
     .getByRole("button", { name: "Repartir entre hoteles", exact: true })
     .click();
   const page = target.page();
