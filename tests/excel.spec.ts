@@ -11,7 +11,9 @@ test("loads every source row, preserves unknown quantities and shows the matchin
     "6250",
   );
   const row = page.locator("tbody tr").filter({ hasText: "Fila 22" });
-  await expect(row.locator("td").nth(2)).toHaveText("Pendiente");
+  await expect(row.locator("td").nth(3).locator("strong")).toHaveText(
+    "Pendiente",
+  );
   await page
     .getByRole("button", {
       name: "Ver foto de Sillón tapizado · fila 2",
@@ -38,17 +40,18 @@ test("edits transfer quantities without replacing unknowns with zero", async ({
 }) => {
   await page.goto("/");
   const row = page.locator("tbody tr").filter({ hasText: "Fila 22" });
-  await row
-    .getByRole("button", { name: "Editar Silla ratán", exact: true })
-    .click();
-  await expect(page.getByLabel("Unidades", { exact: true })).toHaveValue("");
-  await expect(page.getByRole("dialog")).toContainText("=I21");
-  await page.getByLabel("Enviadas", { exact: true }).fill("0");
-  await page.getByRole("button", { name: "Guardar mobiliario" }).click();
+  await expect(
+    row.getByLabel("Inventario corregido", { exact: true }),
+  ).toHaveValue("");
+  await expect(row).toContainText("=I21");
+  await row.getByLabel("Enviadas", { exact: true }).fill("0");
+  await row.getByLabel("Enviadas", { exact: true }).press("Enter");
   await page.reload();
-  await expect(row.locator("td").nth(2)).toHaveText("Pendiente");
-  await expect(row.locator("td").nth(3)).toHaveText("0");
-  await expect(row.locator("td").nth(4)).toHaveText("Pendiente");
+  await expect(row.locator("td").nth(3).locator("strong")).toHaveText(
+    "Pendiente",
+  );
+  await expect(row.getByLabel("Enviadas", { exact: true })).toHaveValue("0");
+  await expect(row.getByLabel("Recibidas", { exact: true })).toHaveValue("");
   const d = page.waitForEvent("download");
   await page.getByRole("button", { name: "Copia JSON" }).click();
   const download = await d;

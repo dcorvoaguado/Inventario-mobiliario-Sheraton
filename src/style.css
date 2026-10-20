@@ -552,3 +552,88 @@ dialog::backdrop {
     flex-basis: 40%;
   }
 }
+.responsible {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin: 0 24px 22px;
+  padding: 16px;
+  background: #f4f6f1;
+  border: 1px solid #dce3d8;
+  border-radius: 6px;
+}
+.responsible label {
+  margin: 0;
+  min-width: 220px;
+  font-weight: 600;
+}
+.responsible p {
+  font-size: 12px;
+  max-width: 600px;
+}
+.inline-number {
+  width: 110px;
+  font-size: 13px;
+}
+.inline-number:disabled,
+.inline-destination:disabled,
+.inline-damage select:disabled {
+  background: #f1f2ee;
+  color: #778174;
+  opacity: 0.85;
+  cursor: not-allowed;
+}
+.inline-destination {
+  width: 175px;
+}
+.inline-damage {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 130px;
+}
+.inline-damage select {
+  width: 140px;
+}
+td small {
+  white-space: normal;
+  max-width: 160px;
+  line-height: 1.5;
+}
+th small {
+  font-size: 9px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+.transfer-pendiente {
+  background: #eff1eb;
+  color: #687264;
+}
+.transfer-enviado {
+  background: #fbf2de;
+  color: #8d6823;
+}
+.transfer-recibido {
+  background: #edf4ec;
+  color: #396d50;
+}
+[aria-invalid="true"] {
+  border-color: #a24f45;
+  background: #fff4ef;
+}
+.table-scroll {
+  max-height: 75vh;
+}
+thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+@media (max-width: 750px) {
+  .responsible {
+    margin: 0 14px 18px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+}

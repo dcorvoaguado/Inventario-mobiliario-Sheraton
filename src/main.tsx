@@ -4,13 +4,23 @@ import {
   read,
   key,
   empty,
-  conditions,
   validCount,
   initialInventory,
   imageUrl,
   displayCount,
+  destinations,
+  sender,
+  transferStatus,
+  effectiveQuantity,
   type Item,
 } from "./inventory";
+import {
+  Count,
+  Damage,
+  Destination,
+  canEdit,
+  type Editable,
+} from "./InlineFields";
 import summary from "./data/import-summary.json";
 import "./style.css";
 function downloadFile(contents: string, type: string, name: string) {
@@ -61,8 +71,8 @@ function App() {
   const [draft, setDraft] = useState<Item | null>(null),
     [error, setError] = useState(""),
     [message, setMessage] = useState("");
-  const [pendingDelete, setPendingDelete] = useState<string | null>(null),
-    [detail, setDetail] = useState<Item | null>(null);
+  const [detail, setDetail] = useState<Item | null>(null);
+  const [actor, setActor] = useState(sender);
   const [view, setView] = useState<"table" | "gallery">("table");
   const visible = items.filter(
     (i) =>
@@ -73,12 +83,12 @@ function App() {
         (location === "__missing" ? !i.location : i.location === location)) &&
       (!condition ||
         (condition === "__pending"
-          ? i.quantity === null || !i.location || !i.origin
-          : i.condition === condition)) &&
+          ? effectiveQuantity(i) === null || !i.location || !i.origin
+          : transferStatus(i) === condition)) &&
       (!section || i.category === section),
   );
   const pending = items.filter(
-    (i) => i.quantity === null || !i.location || !i.origin,
+    (i) => effectiveQuantity(i) === null || !i.location || !i.origin,
   ).length;
   function persist(next: Item[]) {
     if (loadError) return false;
@@ -97,34 +107,75 @@ function App() {
   function save(e: FormEvent) {
     e.preventDefault();
     if (!draft) return;
-    const next = {
-      ...draft,
-      name: draft.name.trim(),
-      origin: draft.origin.trim(),
-      location: draft.location.trim(),
-      notes: draft.notes.trim(),
-    };
-    if (
-      !next.name ||
-      ![next.quantity, next.sent, next.received, next.recycled].every(
-        validCount,
-      )
-    ) {
+    if (items.some((i) => i.id === draft.id)) {
       setError(
-        "Introduce un nombre y cantidades enteras mayores o iguales a cero. Deja en blanco las cantidades desconocidas.",
+        "Los registros existentes se actualizan desde la tabla principal.",
       );
       return;
     }
     if (
-      persist(
-        items.some((i) => i.id === next.id)
-          ? items.map((i) => (i.id === next.id ? next : i))
-          : [...items, next],
-      )
+      !draft.name.trim() ||
+      !validCount(draft.quantity) ||
+      !destinations.includes(draft.location)
+    ) {
+      setError("Completa nombre, destino y una cantidad entera válida.");
+      return;
+    }
+    if (
+      persist([
+        ...items,
+        {
+          ...draft,
+          name: draft.name.trim(),
+          sent: null,
+          received: null,
+          recycled: null,
+        },
+      ])
     ) {
       setDraft(null);
-      setMessage("Registro guardado.");
+      setMessage("Registro añadido.");
     }
+  }
+  function update(item: Item, field: Editable, value: string | number | null) {
+    if (!canEdit(field, item, actor)) {
+      setError("Selecciona el hotel responsable de este campo.");
+      return false;
+    }
+    if (
+      field === "location" &&
+      (typeof value !== "string" ||
+        (value !== "" && !destinations.includes(value)) ||
+        item.received !== null)
+    ) {
+      setError(
+        "Elige un destino permitido. Para cambiar un destino recibido, retira primero su recepción.",
+      );
+      return false;
+    }
+    if (
+      !["location", "damageSentMode", "damageReceivedMode"].includes(field) &&
+      !validCount(value)
+    ) {
+      setError("Las cantidades deben ser enteros mayores o iguales a cero.");
+      return false;
+    }
+    const next = { ...item, [field]: value };
+    if (field === "sent") next.sentBy = value === null ? null : sender;
+    if (field === "received") next.receivedBy = value === null ? null : actor;
+    if (field === "damageSentMode")
+      next.damageSent = value === "none" ? 0 : null;
+    if (field === "damageReceivedMode")
+      next.damageReceived = value === "none" ? 0 : null;
+    if (field === "damageSent")
+      next.damageSentMode = value === 0 ? "none" : "damaged";
+    if (field === "damageReceived")
+      next.damageReceivedMode = value === 0 ? "none" : "damaged";
+    if (persist(items.map((i) => (i.id === item.id ? next : i)))) {
+      setMessage("Cambios guardados en este navegador.");
+      return true;
+    }
+    return false;
   }
   function csv() {
     const cell = (value: string | number | null) =>
@@ -143,10 +194,15 @@ function App() {
         "Hotel origen",
         "Hotel destino",
         "Sección",
-        "Inventariadas",
+        "Inventariadas originales",
+        "Inventario corregido",
         "Enviadas",
         "Recibidas",
-        "Rotura",
+        "Rotura envío",
+        "Rotura recepción",
+        "Rotura anterior sin responsable",
+        "Comprobado envío por",
+        "Comprobado recepción por",
         "Estado",
         "Comentario",
         "Fila Excel",
@@ -159,10 +215,15 @@ function App() {
         i.location,
         i.category,
         i.quantity,
+        i.correctedQuantity ?? null,
         i.sent,
         i.received,
+        i.damageSent ?? null,
+        i.damageReceived ?? null,
         i.recycled,
-        i.condition,
+        i.sentBy ?? "",
+        i.receivedBy ?? "",
+        transferStatus(i),
         i.notes,
         i.source?.row ?? "",
         i.source?.formulas.F ?? "",
@@ -186,12 +247,7 @@ function App() {
   const numbers: [
     keyof Pick<Item, "quantity" | "sent" | "received" | "recycled">,
     string,
-  ][] = [
-    ["quantity", "Unidades"],
-    ["sent", "Enviadas"],
-    ["received", "Recibidas"],
-    ["recycled", "Rotura / reciclaje"],
-  ];
+  ][] = [["quantity", "Unidades"]];
   return (
     <>
       <header>
@@ -211,7 +267,7 @@ function App() {
             <p>Fotografías, destinos y seguimiento de los traslados.</p>
           </div>
           <button
-            disabled={loadError}
+            disabled={loadError || actor !== sender}
             onClick={() => {
               setError("");
               setDraft(empty());
@@ -228,7 +284,9 @@ function App() {
           supuesto destinos, cantidades ni estados.
           <br />
           Los cambios se guardan solo en este navegador. Exporta una copia antes
-          de cambiar de dispositivo o borrar sus datos.
+          de cambiar de dispositivo o borrar sus datos. La selección de hotel
+          organiza la edición; no verifica la identidad ni sincroniza los
+          cambios entre hoteles.
         </aside>
         {(loadError || error) && (
           <p role="alert" className="error">
@@ -311,6 +369,24 @@ function App() {
               </button>
             </div>
           </div>
+          <div className="responsible">
+            <label>
+              Responsable de esta revisión
+              <select
+                aria-label="Hotel que registra"
+                value={actor}
+                onChange={(e) => setActor(e.target.value)}
+              >
+                {[sender, ...destinations].map((h) => (
+                  <option key={h}>{h}</option>
+                ))}
+              </select>
+            </label>
+            <p>
+              Los números se guardan al salir del campo o pulsar Intro. El hotel
+              de origen registra envío; cada destino registra su recepción.
+            </p>
+          </div>
           <div className="filters">
             <input
               aria-label="Buscar mobiliario"
@@ -338,7 +414,7 @@ function App() {
             >
               <option value="">Todos los estados</option>
               <option value="__pending">Datos por completar</option>
-              {conditions.map((c) => (
+              {["Pendiente", "Enviado", "Recibido"].map((c) => (
                 <option key={c}>{c}</option>
               ))}
             </select>
@@ -375,13 +451,39 @@ function App() {
                 <thead>
                   <tr>
                     <th>Mobiliario</th>
-                    <th>Origen → destino</th>
-                    <th>Inventariadas</th>
-                    <th>Enviadas</th>
-                    <th>Recibidas</th>
-                    <th>Rotura</th>
+                    <th>Origen</th>
+                    <th>Destino</th>
+                    <th>
+                      Inventariadas
+                      <br />
+                      originales
+                    </th>
+                    <th>
+                      Inventario
+                      <br />
+                      corregido
+                    </th>
+                    <th>
+                      Enviadas
+                      <br />
+                      <small>Hotel Sheraton</small>
+                    </th>
+                    <th>
+                      Recibidas
+                      <br />
+                      <small>Hotel destino</small>
+                    </th>
+                    <th>
+                      Rotura envío
+                      <br />
+                      <small>Hotel Sheraton</small>
+                    </th>
+                    <th>
+                      Rotura recepción
+                      <br />
+                      <small>Hotel destino</small>
+                    </th>
                     <th>Estado</th>
-                    <th>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -399,41 +501,90 @@ function App() {
                           </div>
                         </div>
                       </td>
+                      <td>{i.origin || "Origen pendiente"}</td>
                       <td>
-                        <small>{i.origin || "Origen pendiente"}</small>
-                        <span>{i.location || "Sin destino asignado"}</span>
+                        <Destination
+                          item={i}
+                          disabled={loadError || actor !== sender}
+                          change={(f, v) => update(i, f, v)}
+                        />
                       </td>
-                      <td>{displayCount(i.quantity)}</td>
-                      <td>{displayCount(i.sent)}</td>
-                      <td>{displayCount(i.received)}</td>
-                      <td>{displayCount(i.recycled)}</td>
+                      <td>
+                        <strong>{displayCount(i.quantity)}</strong>
+                        {i.source?.formulas.F && (
+                          <small title={i.source.formulas.F}>
+                            Fórmula original: {i.source.formulas.F}
+                          </small>
+                        )}
+                      </td>
+                      <td>
+                        <Count
+                          value={i.correctedQuantity ?? null}
+                          label="Inventario corregido"
+                          disabled={loadError || actor !== sender}
+                          onSave={(v) => update(i, "correctedQuantity", v)}
+                        />
+                      </td>
+                      <td>
+                        <Count
+                          value={i.sent}
+                          label="Enviadas"
+                          disabled={loadError || actor !== sender}
+                          onSave={(v) => update(i, "sent", v)}
+                        />
+                        {i.sent !== null && (
+                          <small>
+                            {i.sentBy
+                              ? "Comprobado por " + i.sentBy
+                              : "Registro anterior · responsable sin identificar"}
+                          </small>
+                        )}
+                      </td>
+                      <td>
+                        <Count
+                          value={i.received}
+                          label="Recibidas"
+                          disabled={loadError || !canEdit("received", i, actor)}
+                          onSave={(v) => update(i, "received", v)}
+                        />
+                        <small>
+                          {i.receivedBy
+                            ? "Comprobado por " + i.receivedBy
+                            : "A completar por " +
+                              (i.location || "hotel destino")}
+                        </small>
+                      </td>
+                      <td>
+                        <Damage
+                          item={i}
+                          side="Sent"
+                          disabled={loadError || actor !== sender}
+                          change={(f, v) => update(i, f, v)}
+                        />
+                        {i.recycled !== null && (
+                          <small>
+                            Rotura anterior sin responsable: {i.recycled}
+                          </small>
+                        )}
+                      </td>
+                      <td>
+                        <Damage
+                          item={i}
+                          side="Received"
+                          disabled={
+                            loadError || !canEdit("damageReceived", i, actor)
+                          }
+                          change={(f, v) => update(i, f, v)}
+                        />
+                      </td>
                       <td>
                         <span
                           className={
-                            "badge status" + conditions.indexOf(i.condition)
+                            "badge transfer-" + transferStatus(i).toLowerCase()
                           }
                         >
-                          {i.condition}
+                          {transferStatus(i)}
                         </span>
-                      </td>
-                      <td>
-                        <button
-                          className="link"
-                          onClick={() => {
-                            setError("");
-                            setDraft({ ...i });
-                          }}
-                          aria-label={"Editar " + i.name}
-                        >
-                          Editar
-                        </button>
-                        <button
-                          className="link danger"
-                          onClick={() => setPendingDelete(i.id)}
-                          aria-label={"Eliminar " + i.name}
-                        >
-                          Eliminar
-                        </button>
                       </td>
                     </tr>
                   ))}
@@ -456,7 +607,15 @@ function App() {
                       {i.location || "Sin destino"}
                     </p>
                     <p>
-                      <strong>{displayCount(i.quantity)}</strong> unidades
+                      <strong>{displayCount(i.quantity)}</strong> inventariadas
+                      originales
+                      {i.correctedQuantity != null && (
+                        <>
+                          <br />
+                          Inventario corregido:{" "}
+                          <strong>{displayCount(i.correctedQuantity)}</strong>
+                        </>
+                      )}
                     </p>
                     <button className="link" onClick={() => setDetail(i)}>
                       Ver detalle
@@ -464,11 +623,11 @@ function App() {
                     <button
                       className="link"
                       onClick={() => {
-                        setError("");
-                        setDraft({ ...i });
+                        setView("table");
+                        setQuery(i.name);
                       }}
                     >
-                      Editar
+                      Ver en tabla
                     </button>
                   </div>
                 </article>
@@ -545,14 +704,18 @@ function App() {
               </label>
               <label>
                 Ubicación
-                <input
-                  maxLength={160}
-                  placeholder="Hotel destino · pendiente si está vacío"
+                <select
                   value={draft.location}
+                  required
                   onChange={(e) =>
                     setDraft({ ...draft, location: e.target.value })
                   }
-                />
+                >
+                  <option value="">Selecciona destino</option>
+                  {destinations.map((h) => (
+                    <option key={h}>{h}</option>
+                  ))}
+                </select>
               </label>
             </div>
             <label>
@@ -608,19 +771,6 @@ function App() {
               Vacío significa pendiente de registrar. Cero significa ninguna
               unidad.
             </p>
-            <label>
-              Estado
-              <select
-                value={draft.condition}
-                onChange={(e) =>
-                  setDraft({ ...draft, condition: e.target.value })
-                }
-              >
-                {conditions.map((c) => (
-                  <option key={c}>{c}</option>
-                ))}
-              </select>
-            </label>
             <label>
               Notas
               <textarea
@@ -683,55 +833,20 @@ function App() {
             {detail.location || "Sin destino asignado"}
           </p>
           <p>
-            {displayCount(detail.quantity)} unidades inventariadas ·{" "}
-            {detail.condition}
+            {displayCount(detail.quantity)} unidades inventariadas originales ·{" "}
+            {transferStatus(detail)}
           </p>
+          {detail.correctedQuantity != null && (
+            <p>
+              Inventario corregido: {displayCount(detail.correctedQuantity)}
+            </p>
+          )}
           <p>{detail.notes}</p>
           {detail.source && (
             <p>
               Excel: {detail.source.sheet}, fila {detail.source.row}
             </p>
           )}
-          <button
-            className="secondary"
-            onClick={() => {
-              setDraft({ ...detail });
-              setDetail(null);
-            }}
-          >
-            Editar este registro
-          </button>
-        </dialog>
-      )}
-      {pendingDelete && (
-        <dialog
-          ref={(node) => {
-            if (node && !node.open) node.showModal();
-          }}
-          onCancel={() => setPendingDelete(null)}
-          aria-labelledby="delete-title"
-        >
-          <h2 id="delete-title">Eliminar registro</h2>
-          <p>
-            Se eliminará «{items.find((i) => i.id === pendingDelete)?.name}» del
-            inventario de este navegador.
-          </p>
-          <div className="form-actions">
-            <button
-              className="secondary"
-              onClick={() => setPendingDelete(null)}
-            >
-              Cancelar
-            </button>
-            <button
-              onClick={() => {
-                if (persist(items.filter((i) => i.id !== pendingDelete)))
-                  setPendingDelete(null);
-              }}
-            >
-              Confirmar eliminación
-            </button>
-          </div>
         </dialog>
       )}
     </>

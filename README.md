@@ -1,6 +1,6 @@
 # Inventario de mobiliario · Sheraton
 
-Aplicación web en español para registrar mobiliario, ubicación, categoría, unidades, estado de conservación y notas. Incluye edición, eliminación con confirmación, búsqueda, filtros, resumen y exportación CSV de los registros filtrados.
+Aplicación web en español para registrar mobiliario y gestionar su distribución entre hoteles. Incluye fotografías, inventario original y corregido, envíos, recepciones, roturas, búsqueda, filtros y exportación de los registros filtrados.
 
 ## Desarrollo
 
@@ -46,3 +46,7 @@ La aplicación y sus archivos serán accesibles públicamente. El inventario sig
 La aplicación carga inicialmente 73 registros y 63 fotografías extraídos del Excel facilitado. Incluye hoteles de origen y destino, secciones, unidades inventariadas, enviadas, recibidas, roturas, comentario y procedencia por fila. Las cantidades desconocidas se muestran como pendientes y las fotos se pueden ampliar o recorrer en galería. Los registros locales existentes se conservan; la carga del Excel añade solo identificadores ausentes.
 
 Consulta [el informe de importación](docs/importacion-excel.md) para los totales, datos pendientes, conservación de valores originales y método de asociación de imágenes. `docs/inventario-extraido.csv` permite revisar la extracción fuera de la aplicación.
+
+## Edición de la distribución
+
+La tabla principal permite elegir destino, registrar inventario corregido, enviadas, recibidas y roturas independientes de envío y recepción. Se mantienen visibles los valores originales del Excel y se bloquean foto, nombre y origen. El estado Pendiente / Enviado / Recibido se calcula a partir de las cantidades registradas. La selección «Responsable de esta revisión» habilita los campos correspondientes al hotel seleccionado. No es autenticación y los cambios siguen siendo locales al navegador. Consulta [el funcionamiento y los límites](docs/edicion-distribucion.md).

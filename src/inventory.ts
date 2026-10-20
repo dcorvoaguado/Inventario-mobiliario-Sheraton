@@ -9,6 +9,13 @@ export type Item = {
   sent: number | null;
   received: number | null;
   recycled: number | null;
+  correctedQuantity?: number | null;
+  damageSent?: number | null;
+  damageReceived?: number | null;
+  damageSentMode?: string;
+  damageReceivedMode?: string;
+  sentBy?: string | null;
+  receivedBy?: string | null;
   condition: string;
   notes: string;
   image?: string | null;
@@ -46,9 +53,14 @@ export function read(): Item[] {
         typeof i.notes === "string" &&
         validCount(i.quantity) &&
         conditions.includes(i.condition) &&
-        ["sent", "received", "recycled"].every(
-          (k) => i[k] === undefined || validCount(i[k]),
-        ) &&
+        [
+          "sent",
+          "received",
+          "recycled",
+          "correctedQuantity",
+          "damageSent",
+          "damageReceived",
+        ].every((k) => i[k] === undefined || validCount(i[k])) &&
         (i.origin === undefined || typeof i.origin === "string") &&
         (i.image === undefined ||
           i.image === null ||
@@ -63,13 +75,28 @@ export function read(): Item[] {
     throw Error("Invalid inventory");
   if (new Set(data.map((i) => i.id)).size !== data.length)
     throw Error("Duplicate record identifiers");
-  return data.map((i) => ({
-    ...i,
-    origin: i.origin ?? "",
-    sent: i.sent ?? null,
-    received: i.received ?? null,
-    recycled: i.recycled ?? null,
-  }));
+  return data.map((i) => {
+    const original = initialInventory.find((row) => row.id === i.id);
+    return {
+      ...i,
+      quantity: original ? original.quantity : i.quantity,
+      correctedQuantity:
+        i.correctedQuantity !== undefined
+          ? i.correctedQuantity
+          : original && original.quantity !== i.quantity
+            ? i.quantity
+            : null,
+      origin: original ? original.origin : (i.origin ?? ""),
+      name: original ? original.name : i.name,
+      image: original ? original.image : i.image,
+      source: original?.source ?? i.source,
+      sent: i.sent ?? null,
+      received: i.received ?? null,
+      recycled: i.recycled ?? null,
+      damageSent: i.damageSent ?? null,
+      damageReceived: i.damageReceived ?? null,
+    };
+  });
 }
 export const empty = (): Item => ({
   id: crypto.randomUUID(),
@@ -87,3 +114,21 @@ export const empty = (): Item => ({
 export const imageUrl = (image: string) => import.meta.env.BASE_URL + image;
 export const displayCount = (value: number | null) =>
   value === null ? "Pendiente" : value.toLocaleString("es-ES");
+
+export const destinations = [
+  "Elba Carlota",
+  "Elba Sara",
+  "Elba Lucía",
+  "Elba Palace",
+];
+export const sender = "Hotel Sheraton";
+export function transferStatus(item: Item) {
+  return item.received !== null
+    ? "Recibido"
+    : item.sent !== null
+      ? "Enviado"
+      : "Pendiente";
+}
+export function effectiveQuantity(item: Item) {
+  return item.correctedQuantity ?? item.quantity;
+}
