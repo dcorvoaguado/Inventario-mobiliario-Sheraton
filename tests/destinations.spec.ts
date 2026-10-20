@@ -79,7 +79,18 @@ test("destinations with movements stay protected and receipts share the stock li
     page.getByRole("dialog").getByRole("checkbox", { name: /Elba Carlota/ }),
   ).toBeDisabled();
   await page.getByRole("button", { name: "Cancelar", exact: true }).click();
+  const destinationRow = group(page).filter({
+    has: page.locator("select.inline-destination").filter({
+      has: page.locator('option:checked[value="Elba Sara"]'),
+    }),
+  });
+  await number(destinationRow, "Enviadas", "11");
   await page.getByLabel("Hotel que registra").selectOption("Elba Carlota");
+  await number(original(page), "Recibidas", "41");
+  await expect(page.getByRole("alert")).toContainText("40 unidades enviadas");
+  await expect(
+    original(page).getByLabel("Recibidas", { exact: true }),
+  ).toHaveValue("");
   await number(original(page), "Recibidas", "40");
   await page.getByLabel("Hotel que registra").selectOption("Elba Sara");
   const sara = group(page).filter({
@@ -88,9 +99,7 @@ test("destinations with movements stay protected and receipts share the stock li
       .filter({ has: page.locator('option:checked[value="Elba Sara"]') }),
   });
   await number(sara, "Recibidas", "12");
-  await expect(page.getByRole("alert")).toContainText(
-    "recibidas entre todos los hoteles suman 52",
-  );
+  await expect(page.getByRole("alert")).toContainText("11 unidades enviadas");
   await expect(sara.getByLabel("Recibidas", { exact: true })).toHaveValue("");
   await number(sara, "Recibidas", "11");
   await expect(sara.locator("td").last()).toHaveText("Recibido");
@@ -181,4 +190,36 @@ test("partial reset keeps the shared correction and data of the other hotel", as
   await expect(
     original(page).getByLabel("Inventario corregido", { exact: true }),
   ).toHaveValue("60");
+});
+
+test("corrected inventory can change either way and each receipt is capped by its shipment", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await number(original(page), "Inventario corregido", "40");
+  await expect(
+    original(page).getByLabel("Inventario corregido", { exact: true }),
+  ).toHaveValue("40");
+  await number(original(page), "Inventario corregido", "70");
+  await number(original(page), "Enviadas", "35");
+  await page.getByLabel("Hotel que registra").selectOption("Elba Carlota");
+  await number(original(page), "Recibidas", "36");
+  await expect(page.getByRole("alert")).toContainText("35 unidades enviadas");
+  await expect(
+    original(page).getByLabel("Recibidas", { exact: true }),
+  ).toHaveValue("");
+  await number(original(page), "Recibidas", "34");
+  await number(original(page), "Recibidas", "35");
+  await expect(
+    original(page).getByLabel("Recibidas", { exact: true }),
+  ).toHaveValue("35");
+  await page.getByLabel("Hotel que registra").selectOption("Hotel Sheraton");
+  await number(original(page), "Enviadas", "34");
+  await expect(
+    original(page).getByLabel("Enviadas", { exact: true }),
+  ).toHaveValue("35");
+  await page.reload();
+  await expect(
+    original(page).getByLabel("Recibidas", { exact: true }),
+  ).toHaveValue("35");
 });

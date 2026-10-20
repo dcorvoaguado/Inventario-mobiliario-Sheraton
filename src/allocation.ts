@@ -48,6 +48,11 @@ export function allocationError(items: Item[], item: Item) {
     return "Indica el inventario corregido antes de registrar cantidades para este mueble.";
   if (a.limit !== null && a.sent > a.limit)
     return `Las enviadas entre todos los hoteles suman ${a.sent} y superan el inventario disponible de ${a.limit}.`;
+  const excessiveReceipt = a.rows.find(
+    (row) => (row.received ?? 0) > (row.sent ?? 0),
+  );
+  if (excessiveReceipt)
+    return `Las recibidas de ${excessiveReceipt.location} no pueden superar las ${excessiveReceipt.sent ?? 0} unidades enviadas a ese hotel.`;
   if (a.limit !== null && a.received > a.limit)
     return `Las recibidas entre todos los hoteles suman ${a.received} y superan el inventario disponible de ${a.limit}.`;
   return null;
