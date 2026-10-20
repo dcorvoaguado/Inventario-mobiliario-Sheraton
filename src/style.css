@@ -1091,12 +1091,12 @@ main {
 :root {
   --block-base-head: #f3eee7;
   --block-base-body: #fcfaf7;
-  --block-sender-head: #dce5ea;
-  --block-sender-body: #eff4f6;
-  --block-receiver-head: #e8dce1;
-  --block-receiver-body: #f7f0f3;
-  --block-status-head: #e3e3e3;
-  --block-status-body: #f3f3f3;
+  --block-sender-head: #f3eee7;
+  --block-sender-body: #fcfaf7;
+  --block-receiver-head: #f3eee7;
+  --block-receiver-body: #fcfaf7;
+  --block-status-head: #f3eee7;
+  --block-status-body: #fcfaf7;
 }
 .editable-table th.block-base {
   background: var(--block-base-head);
@@ -1123,13 +1123,13 @@ main {
   background: var(--block-status-body);
 }
 .editable-table .block-start {
-  border-left: 2px solid #b9b7b4;
+  border-left: 2px solid #ded8ce;
 }
 .editable-table .block-sender.block-start {
-  border-left-color: #b2c2cb;
+  border-left-color: #ded8ce;
 }
 .editable-table .block-receiver.block-start {
-  border-left-color: #cbb6c0;
+  border-left-color: #ded8ce;
 }
 .editable-table .block-headings th {
   text-transform: none;
@@ -1176,16 +1176,16 @@ main {
   }
   .editable-table tbody td:nth-child(5),
   .editable-table tbody td:nth-child(6) {
-    border-top: 2px solid #b2c2cb;
+    border-top: 2px solid #ded8ce;
     padding-top: 12px !important;
   }
   .editable-table tbody td:nth-child(8),
   .editable-table tbody td:nth-child(9) {
-    border-top: 2px solid #cbb6c0;
+    border-top: 2px solid #ded8ce;
     padding-top: 12px !important;
   }
   .editable-table tbody td:nth-child(10) {
-    border-top: 2px solid #b9b7b4;
+    border-top: 2px solid #ded8ce;
     padding-top: 12px !important;
   }
   .editable-table .inline-number,
@@ -1196,8 +1196,8 @@ main {
   }
 }
 .editable-table td.block-status .badge {
-  background: #e4e4e4;
-  color: #4f4f4f;
+  background: #eae1d4;
+  color: #594b3c;
 }
 .manage-destinations {
   display: block;
@@ -1479,7 +1479,7 @@ h1 {
     border-right: 0;
   }
   .grouped-table tbody td.block-start {
-    border-top: 2px solid #b7b4b2;
+    border-top: 2px solid #ded8ce;
   }
   .product-overview {
     gap: 14px;
@@ -1635,9 +1635,40 @@ h1 {
     border-right: 0;
   }
   .linear-table tbody td.block-start {
-    border-top: 2px solid #b7b4b2;
+    border-top: 2px solid #ded8ce;
   }
   .linear-table tbody td[data-label="Mobiliario"] {
     grid-column: 1 / -1;
+  }
+}
+
+/* One warm palette, alternating by column rather than by responsibility. */
+.linear-table thead tr:last-child th:nth-child(odd),
+.linear-table tbody td:nth-child(odd) {
+  background: #f3eee7;
+}
+.linear-table thead tr:last-child th:nth-child(even),
+.linear-table tbody td:nth-child(even) {
+  background: #faf7f2;
+}
+.linear-table .block-headings th {
+  background: #f3eee7;
+}
+.linear-table tbody td + td,
+.linear-table .block-start {
+  border-left: 1px solid #ded8ce;
+}
+.transfer-pendiente,
+.transfer-enviado,
+.transfer-recibido {
+  background: #eae1d4;
+  color: #594b3c;
+}
+@media (max-width: 1000px) {
+  .linear-table tbody td.block-start {
+    border-top: 1px solid #ded8ce;
+  }
+  .linear-table tbody td + td {
+    border-left: 0;
   }
 }

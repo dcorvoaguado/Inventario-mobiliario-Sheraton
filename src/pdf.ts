@@ -189,19 +189,19 @@ function render(items: Item[], title: string, photos: Map<string, Picture>) {
       },
       didParseCell: (data) => {
         const index = data.column.index;
-        const group = index < 6 ? 0 : index < 9 ? 1 : index < 11 ? 2 : 3;
-        const colors =
-          data.section === "head"
-            ? ["#f3eee7", "#dce5ea", "#e8dce1", "#e3e3e3"]
-            : ["#fcfaf7", "#eff4f6", "#f7f0f3", "#f3f3f3"];
-        data.cell.styles.fillColor = colors[group];
+        data.cell.styles.fillColor =
+          data.section === "head" && data.row.index === 0
+            ? "#f3eee7"
+            : index % 2 === 0
+              ? "#f3eee7"
+              : "#faf7f2";
         if (data.section === "head")
           data.cell.styles.minCellHeight = data.row.index === 0 ? 8 : 13;
       },
       didDrawCell: (data) => {
         if ([6, 9, 11].includes(data.column.index)) {
-          doc.setDrawColor("#b7b4b2");
-          doc.setLineWidth(0.5);
+          doc.setDrawColor("#ded8ce");
+          doc.setLineWidth(0.15);
           doc.line(
             data.cell.x,
             data.cell.y,
