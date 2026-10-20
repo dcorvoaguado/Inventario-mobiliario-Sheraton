@@ -443,11 +443,18 @@ function App() {
   return (
     <>
       <header>
-        <a className="brand" href="./">
-          <span className="seal">S</span>
-          <span>
-            SHERATON<small>FUERTEVENTURA</small>
-          </span>
+        <a
+          className="brand"
+          href="./"
+          aria-label="Sheraton · Inicio del inventario"
+        >
+          <img
+            className="brand-logo"
+            src={`${import.meta.env.BASE_URL}images/brand/sheraton-reference.png`}
+            alt="Sheraton · Est. 1937"
+            width="191"
+            height="82"
+          />
         </a>
         <span className="workspace">Distribución entre hoteles</span>
       </header>
