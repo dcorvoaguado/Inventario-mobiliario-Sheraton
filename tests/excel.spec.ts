@@ -7,9 +7,6 @@ test("loads every record, applies repeated quantities and shows the matching pho
 }) => {
   await page.goto("/");
   await expect(page.locator("tbody tr")).toHaveCount(73);
-  await expect(page.getByRole("region", { name: "Resumen" })).toContainText(
-    "6250",
-  );
   const row = page.locator('tbody tr[data-record-id="excel-row-22"]');
   await expect(row.locator("td").nth(3).locator("strong")).toHaveText("60");
   await page

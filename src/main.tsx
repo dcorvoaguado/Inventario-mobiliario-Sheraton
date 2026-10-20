@@ -12,7 +12,6 @@ import {
   sender,
   transferStatus,
   effectiveQuantity,
-  inventoryTotal,
   normalizeSearch,
   type Item,
 } from "./inventory";
@@ -25,7 +24,6 @@ import {
 } from "./InlineFields";
 import ImagePicker from "./ImagePicker";
 import PdfExport from "./PdfExport";
-import summary from "./data/import-summary.json";
 import "@fontsource/inter/latin-400.css";
 import "@fontsource/inter/latin-500.css";
 import "@fontsource/inter/latin-600.css";
@@ -96,9 +94,6 @@ function App() {
           : transferStatus(i) === condition)) &&
       (!section || i.category === section),
   );
-  const pending = items.filter(
-    (i) => effectiveQuantity(i) === null || !i.location || !i.origin,
-  ).length;
   function persist(next: Item[]) {
     if (loadError) return false;
     try {
@@ -296,7 +291,6 @@ function App() {
         <div className="heading">
           <div>
             <h1>Inventario y distribución</h1>
-            <p>Fotografías, destinos y seguimiento de los traslados.</p>
           </div>
           <button
             disabled={loadError || actor !== sender}
@@ -309,18 +303,7 @@ function App() {
             ＋ Añadir mobiliario
           </button>
         </div>
-        <aside className="notice">
-          <strong>Excel incorporado:</strong> {summary.records} registros ·{" "}
-          {summary.uniqueImages} imágenes ·{" "}
-          {summary.knownUnits.toLocaleString("es-ES")} unidades conocidas y{" "}
-          {summary.unknownQuantities.length} cantidades pendientes. No se han
-          supuesto destinos, cantidades ni estados.
-          <br />
-          Los cambios se guardan solo en este navegador. Exporta una copia antes
-          de cambiar de dispositivo o borrar sus datos. La selección de hotel
-          organiza la edición; no verifica la identidad ni sincroniza los
-          cambios entre hoteles.
-        </aside>
+
         {(loadError || error) && (
           <p role="alert" className="error">
             {loadError
@@ -333,31 +316,6 @@ function App() {
             {message}
           </p>
         )}
-        <section className="stats" aria-label="Resumen">
-          <article>
-            <span>UNIDADES INVENTARIADAS</span>
-            <strong>{inventoryTotal(items).toLocaleString("es-ES")}</strong>
-            <small>
-              {items.filter((i) => i.quantity === null).length} registros con
-              cantidad pendiente
-            </small>
-          </article>
-          <article>
-            <span>HOTELES DE DESTINO</span>
-            <strong>
-              {new Set(items.map((i) => i.location).filter(Boolean)).size}
-            </strong>
-            <small>
-              {items.filter((i) => !i.location).length} registros sin destino
-              asignado
-            </small>
-          </article>
-          <article>
-            <span>DATOS POR COMPLETAR</span>
-            <strong>{pending}</strong>
-            <small>Registros sin cantidad, origen o destino</small>
-          </article>
-        </section>
         <section className="inventory">
           <div className="section-title">
             <h2>

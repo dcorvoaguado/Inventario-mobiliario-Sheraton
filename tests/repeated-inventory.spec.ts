@@ -17,9 +17,6 @@ test("repeated inventory uses the previous amount and spreadsheet coordinates st
   await expect(page.locator("tbody")).not.toContainText(
     /Fila \d|Fórmula original/,
   );
-  await expect(page.getByRole("region", { name: "Resumen" })).toContainText(
-    "6250",
-  );
   await page.getByRole("button", { name: "Galería de fotos" }).click();
   await expect(page.locator(".gallery")).not.toContainText(/Fila \d/);
   await page
