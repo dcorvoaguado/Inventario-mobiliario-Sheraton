@@ -1642,21 +1642,19 @@ h1 {
   }
 }
 
-/* One warm palette, alternating by column rather than by responsibility. */
-.linear-table thead tr:last-child th:nth-child(odd),
-.linear-table tbody td:nth-child(odd) {
-  background: #f3eee7;
+/* Warm tones identify responsibility blocks, never individual columns. */
+:root {
+  --block-base-head: #f3eee7;
+  --block-base-body: #f3eee7;
+  --block-sender-head: #faf7f2;
+  --block-sender-body: #faf7f2;
+  --block-receiver-head: #eee6db;
+  --block-receiver-body: #eee6db;
+  --block-status-head: #f7f2ea;
+  --block-status-body: #f7f2ea;
 }
-.linear-table thead tr:last-child th:nth-child(even),
-.linear-table tbody td:nth-child(even) {
-  background: #faf7f2;
-}
-.linear-table .block-headings th {
-  background: #f3eee7;
-}
-.linear-table tbody td + td,
 .linear-table .block-start {
-  border-left: 1px solid #ded8ce;
+  border-left: 2px solid #d9cdbd;
 }
 .transfer-pendiente,
 .transfer-enviado,

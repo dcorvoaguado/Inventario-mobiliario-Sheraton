@@ -189,12 +189,13 @@ function render(items: Item[], title: string, photos: Map<string, Picture>) {
       },
       didParseCell: (data) => {
         const index = data.column.index;
-        data.cell.styles.fillColor =
-          data.section === "head" && data.row.index === 0
-            ? "#f3eee7"
-            : index % 2 === 0
-              ? "#f3eee7"
-              : "#faf7f2";
+        const group = index < 6 ? 0 : index < 9 ? 1 : index < 11 ? 2 : 3;
+        data.cell.styles.fillColor = [
+          "#f3eee7",
+          "#faf7f2",
+          "#eee6db",
+          "#f7f2ea",
+        ][group];
         if (data.section === "head")
           data.cell.styles.minCellHeight = data.row.index === 0 ? 8 : 13;
       },
