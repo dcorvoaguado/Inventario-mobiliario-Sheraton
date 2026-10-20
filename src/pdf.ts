@@ -1,7 +1,12 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import { zipSync } from "fflate";
-import { imageUrl, transferStatus, type Item } from "./inventory";
+import {
+  imageUrl,
+  transferStatus,
+  inventoryTotal,
+  type Item,
+} from "./inventory";
 type Picture = { bytes: Uint8Array; width: number; height: number };
 const unassigned = "Sin destino asignado";
 export const hotelName = (item: Item) => item.location || unassigned;
@@ -70,7 +75,7 @@ function render(items: Item[], title: string, photos: Map<string, Picture>) {
   groups.forEach((hotel, index) => {
     if (index) doc.addPage();
     const entries = items.filter((i) => hotelName(i) === hotel);
-    const original = entries.reduce((n, i) => n + (i.quantity ?? 0), 0);
+    const original = inventoryTotal(entries);
     const unknown = entries.filter((i) => i.quantity === null).length;
     doc.setFillColor("#252323");
     doc.rect(0, 0, 297, 3, "F");
@@ -124,7 +129,7 @@ function render(items: Item[], title: string, photos: Map<string, Picture>) {
       ],
       body: entries.map((i) => [
         "",
-        `${i.name}${i.source ? "\nFila Excel: " + i.source.row : ""}${i.notes ? "\n" + i.notes : ""}${i.recycled !== null ? "\nRotura anterior sin responsable: " + i.recycled : ""}`,
+        `${i.name}${i.notes ? "\n" + i.notes : ""}${i.recycled !== null ? "\nRotura anterior sin responsable: " + i.recycled : ""}`,
         i.origin || "Pendiente",
         hotel,
         amount(i.quantity),

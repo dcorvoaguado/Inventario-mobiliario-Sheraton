@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 const row2 = (page: import("@playwright/test").Page) =>
   page.locator("tbody tr").filter({
     has: page.getByRole("button", {
-      name: "Ver foto de Sillón tapizado · fila 2",
+      name: "Ver foto de Sillón tapizado",
       exact: true,
     }),
   });

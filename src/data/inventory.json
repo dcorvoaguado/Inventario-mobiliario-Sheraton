@@ -577,7 +577,8 @@
         "J": null
       },
       "formulas": {}
-    }
+    },
+    "inventoryGroup": "excel-row-21"
   },
   {
     "id": "excel-row-22",
@@ -585,7 +586,7 @@
     "origin": "SHERATON",
     "location": "Elba Lucía",
     "category": "Distribución inicial",
-    "quantity": null,
+    "quantity": 60,
     "sent": null,
     "received": null,
     "recycled": null,
@@ -607,8 +608,10 @@
       },
       "formulas": {
         "F": "=I21"
-      }
-    }
+      },
+      "quantityInheritedFrom": 21
+    },
+    "inventoryGroup": "excel-row-21"
   },
   {
     "id": "excel-row-23",
@@ -1043,7 +1046,8 @@
         "J": null
       },
       "formulas": {}
-    }
+    },
+    "inventoryGroup": "excel-row-37"
   },
   {
     "id": "excel-row-38",
@@ -1051,7 +1055,7 @@
     "origin": "SHERATON",
     "location": "Elba Sara",
     "category": "Distribución inicial",
-    "quantity": null,
+    "quantity": 260,
     "sent": null,
     "received": null,
     "recycled": null,
@@ -1073,8 +1077,10 @@
       },
       "formulas": {
         "F": "=I37"
-      }
-    }
+      },
+      "quantityInheritedFrom": 37
+    },
+    "inventoryGroup": "excel-row-37"
   },
   {
     "id": "excel-row-39",
@@ -1567,7 +1573,8 @@
         "J": null
       },
       "formulas": {}
-    }
+    },
+    "inventoryGroup": "excel-row-56"
   },
   {
     "id": "excel-row-57",
@@ -1575,7 +1582,7 @@
     "origin": "",
     "location": "Elba San Jorge",
     "category": "NOVEDADES",
-    "quantity": null,
+    "quantity": 50,
     "sent": null,
     "received": null,
     "recycled": null,
@@ -1597,8 +1604,10 @@
       },
       "formulas": {
         "F": "=I56"
-      }
-    }
+      },
+      "quantityInheritedFrom": 56
+    },
+    "inventoryGroup": "excel-row-56"
   },
   {
     "id": "excel-row-58",
@@ -1685,7 +1694,8 @@
         "J": null
       },
       "formulas": {}
-    }
+    },
+    "inventoryGroup": "excel-row-60"
   },
   {
     "id": "excel-row-61",
@@ -1693,7 +1703,7 @@
     "origin": "SHERATON",
     "location": "Elba Sara",
     "category": "NOVEDADES",
-    "quantity": null,
+    "quantity": 100,
     "sent": null,
     "received": null,
     "recycled": null,
@@ -1715,8 +1725,10 @@
       },
       "formulas": {
         "F": "=I60"
-      }
-    }
+      },
+      "quantityInheritedFrom": 60
+    },
+    "inventoryGroup": "excel-row-60"
   },
   {
     "id": "excel-row-63",

@@ -12,6 +12,8 @@ import {
   sender,
   transferStatus,
   effectiveQuantity,
+  inventoryTotal,
+  normalizeSearch,
   type Item,
 } from "./inventory";
 import {
@@ -21,6 +23,7 @@ import {
   canEdit,
   type Editable,
 } from "./InlineFields";
+import ImagePicker from "./ImagePicker";
 import PdfExport from "./PdfExport";
 import summary from "./data/import-summary.json";
 import "@fontsource/inter/latin-400.css";
@@ -42,11 +45,7 @@ function Photo({ item, onOpen }: { item: Item; onOpen: () => void }) {
     <button
       className="photo-button"
       onClick={onOpen}
-      aria-label={
-        "Ver foto de " +
-        item.name +
-        (item.source ? " · fila " + item.source.row : "")
-      }
+      aria-label={"Ver foto de " + item.name}
     >
       <img src={imageUrl(item.image)} alt={item.name} loading="lazy" />
     </button>
@@ -79,13 +78,16 @@ function App() {
     [message, setMessage] = useState("");
   const [detail, setDetail] = useState<Item | null>(null);
   const [pdfOpen, setPdfOpen] = useState(false);
+  const [imageBusy, setImageBusy] = useState(false);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [resetOpen, setResetOpen] = useState(false);
   const [actor, setActor] = useState(sender);
   const [view, setView] = useState<"table" | "gallery">("table");
   const visible = items.filter(
     (i) =>
-      `${i.name} ${i.category} ${i.origin} ${i.location}`
-        .toLocaleLowerCase("es")
-        .includes(query.toLocaleLowerCase("es")) &&
+      normalizeSearch(
+        `${i.name} ${i.category} ${i.origin} ${i.location}`,
+      ).includes(normalizeSearch(query)) &&
       (!location ||
         (location === "__missing" ? !i.location : i.location === location)) &&
       (!condition ||
@@ -111,9 +113,36 @@ function App() {
       return false;
     }
   }
+  function selectItem(id: string) {
+    setSelected((current) => {
+      const next = new Set(current);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+  function resetSelected() {
+    if (actor !== sender || !selected.size) return;
+    const next: Item[] = [];
+    for (const item of items) {
+      if (!selected.has(item.id)) {
+        next.push(item);
+        continue;
+      }
+      const original = initialInventory.find((i) => i.id === item.id);
+      if (original) next.push(structuredClone(original));
+    }
+    if (persist(next)) {
+      setSelected(new Set());
+      setResetOpen(false);
+      setMessage(
+        "Datos de los registros seleccionados borrados. Se conserva el inventario original del Excel.",
+      );
+    }
+  }
   function save(e: FormEvent) {
     e.preventDefault();
-    if (!draft) return;
+    if (!draft || imageBusy) return;
     if (items.some((i) => i.id === draft.id)) {
       setError(
         "Los registros existentes se actualizan desde la tabla principal.",
@@ -212,8 +241,6 @@ function App() {
         "Comprobado recepción por",
         "Estado",
         "Comentario",
-        "Fila Excel",
-        "Fórmula original",
         "Imagen",
       ],
       ...visible.map((i) => [
@@ -232,8 +259,6 @@ function App() {
         i.receivedBy ?? "",
         transferStatus(i),
         i.notes,
-        i.source?.row ?? "",
-        i.source?.formulas.F ?? "",
         i.image ? imageUrl(i.image) : "",
       ]),
     ];
@@ -277,6 +302,7 @@ function App() {
             disabled={loadError || actor !== sender}
             onClick={() => {
               setError("");
+              setImageBusy(false);
               setDraft(empty());
             }}
           >
@@ -310,11 +336,7 @@ function App() {
         <section className="stats" aria-label="Resumen">
           <article>
             <span>UNIDADES INVENTARIADAS</span>
-            <strong>
-              {items
-                .reduce((n, i) => n + (i.quantity ?? 0), 0)
-                .toLocaleString("es-ES")}
-            </strong>
+            <strong>{inventoryTotal(items).toLocaleString("es-ES")}</strong>
             <small>
               {items.filter((i) => i.quantity === null).length} registros con
               cantidad pendiente
@@ -399,6 +421,52 @@ function App() {
               Los números se guardan al salir del campo o pulsar Intro. El hotel
               de origen registra envío; cada destino registra su recepción.
             </p>
+          </div>
+          <div className="selection-bar">
+            <label>
+              <input
+                type="checkbox"
+                aria-label="Seleccionar todo el mobiliario"
+                checked={items.length > 0 && selected.size === items.length}
+                ref={(node) => {
+                  if (node)
+                    node.indeterminate =
+                      selected.size > 0 && selected.size < items.length;
+                }}
+                disabled={loadError || !items.length}
+                onChange={(e) =>
+                  setSelected(
+                    e.target.checked
+                      ? new Set(items.map((i) => i.id))
+                      : new Set(),
+                  )
+                }
+              />
+              Seleccionar todo el mobiliario
+            </label>
+            <span role="status">
+              {selected.size} de {items.length} seleccionados
+              {selected.size > visible.filter((i) => selected.has(i.id)).length
+                ? " · incluye registros fuera del filtro"
+                : ""}
+            </span>
+            <button
+              className="secondary"
+              disabled={!selected.size}
+              onClick={() => setSelected(new Set())}
+            >
+              Quitar selección
+            </button>
+            <button
+              className="danger-button"
+              disabled={loadError || !selected.size || actor !== sender}
+              onClick={() => {
+                setError("");
+                setResetOpen(true);
+              }}
+            >
+              Borrar datos seleccionados
+            </button>
           </div>
           <div className="filters">
             <input
@@ -506,16 +574,25 @@ function App() {
                 </thead>
                 <tbody>
                   {visible.map((i) => (
-                    <tr key={i.id}>
+                    <tr
+                      key={i.id}
+                      data-record-id={i.id}
+                      className={selected.has(i.id) ? "selected-item" : ""}
+                    >
                       <td data-label="Mobiliario">
                         <div className="item-cell">
+                          <input
+                            className="item-selection"
+                            type="checkbox"
+                            aria-label={"Seleccionar " + i.name}
+                            checked={selected.has(i.id)}
+                            disabled={loadError}
+                            onChange={() => selectItem(i.id)}
+                          />
                           <Photo item={i} onOpen={() => setDetail(i)} />
                           <div>
                             <strong>{i.name}</strong>
-                            <small>
-                              {i.category}
-                              {i.source && ` · Fila ${i.source.row}`}
-                            </small>
+                            <small>{i.category}</small>
                           </div>
                         </div>
                       </td>
@@ -531,11 +608,6 @@ function App() {
                       </td>
                       <td data-label="Inventariadas originales">
                         <strong>{displayCount(i.quantity)}</strong>
-                        {i.source?.formulas.F && (
-                          <small title={i.source.formulas.F}>
-                            Fórmula original: {i.source.formulas.F}
-                          </small>
-                        )}
                       </td>
                       <td data-label="Inventario corregido">
                         <Count
@@ -614,13 +686,24 @@ function App() {
           ) : (
             <div className="gallery">
               {visible.map((i) => (
-                <article key={i.id}>
+                <article
+                  key={i.id}
+                  data-record-id={i.id}
+                  className={selected.has(i.id) ? "selected-item" : ""}
+                >
+                  <label className="gallery-selection">
+                    <input
+                      type="checkbox"
+                      aria-label={"Seleccionar " + i.name}
+                      checked={selected.has(i.id)}
+                      disabled={loadError}
+                      onChange={() => selectItem(i.id)}
+                    />
+                    Seleccionar
+                  </label>
                   <Photo item={i} onOpen={() => setDetail(i)} />
                   <div className="card-content">
-                    <small>
-                      {i.category}
-                      {i.source && ` · Fila ${i.source.row}`}
-                    </small>
+                    <small>{i.category}</small>
                     <h3>{i.name}</h3>
                     <p>
                       {i.origin || "Origen pendiente"} →{" "}
@@ -671,12 +754,49 @@ function App() {
           )}
           <footer>
             {visible.length} de {items.length} registros
-            <span>
-              Una fila del Excel = un registro · Sin fusionar duplicados
-            </span>
+            <span>Inventario y seguimiento por hotel</span>
           </footer>
         </section>
       </main>
+      {resetOpen && (
+        <dialog
+          ref={(node) => {
+            if (node && !node.open) node.showModal();
+          }}
+          onCancel={() => setResetOpen(false)}
+          aria-labelledby="reset-title"
+          aria-describedby="reset-description"
+        >
+          <h2 id="reset-title">
+            Estás a punto de borrar todos los datos, ¿estás seguro?
+          </h2>
+          <p id="reset-description">
+            Esta acción afecta a {selected.size} registros seleccionados,
+            incluidos los que no se ven por los filtros. Se borrarán las
+            correcciones, envíos, recepciones, roturas y comentarios añadidos;
+            los destinos del Excel se restablecerán. El mobiliario, las
+            fotografías y el inventario original del Excel se conservan. Los
+            muebles nuevos seleccionados se eliminarán junto con sus fotos.
+          </p>
+          {error && (
+            <p role="alert" className="error">
+              {error}
+            </p>
+          )}
+          <div className="form-actions">
+            <button
+              autoFocus
+              className="secondary"
+              onClick={() => setResetOpen(false)}
+            >
+              No
+            </button>
+            <button className="danger-button" onClick={resetSelected}>
+              Sí
+            </button>
+          </div>
+        </dialog>
+      )}
       {pdfOpen && <PdfExport items={items} onClose={() => setPdfOpen(false)} />}
       {draft && (
         <dialog
@@ -702,6 +822,17 @@ function App() {
                 ✕
               </button>
             </div>
+            <ImagePicker
+              key={draft.id}
+              value={draft.image}
+              items={items}
+              onBusy={setImageBusy}
+              onChange={(image) =>
+                setDraft((current) =>
+                  current?.id === draft.id ? { ...current, image } : current,
+                )
+              }
+            />
             <label>
               Nombre
               <input
@@ -800,13 +931,7 @@ function App() {
                 onChange={(e) => setDraft({ ...draft, notes: e.target.value })}
               />
             </label>
-            {draft.source && (
-              <p className="field-help">
-                Origen: {draft.source.sheet}, fila {draft.source.row}.{" "}
-                {draft.source.formulas.F &&
-                  `Fórmula original en F${draft.source.row}: ${draft.source.formulas.F}. Se conserva como referencia; no se recalcula.`}
-              </p>
-            )}
+
             {error && <p role="alert">{error}</p>}
             <div className="form-actions">
               <button
@@ -816,7 +941,7 @@ function App() {
               >
                 Cancelar
               </button>
-              <button>Guardar mobiliario</button>
+              <button disabled={imageBusy}>Guardar mobiliario</button>
             </div>
           </form>
         </dialog>
@@ -863,11 +988,6 @@ function App() {
             </p>
           )}
           <p>{detail.notes}</p>
-          {detail.source && (
-            <p>
-              Excel: {detail.source.sheet}, fila {detail.source.row}
-            </p>
-          )}
         </dialog>
       )}
     </>

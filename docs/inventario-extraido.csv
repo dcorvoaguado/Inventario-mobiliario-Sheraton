@@ -19,7 +19,7 @@
 19,Distribución inicial,SHERATON,Elba Palace,Silla teca,82,,,,,images/excel/sheraton_reduced_16.jpg,
 20,Distribución inicial,SHERATON,Elba Lucía,Silla teca,82,,,,,images/excel/sheraton_reduced_16.jpg,
 21,Distribución inicial,SHERATON,Elba Sara,Silla ratán,60,,,,,images/excel/sheraton_reduced_17.jpg,
-22,Distribución inicial,SHERATON,Elba Lucía,Silla ratán,,,,,,images/excel/sheraton_reduced_17.jpg,'=I21
+22,Distribución inicial,SHERATON,Elba Lucía,Silla ratán,60,,,,,images/excel/sheraton_reduced_17.jpg,'=I21
 23,Distribución inicial,SHERATON,Elba Sara,Mesa baja,10,,,,,images/excel/sheraton_reduced_18.jpg,
 24,Distribución inicial,SHERATON,Elba Lucía,Mesa baja,2,,,,,images/excel/sheraton_reduced_18.jpg,
 25,Distribución inicial,SHERATON,Elba San Jorge,Silla ratán,90,,,,,images/excel/sheraton_reduced_19.jpg,
@@ -35,7 +35,7 @@
 35,Distribución inicial,SHERATON,Elba San Jorge,Mueble tv,266,,,,,images/excel/sheraton_reduced_29.jpg,
 36,Distribución inicial,SHERATON,Elba San Jorge,Mueble media luna,240,,,,,images/excel/sheraton_reduced_30.jpg,
 37,Distribución inicial,SHERATON,Elba San Jorge,Mesa de salón,260,,,,,images/excel/sheraton_reduced_31.jpg,
-38,Distribución inicial,SHERATON,Elba Sara,Mesa de salón,,,,,,images/excel/sheraton_reduced_31.jpg,'=I37
+38,Distribución inicial,SHERATON,Elba Sara,Mesa de salón,260,,,,,images/excel/sheraton_reduced_31.jpg,'=I37
 39,Distribución inicial,SHERATON,Elba San Jorge,Mesa amenities,40,,,,,images/excel/sheraton_reduced_32.jpg,
 40,Distribución inicial,SHERATON,Elba San Jorge,Lámpara araña,40,,,,,images/excel/sheraton_reduced_33.jpg,
 41,Distribución inicial,SHERATON,Elba San Jorge,Ventilador techo,266,,,,,images/excel/sheraton_reduced_34.jpg,
@@ -53,11 +53,11 @@
 54,NOVEDADES,SHERATON,Elba Lucía,Aplique pared,20,,,,,images/excel/sheraton_reduced_43.jpg,
 55,NOVEDADES,SHERATON,Elba Lucía,Aplique pared,6,,,,,images/excel/sheraton_reduced_44.jpg,
 56,NOVEDADES,,Elba Carlota,Sillón giratorio,50,,,,,images/excel/sheraton_reduced_45.jpg,
-57,NOVEDADES,,Elba San Jorge,Sillón giratorio,,,,,,images/excel/sheraton_reduced_45.jpg,'=I56
+57,NOVEDADES,,Elba San Jorge,Sillón giratorio,50,,,,,images/excel/sheraton_reduced_45.jpg,'=I56
 58,NOVEDADES,SHERATON,Elba Sara,Mesa,3,,,,,images/excel/sheraton_reduced_46.jpg,
 59,NOVEDADES,SHERATON,Elba Lucía,Lámpara de pie,48,,,,,images/excel/sheraton_reduced_47.jpg,
 60,NOVEDADES,SHERATON,Elba Sara,Sillón,100,,,,,images/excel/sheraton_reduced_48.jpg,
-61,NOVEDADES,SHERATON,Elba Sara,Sillón,,,,,,images/excel/sheraton_reduced_48.jpg,'=I60
+61,NOVEDADES,SHERATON,Elba Sara,Sillón,100,,,,,images/excel/sheraton_reduced_48.jpg,'=I60
 63,MOBILIARIO RESIDUAL OTROS HOTELES,PALACE,Elba San Jorge,Mesa exterior,13,,,,,images/excel/sheraton_reduced_49.jpg,
 64,MOBILIARIO RESIDUAL OTROS HOTELES,PALACE,Elba San Jorge,Silla exterior,40,,,,,images/excel/sheraton_reduced_50.jpg,
 66,CUADROS SHERATON,SHERATON,Elba Lucia,Cuadros,200,,,,,images/excel/sheraton_reduced_51.jpg,

@@ -78,13 +78,24 @@ def extract(path):
         media = [p for p in z.namelist() if p.startswith('xl/media/')]
         used = {r['image'] for r in records if r['image']}
         assert len(used) == len(media), 'An image was not associated with a row'
+    # User clarified that these repeated rows share the previous row's inventory.
+    by_row = {r['source']['row']: r for r in records}
+    overrides = json.loads((ROOT/'scripts/quantity-overrides.json').read_text())
+    for child, parent in overrides.items():
+        repeated, original = by_row[int(child)], by_row[parent]
+        assert repeated['name'].casefold() == original['name'].casefold()
+        assert isinstance(original['quantity'], int)
+        repeated['quantity'] = original['quantity']
+        repeated['source']['quantityInheritedFrom'] = parent
+        repeated['inventoryGroup'] = original['inventoryGroup'] = original['id']
+    totals = {r.get('inventoryGroup',r['id']):r['quantity'] for r in records}
     summary = {'file':Path(path).name,'sha256':hashlib.sha256(Path(path).read_bytes()).hexdigest(),
       'records':len(records),'uniqueImages':len(used),'recordsWithImages':sum(bool(r['image']) for r in records),
-      'knownUnits':sum(r['quantity'] or 0 for r in records),'unknownQuantities':[r['source']['row'] for r in records if r['quantity'] is None],
+      'knownUnits':sum(n or 0 for n in totals.values()),'displayedRowUnits':sum(r['quantity'] or 0 for r in records),'unknownQuantities':[r['source']['row'] for r in records if r['quantity'] is None],
       'missingDestinations':[r['source']['row'] for r in records if not r['location']],
       'missingOrigins':[r['source']['row'] for r in records if not r['origin']],
       'missingImages':[r['source']['row'] for r in records if not r['image']],
-      'notes':['No se fusionan filas con nombres repetidos.', 'Fórmulas que apuntan a celdas vacías: cantidad desconocida; se conserva fórmula y valor en caché.', 'Elba Lucia se muestra como Elba Lucía; el texto original se conserva en source.cells.', 'Enviadas, recibidas y roturas vacías se conservan como null.', 'No se infiere estado de conservación.']}
+      'notes':['No se fusionan filas con nombres repetidos.', 'Cantidades repetidas completadas con la fila anterior según aclaración del usuario. Las partidas compartidas solo se cuentan una vez en los totales. Se conservan fórmula y valor en caché originales.', 'Elba Lucia se muestra como Elba Lucía; el texto original se conserva en source.cells.', 'Enviadas, recibidas y roturas vacías se conservan como null.', 'No se infiere estado de conservación.']}
     (ROOT/'src/data/inventory.json').write_text(json.dumps(records,ensure_ascii=False,indent=2)+'\n')
     (ROOT/'src/data/import-summary.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2)+'\n')
     out=io.StringIO(); writer=csv.writer(out, lineterminator="\n"); writer.writerow(['Fila Excel','Sección','Hotel origen','Hotel destino','Artículo','Inventariadas','Enviadas','Recibidas','Rotura','Comentario','Imagen','Fórmula inventariadas'])

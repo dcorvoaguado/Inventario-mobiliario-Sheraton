@@ -1,6 +1,6 @@
 # Edición de la distribución
 
-La tabla principal es el único lugar donde se actualizan los registros existentes. Foto, nombre, origen e inventario original se muestran sin controles de edición. El botón de añadir permite crear un registro nuevo; no modifica los existentes. Se ha retirado el formulario general de edición y la eliminación desde la tabla para conservar las filas de referencia.
+La tabla principal es el único lugar donde se actualizan los registros existentes. Foto, nombre, origen e inventario original se muestran sin controles de edición. El botón de añadir permite crear un registro nuevo; no modifica los existentes. Se ha retirado el formulario general de edición. El borrado por selección restablece los registros del Excel y elimina los registros creados posteriormente, con confirmación.
 
 ## Campos y responsable seleccionado
 
@@ -27,3 +27,17 @@ Si una versión anterior había modificado las unidades de una fila del Excel, s
 ## Alcance de los controles
 
 «Responsable de esta revisión» es una selección de trabajo, no un inicio de sesión. Cualquiera que abra la aplicación puede cambiar esa selección. Los textos «Comprobado por» reflejan el hotel seleccionado y no constituyen una identidad autenticada. Los cambios se guardan solo en el navegador actual; no hay sincronización entre hoteles. Para imponer permisos reales y compartir el mismo inventario hace falta añadir cuentas, autorización en un servidor y una base de datos común.
+
+## Fotos en el alta
+
+En «Nuevo mobiliario» se puede seleccionar una foto JPG, PNG o WebP desde la galería del dispositivo o desde el equipo, o reutilizar una foto del inventario. Se muestra una vista previa, se permite retirarla antes de guardar y el botón de alta espera a que se prepare. El archivo original no se modifica; se genera una copia JPEG ligera, con fondo blanco para transparencias, que se guarda con el registro en el navegador. Tras el alta, la foto queda bloqueada como las fotos del Excel. También se incluye en los PDF y en la copia JSON. Los fallos de lectura o de cuota de almacenamiento se notifican sin sobrescribir los registros anteriores.
+
+## Selección y borrado
+
+Las casillas de la tabla y de la galería permiten seleccionar registros concretos. «Seleccionar todo el mobiliario» abarca todos los registros, incluidos los ocultos por filtros. El contador avisa si hay seleccionados fuera del filtro.
+
+Con Hotel Sheraton seleccionado, «Borrar datos seleccionados» muestra «Estás a punto de borrar todos los datos, ¿estás seguro?», el número de afectados y el alcance exacto. «No» o Escape cancelan sin cambios. «Sí» restablece los registros del Excel a su estado base, conservando fotos, nombres, origen, inventario y las cantidades repetidas aclaradas; restablece destinos y retira correcciones, envíos, recepciones, roturas y comentarios añadidos. Los registros nuevos seleccionados se eliminan junto con sus fotos. Los no seleccionados se conservan. La operación se aplica a los datos de este navegador.
+
+## Búsqueda flexible
+
+La búsqueda ignora mayúsculas, tildes, espacios y signos de puntuación tanto en los datos como en la consulta. «SOFA», «sofá» y «S.O.F.A.» encuentran los mismos registros. Se aplica a nombre, categoría, origen y destino sin modificar el texto que se muestra o se exporta.

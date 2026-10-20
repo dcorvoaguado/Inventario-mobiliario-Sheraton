@@ -14,7 +14,9 @@ test("editing fields fit desktop and narrow screens without horizontal scrolling
       return {
         document: document.documentElement.scrollWidth <= innerWidth,
         table: table.scrollWidth <= table.clientWidth + 1,
-        fields: [...first.querySelectorAll("input,select")].every((e) => {
+        fields: [
+          ...first.querySelectorAll('input:not([type="checkbox"]),select'),
+        ].every((e) => {
           const b = e.getBoundingClientRect();
           return b.left >= 0 && b.right <= innerWidth && b.width >= 30;
         }),

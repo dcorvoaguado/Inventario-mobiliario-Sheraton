@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { readFile } from "node:fs/promises";
 import inventory from "../src/data/inventory.json" with { type: "json" };
-test("loads every source row, preserves unknown quantities and shows the matching photograph", async ({
+test("loads every record, applies repeated quantities and shows the matching photograph", async ({
   page,
   request,
 }) => {
@@ -10,17 +10,15 @@ test("loads every source row, preserves unknown quantities and shows the matchin
   await expect(page.getByRole("region", { name: "Resumen" })).toContainText(
     "6250",
   );
-  const row = page.locator("tbody tr").filter({ hasText: "Fila 22" });
-  await expect(row.locator("td").nth(3).locator("strong")).toHaveText(
-    "Pendiente",
-  );
+  const row = page.locator('tbody tr[data-record-id="excel-row-22"]');
+  await expect(row.locator("td").nth(3).locator("strong")).toHaveText("60");
   await page
     .getByRole("button", {
-      name: "Ver foto de Sillón tapizado · fila 2",
+      name: "Ver foto de Sillón tapizado",
       exact: true,
     })
     .click();
-  await expect(page.getByRole("dialog")).toContainText("fila 2");
+  await expect(page.getByRole("dialog")).not.toContainText("fila");
   await expect(page.getByRole("dialog").getByRole("img")).toHaveAttribute(
     "src",
     "/images/excel/sheraton_reduced_0.jpg",
@@ -39,17 +37,15 @@ test("edits transfer quantities without replacing unknowns with zero", async ({
   page,
 }) => {
   await page.goto("/");
-  const row = page.locator("tbody tr").filter({ hasText: "Fila 22" });
+  const row = page.locator('tbody tr[data-record-id="excel-row-22"]');
   await expect(
     row.getByLabel("Inventario corregido", { exact: true }),
   ).toHaveValue("");
-  await expect(row).toContainText("=I21");
+  await expect(row).not.toContainText("=I21");
   await row.getByLabel("Enviadas", { exact: true }).fill("0");
   await row.getByLabel("Enviadas", { exact: true }).press("Enter");
   await page.reload();
-  await expect(row.locator("td").nth(3).locator("strong")).toHaveText(
-    "Pendiente",
-  );
+  await expect(row.locator("td").nth(3).locator("strong")).toHaveText("60");
   await expect(row.getByLabel("Enviadas", { exact: true })).toHaveValue("0");
   await expect(row.getByLabel("Recibidas", { exact: true })).toHaveValue("");
   const d = page.waitForEvent("download");
@@ -58,7 +54,7 @@ test("edits transfer quantities without replacing unknowns with zero", async ({
   const path = await download.path();
   const data = JSON.parse(await readFile(path!, "utf8"));
   const item = data.find((i: { id: string }) => i.id === "excel-row-22");
-  expect(item.quantity).toBeNull();
+  expect(item.quantity).toBe(60);
   expect(item.sent).toBe(0);
   expect(item.received).toBeNull();
   expect(item.source.formulas.F).toBe("=I21");

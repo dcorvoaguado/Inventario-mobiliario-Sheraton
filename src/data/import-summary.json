@@ -5,12 +5,8 @@
   "uniqueImages": 63,
   "recordsWithImages": 70,
   "knownUnits": 6250,
-  "unknownQuantities": [
-    22,
-    38,
-    57,
-    61
-  ],
+  "displayedRowUnits": 6720,
+  "unknownQuantities": [],
   "missingDestinations": [
     5,
     13,
@@ -37,7 +33,7 @@
   ],
   "notes": [
     "No se fusionan filas con nombres repetidos.",
-    "Fórmulas que apuntan a celdas vacías: cantidad desconocida; se conserva fórmula y valor en caché.",
+    "Cantidades repetidas completadas con la fila anterior según aclaración del usuario. Las partidas compartidas solo se cuentan una vez en los totales. Se conservan fórmula y valor en caché originales.",
     "Elba Lucia se muestra como Elba Lucía; el texto original se conserva en source.cells.",
     "Enviadas, recibidas y roturas vacías se conservan como null.",
     "No se infiere estado de conservación."

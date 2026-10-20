@@ -6,6 +6,7 @@ export type Item = {
   location: string;
   category: string;
   quantity: number | null;
+  inventoryGroup?: string;
   sent: number | null;
   received: number | null;
   recycled: number | null;
@@ -80,6 +81,7 @@ export function read(): Item[] {
     return {
       ...i,
       quantity: original ? original.quantity : i.quantity,
+      inventoryGroup: original?.inventoryGroup ?? i.inventoryGroup,
       correctedQuantity:
         i.correctedQuantity !== undefined
           ? i.correctedQuantity
@@ -111,7 +113,10 @@ export const empty = (): Item => ({
   condition: "Sin evaluar",
   notes: "",
 });
-export const imageUrl = (image: string) => import.meta.env.BASE_URL + image;
+export const imageUrl = (image: string) =>
+  image.startsWith("data:image/jpeg;base64,")
+    ? image
+    : import.meta.env.BASE_URL + image;
 export const displayCount = (value: number | null) =>
   value === null ? "Pendiente" : value.toLocaleString("es-ES");
 
@@ -131,4 +136,20 @@ export function transferStatus(item: Item) {
 }
 export function effectiveQuantity(item: Item) {
   return item.correctedQuantity ?? item.quantity;
+}
+
+export function inventoryTotal(items: Item[]) {
+  return [
+    ...new Map(
+      items.map((i) => [i.inventoryGroup ?? i.id, i.quantity]),
+    ).values(),
+  ].reduce<number>((sum, quantity) => sum + (quantity ?? 0), 0);
+}
+
+export function normalizeSearch(value: string) {
+  return value
+    .normalize("NFD")
+    .toLocaleLowerCase("es")
+    .replace(/\p{M}/gu, "")
+    .replace(/[^\p{L}\p{N}]/gu, "");
 }
