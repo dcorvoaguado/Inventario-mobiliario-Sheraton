@@ -54,7 +54,7 @@ test("delete cancels safely, persists removed rows and recovers all saved data",
   await expect(sent).toHaveValue("35");
   await expect(row(page).getByRole("img")).toHaveAttribute(
     "src",
-    /sheraton_reduced_0.jpg/,
+    /^data:image\/jpeg;base64,/,
   );
   await page.reload();
   await expect(

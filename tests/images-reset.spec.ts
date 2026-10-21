@@ -1,3 +1,4 @@
+import { readFile } from "node:fs/promises";
 import { test, expect } from "@playwright/test";
 import inventory from "../src/data/inventory.json" with { type: "json" };
 async function seeded(page: import("@playwright/test").Page) {
@@ -90,7 +91,13 @@ test("invalid images show an error and an existing inventory photo can be reused
     .click();
   await expect(
     page.getByRole("img", { name: "Vista previa del nuevo mobiliario" }),
-  ).toHaveAttribute("src", /\/images\/excel\/sheraton_reduced_0\.jpg$/);
+  ).toHaveAttribute(
+    "src",
+    "data:image/jpeg;base64," +
+      (await readFile("public/images/excel/sheraton_reduced_0.jpg")).toString(
+        "base64",
+      ),
+  );
   await page.getByRole("button", { name: "Quitar foto" }).click();
   await expect(
     page.getByRole("img", { name: "Vista previa del nuevo mobiliario" }),
@@ -126,7 +133,13 @@ test("confirmation cancels safely and resetting selected records preserves unsel
   await expect(first.getByLabel("Enviadas", { exact: true })).toHaveValue("");
   await expect(
     first.locator("xpath=ancestor::tbody").getByRole("img"),
-  ).toHaveAttribute("src", /\/images\/excel\/sheraton_reduced_0\.jpg$/);
+  ).toHaveAttribute(
+    "src",
+    "data:image/jpeg;base64," +
+      (await readFile("public/images/excel/sheraton_reduced_0.jpg")).toString(
+        "base64",
+      ),
+  );
   await expect(
     page
       .locator('[data-record-id="excel-row-3"]')

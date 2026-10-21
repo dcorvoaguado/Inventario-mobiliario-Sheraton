@@ -31,3 +31,9 @@ La cabecera usa `public/images/brand/sheraton-reference.png`, una adaptación gr
 ## Fotografía de mobiliario
 
 En escritorio la zona de fotografía ocupa toda la altura de la fila, con ancho adaptable de 72 a 120 px y proporción conservada (`object-fit: contain`). El control de selección y el nombre se mantienen junto a la foto. En pantallas estrechas se usa una fotografía de hasta 115 × 130 px dentro de la ficha. La validación visual comprueba el alto de imagen respecto a la fila y que no haya desplazamiento horizontal entre 390 y 1440 px.
+
+## Fotos del Excel incluidas en la aplicación
+
+Las 63 fotografías originales del Excel se incluyen ahora como datos JPEG dentro de un módulo JavaScript independiente, generado por el plugin de Vite desde `public/images/excel`. `imageUrl` reconoce sus nombres incluso si un registro antiguo conserva un enlace absoluto o con otra ruta. Así, la tabla, galería, detalle, recuperación y PDF no dependen de que GitHub sirva los archivos JPEG por separado. Las fotos subidas por el usuario mantienen sus datos originales. Esta resolución no modifica localStorage ni los registros del inventario.
+
+La compilación verifica que se incluyan las 63 fotos. Las pruebas de publicación hacen devolver 404 a todas las peticiones de JPEG y comprueban que todas las imágenes se decodifican y que el PDF se genera sin pedir esos archivos. El módulo de fotografías supone aproximadamente 3,36 MB comprimidos en la primera carga y se puede almacenar en caché por su nombre con hash; se conserva separado del código principal.

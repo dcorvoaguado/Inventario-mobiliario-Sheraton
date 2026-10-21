@@ -1,4 +1,5 @@
 import imported from "./data/inventory.json";
+import bundledPhotos from "virtual:inventory-photos";
 export type Item = {
   id: string;
   name: string;
@@ -140,7 +141,10 @@ export const empty = (): Item => ({
   notes: "",
 });
 export function imageUrl(image: string) {
-  if (/^(data:image\/|blob:|https?:\/\/)/i.test(image)) return image;
+  if (/^(data:image\/|blob:)/i.test(image)) return image;
+  const filename = image.split(/[?#]/, 1)[0].split("/").pop() ?? "";
+  if (bundledPhotos[filename]) return bundledPhotos[filename];
+  if (/^https?:\/\//i.test(image)) return image;
   const relative = image.replace(/^(?:\.\/|\/)+/, "");
   return new URL(relative, new URL(import.meta.env.BASE_URL, document.baseURI))
     .href;
