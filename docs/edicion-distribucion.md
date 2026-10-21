@@ -92,3 +92,9 @@ La galería muestra una tarjeta por grupo, con los destinos del producto y acces
 ## Vista lineal
 
 La tabla vuelve a mostrar el mobiliario y sus datos en una misma fila, sin cabeceras independientes por producto. Cada destino conserva foto, nombre, origen, inventario original, unidades asignadas, total real disponible, envío, roturas, recepción y estado en horizontal. Los totales repetidos se identifican como compartidos. Se mantienen la ventana única de reparto, las validaciones locales, las acciones simplificadas y todos los datos guardados. En pantallas estrechas cada fila se reorganiza como ficha sin desplazamiento horizontal.
+
+## Disponibilidad encima del destino
+
+Todas las filas muestran encima del nombre del hotel un aviso compartido para el mueble completo. «DISPONIBLE (N unidades disponibles)» aparece en verde pastel si queda inventario sin reservar; «NO DISPONIBLE (Hotel asignado)» aparece en rojo pastel si se ha asignado todo. También se muestra en los repartos duplicados y en la fila pendiente de asignar. Los filtros no alteran el cálculo: se suman todos los destinos del producto y se usa el total real disponible, o el original cuando no hay corrección. Los movimientos antiguos sin cantidad asignada cuentan como unidades comprometidas para no anunciar como libres unidades ya enviadas o recibidas. No se restan dos veces los envíos de unidades ya asignadas.
+
+Con inventario pendiente o correcciones contradictorias se muestra una advertencia neutra para confirmar el total. Si el total es cero y no hay reservas, el aviso rojo dice «Sin unidades». El aviso no modifica el reparto ni el estado de envío/recepción.

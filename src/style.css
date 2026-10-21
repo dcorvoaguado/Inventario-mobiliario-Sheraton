@@ -1734,3 +1734,30 @@ h1 {
     object-fit: contain;
   }
 }
+.availability-label {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  margin-bottom: 8px;
+  padding: 6px 8px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.availability-yes {
+  background: #e5f0e4;
+  color: #43654a;
+  border: 1px solid #cddfcb;
+}
+.availability-no {
+  background: #f6e3e0;
+  color: #8b4943;
+  border: 1px solid #e7c9c4;
+}
+.availability-pending {
+  background: #eee6db;
+  color: #6c665f;
+  border: 1px solid #ded8ce;
+}

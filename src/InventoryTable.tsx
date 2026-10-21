@@ -89,6 +89,26 @@ export default function InventoryTable({
           ).length;
           const remaining =
             a.limit === null ? null : Math.max(0, a.limit - assigned);
+          const committed = named.reduce(
+            (sum, row) =>
+              sum +
+              Math.max(
+                row.allocatedQuantity ?? 0,
+                row.sent ?? 0,
+                row.received ?? 0,
+              ),
+            0,
+          );
+          const available =
+            a.limit === null || a.conflict
+              ? null
+              : Math.max(0, a.limit - committed);
+          const availabilityText =
+            available === null
+              ? "DISPONIBILIDAD PENDIENTE (Confirmar inventario)"
+              : available > 0
+                ? `DISPONIBLE (${displayCount(available)} ${available === 1 ? "unidad disponible" : "unidades disponibles"})`
+                : `NO DISPONIBLE (${a.limit === 0 && committed === 0 ? "Sin unidades" : "Hotel asignado"})`;
           return (
             <tbody key={productKey(base)} data-product-group={productKey(base)}>
               {visibleRows.map((i) => {
@@ -153,6 +173,11 @@ export default function InventoryTable({
                       {i.origin || "Pendiente"}
                     </td>
                     <td className="block-base" data-label="Destino">
+                      <span
+                        className={`availability-label ${available === null ? "availability-pending" : available > 0 ? "availability-yes" : "availability-no"}`}
+                      >
+                        {availabilityText}
+                      </span>
                       <strong>{i.location || "Sin hotel asignado"}</strong>
                       <button
                         className="link linear-distribute"
