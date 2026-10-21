@@ -44,7 +44,7 @@ test("uploads a device photo, preserves it on reload and exports it to PDF", asy
   ).toHaveAttribute("src", /^data:image\/jpeg;base64,/);
   await page.getByLabel("Nombre", { exact: true }).fill("Nuevo con foto");
   await page
-    .getByRole("combobox", { name: "Ubicación", exact: true })
+    .getByRole("combobox", { name: "Hotel destino", exact: true })
     .selectOption("Elba Sara");
   await page.getByRole("button", { name: "Guardar mobiliario" }).click();
   await page.reload();

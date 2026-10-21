@@ -9,6 +9,7 @@ import {
   imageUrl,
   displayCount,
   destinations,
+  hotels,
   sender,
   transferStatus,
   effectiveQuantity,
@@ -221,9 +222,12 @@ function App() {
     if (
       !draft.name.trim() ||
       !validCount(draft.quantity) ||
-      !destinations.includes(draft.location)
+      !hotels.includes(draft.origin) ||
+      !hotels.includes(draft.location)
     ) {
-      setError("Completa nombre, destino y una cantidad entera válida.");
+      setError(
+        "Completa nombre, hotel origen, hotel destino y una cantidad entera válida.",
+      );
       return;
     }
     if (
@@ -549,7 +553,7 @@ function App() {
                 value={actor}
                 onChange={(e) => setActor(e.target.value)}
               >
-                {[sender, ...destinations].map((h) => (
+                {hotels.map((h) => (
                   <option key={h}>{h}</option>
                 ))}
               </select>
@@ -1005,16 +1009,22 @@ function App() {
             <div className="form-grid">
               <label>
                 Hotel origen
-                <input
-                  maxLength={160}
+                <select
                   value={draft.origin}
+                  required
                   onChange={(e) =>
                     setDraft({ ...draft, origin: e.target.value })
                   }
-                />
+                >
+                  {hotels.map((hotel) => (
+                    <option key={hotel} value={hotel}>
+                      {hotel}
+                    </option>
+                  ))}
+                </select>
               </label>
               <label>
-                Ubicación
+                Hotel destino
                 <select
                   value={draft.location}
                   required
@@ -1022,40 +1032,15 @@ function App() {
                     setDraft({ ...draft, location: e.target.value })
                   }
                 >
-                  <option value="">Selecciona destino</option>
-                  {destinations.map((h) => (
-                    <option key={h}>{h}</option>
+                  <option value="">Selecciona hotel destino</option>
+                  {hotels.map((hotel) => (
+                    <option key={hotel} value={hotel}>
+                      {hotel}
+                    </option>
                   ))}
                 </select>
               </label>
             </div>
-            <label>
-              Sección / categoría
-              <input
-                list="categories"
-                required
-                value={draft.category}
-                onChange={(e) =>
-                  setDraft({ ...draft, category: e.target.value })
-                }
-              />
-              <datalist id="categories">
-                {[
-                  ...new Set([
-                    ...items.map((i) => i.category),
-                    "Asientos",
-                    "Mesas",
-                    "Almacenaje",
-                    "Camas",
-                    "Iluminación",
-                    "Decoración",
-                    "Otros",
-                  ]),
-                ].map((c) => (
-                  <option key={c} value={c} />
-                ))}
-              </datalist>
-            </label>
             <div className="form-grid">
               {numbers.map(([field, label]) => (
                 <label key={field}>

@@ -130,9 +130,9 @@ export function read(): Item[] {
 export const empty = (): Item => ({
   id: crypto.randomUUID(),
   name: "",
-  origin: "",
+  origin: "Hotel Sheraton",
   location: "",
-  category: "Asientos",
+  category: "Otros",
   quantity: 1,
   sent: null,
   received: null,
@@ -152,14 +152,17 @@ export function imageUrl(image: string) {
 export const displayCount = (value: number | null) =>
   value === null ? "Pendiente" : value.toLocaleString("es-ES");
 
+export const sender = "Hotel Sheraton";
 export const destinations = [
   "Elba Carlota",
   "Elba Sara",
   "Elba Lucía",
   "Elba Palace",
   "Elba San Jorge",
+  "Elba Vecindario",
+  sender,
 ];
-export const sender = "Hotel Sheraton";
+export const hotels = [...new Set([sender, ...destinations])];
 export function transferStatus(item: Item) {
   return item.received !== null
     ? "Recibido"

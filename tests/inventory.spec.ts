@@ -11,7 +11,7 @@ test("new records keep immutable identity, support search and export transfer fi
   await page.getByRole("button", { name: "Añadir mobiliario" }).click();
   await page.getByLabel("Nombre", { exact: true }).fill("Sillón lobby");
   await page
-    .getByRole("combobox", { name: "Ubicación", exact: true })
+    .getByRole("combobox", { name: "Hotel destino", exact: true })
     .selectOption("Elba Sara");
   await page.getByLabel("Unidades", { exact: true }).fill("4");
   await page.getByRole("button", { name: "Guardar mobiliario" }).click();
