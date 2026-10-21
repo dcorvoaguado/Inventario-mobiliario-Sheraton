@@ -103,15 +103,24 @@ export default function InventoryTable({
             a.limit === null || a.conflict
               ? null
               : Math.max(0, a.limit - committed);
-          const availabilityText =
-            available === null
-              ? "DISPONIBILIDAD PENDIENTE (Confirmar inventario)"
-              : available > 0
-                ? `DISPONIBLE (${displayCount(available)} ${available === 1 ? "unidad disponible" : "unidades disponibles"})`
-                : `NO DISPONIBLE (${a.limit === 0 && committed === 0 ? "Sin unidades" : "Hotel asignado"})`;
           return (
             <tbody key={productKey(base)} data-product-group={productKey(base)}>
               {visibleRows.map((i) => {
+                const reserved =
+                  Boolean(i.location) &&
+                  Math.max(
+                    i.allocatedQuantity ?? 0,
+                    i.sent ?? 0,
+                    i.received ?? 0,
+                  ) > 0;
+                const rowAvailable = reserved ? 0 : available;
+                const availabilityText = reserved
+                  ? "NO DISPONIBLE (Hotel asignado)"
+                  : available === null
+                    ? "DISPONIBILIDAD PENDIENTE (Confirmar inventario)"
+                    : available > 0
+                      ? `DISPONIBLE (${displayCount(available)} ${available === 1 ? "unidad disponible" : "unidades disponibles"})`
+                      : `NO DISPONIBLE (${a.limit === 0 && committed === 0 ? "Sin unidades" : "Hotel asignado"})`;
                 const receiverReason = !i.location
                   ? "Asigna un hotel para registrar la recepción."
                   : actor !== i.location
@@ -174,11 +183,20 @@ export default function InventoryTable({
                     </td>
                     <td className="block-base" data-label="Destino">
                       <span
-                        className={`availability-label ${available === null ? "availability-pending" : available > 0 ? "availability-yes" : "availability-no"}`}
+                        className={`availability-label ${rowAvailable === null ? "availability-pending" : rowAvailable > 0 ? "availability-yes" : "availability-no"}`}
                       >
                         {availabilityText}
                       </span>
                       <strong>{i.location || "Sin hotel asignado"}</strong>
+                      {reserved && available !== null && available > 0 && (
+                        <small>
+                          Puedes añadir hasta {displayCount(available)}{" "}
+                          {available === 1
+                            ? "unidad sin asignar"
+                            : "unidades sin asignar"}
+                          .
+                        </small>
+                      )}
                       <button
                         className="link linear-distribute"
                         disabled={loadError || actor !== sender}

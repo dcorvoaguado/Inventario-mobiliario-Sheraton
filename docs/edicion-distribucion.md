@@ -95,10 +95,14 @@ La tabla vuelve a mostrar el mobiliario y sus datos en una misma fila, sin cabec
 
 ## Disponibilidad encima del destino
 
-Todas las filas muestran encima del nombre del hotel un aviso compartido para el mueble completo. «DISPONIBLE (N unidades disponibles)» aparece en verde pastel si queda inventario sin reservar; «NO DISPONIBLE (Hotel asignado)» aparece en rojo pastel si se ha asignado todo. También se muestra en los repartos duplicados y en la fila pendiente de asignar. Los filtros no alteran el cálculo: se suman todos los destinos del producto y se usa el total real disponible, o el original cuando no hay corrección. Los movimientos antiguos sin cantidad asignada cuentan como unidades comprometidas para no anunciar como libres unidades ya enviadas o recibidas. No se restan dos veces los envíos de unidades ya asignadas.
+Todas las filas muestran un aviso encima del destino. Las filas con hotel y unidades reservadas son «NO DISPONIBLE (Hotel asignado)», en rojo pastel. La fila «Sin hotel asignado» muestra «DISPONIBLE (N unidades disponibles)», en verde pastel, mientras queden unidades. El aviso rojo no impide aumentar la reserva de un hotel: el máximo adicional es el remanente compartido de todos los destinos del mismo mueble. Los filtros no alteran el cálculo. Los movimientos antiguos sin cantidad asignada también se consideran comprometidos para no anunciar como libres unidades ya enviadas o recibidas.
 
 Con inventario pendiente o correcciones contradictorias se muestra una advertencia neutra para confirmar el total. Si el total es cero y no hay reservas, el aviso rojo dice «Sin unidades». El aviso no modifica el reparto ni el estado de envío/recepción.
 
 ## Alta con hoteles de origen y destino
 
 El formulario «Añadir mobiliario» ya no muestra «Sección / categoría» ni «Ubicación». Ofrece «Hotel origen» y «Hotel destino» como desplegables con Hotel Sheraton, Elba Carlota, Elba Sara, Elba Lucía, Elba Palace, Elba San Jorge y Elba Vecindario. El origen propone Hotel Sheraton y se puede cambiar; el destino debe seleccionarse. Se validan ambos hoteles al guardar. Los hoteles también están disponibles en el reparto y en el selector de hotel que registra, sin duplicar Sheraton. Las categorías de registros existentes se conservan; los nuevos guardan «Otros» internamente por compatibilidad, sin pedir ese campo al usuario.
+
+### Disponibilidad por fila de reparto
+
+La disponibilidad se distingue por fila: una fila con hotel y unidades ya asignadas, enviadas o recibidas muestra «NO DISPONIBLE (Hotel asignado)» en rojo pastel aunque quede remanente del producto. Las unidades de «Sin hotel asignado» muestran «DISPONIBLE (N unidades disponibles)» en verde pastel. El aviso rojo no bloquea la edición de unidades asignadas. Si quedan unidades libres, la fila reservada indica cuántas puede añadir desde el remanente. Aumentar su cantidad reduce automáticamente la fila sin hotel; agotarla elimina esa fila; reducir la reserva vuelve a generar el remanente. Los límites consideran todos los hoteles incluso bajo filtros.
