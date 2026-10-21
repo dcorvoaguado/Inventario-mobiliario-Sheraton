@@ -90,7 +90,7 @@ test("invalid images show an error and an existing inventory photo can be reused
     .click();
   await expect(
     page.getByRole("img", { name: "Vista previa del nuevo mobiliario" }),
-  ).toHaveAttribute("src", "/images/excel/sheraton_reduced_0.jpg");
+  ).toHaveAttribute("src", /\/images\/excel\/sheraton_reduced_0\.jpg$/);
   await page.getByRole("button", { name: "Quitar foto" }).click();
   await expect(
     page.getByRole("img", { name: "Vista previa del nuevo mobiliario" }),
@@ -117,7 +117,7 @@ test("confirmation cancels safely and resetting selected records preserves unsel
   await page.getByRole("button", { name: "Restablecer datos" }).click();
   await page.getByRole("button", { name: "Sí", exact: true }).click();
   await expect(page.locator("tbody tr[data-record-id]")).toHaveCount(73);
-  await expect(first.locator('td[data-label="Destino"]')).toHaveText(
+  await expect(first.locator('td[data-label="Destino"] strong')).toHaveText(
     "Elba Carlota",
   );
   await expect(
@@ -126,7 +126,7 @@ test("confirmation cancels safely and resetting selected records preserves unsel
   await expect(first.getByLabel("Enviadas", { exact: true })).toHaveValue("");
   await expect(
     first.locator("xpath=ancestor::tbody").getByRole("img"),
-  ).toHaveAttribute("src", "/images/excel/sheraton_reduced_0.jpg");
+  ).toHaveAttribute("src", /\/images\/excel\/sheraton_reduced_0\.jpg$/);
   await expect(
     page
       .locator('[data-record-id="excel-row-3"]')

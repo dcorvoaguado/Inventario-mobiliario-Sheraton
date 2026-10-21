@@ -139,10 +139,12 @@ export const empty = (): Item => ({
   condition: "Sin evaluar",
   notes: "",
 });
-export const imageUrl = (image: string) =>
-  image.startsWith("data:image/jpeg;base64,")
-    ? image
-    : import.meta.env.BASE_URL + image;
+export function imageUrl(image: string) {
+  if (/^(data:image\/|blob:|https?:\/\/)/i.test(image)) return image;
+  const relative = image.replace(/^(?:\.\/|\/)+/, "");
+  return new URL(relative, new URL(import.meta.env.BASE_URL, document.baseURI))
+    .href;
+}
 export const displayCount = (value: number | null) =>
   value === null ? "Pendiente" : value.toLocaleString("es-ES");
 

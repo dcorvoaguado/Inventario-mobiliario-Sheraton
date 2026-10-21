@@ -20,7 +20,7 @@ test("loads every record, applies repeated quantities and shows the matching pho
   await expect(page.getByRole("dialog")).not.toContainText("fila");
   await expect(page.getByRole("dialog").getByRole("img")).toHaveAttribute(
     "src",
-    "/images/excel/sheraton_reduced_0.jpg",
+    /\/images\/excel\/sheraton_reduced_0\.jpg$/,
   );
   await page.getByRole("button", { name: "Cerrar fotografía" }).click();
   await page.getByLabel("Filtrar ubicación").selectOption("__missing");

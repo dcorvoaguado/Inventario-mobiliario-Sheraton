@@ -4,7 +4,7 @@ Estado: solicitado por el usuario; registro, titularidad y DNS aún no comprobad
 
 ## Configuración preparada
 
-La compilación de GitHub Actions usa `base_path` de `actions/configure-pages`. Con el alojamiento actual conserva la ruta del repositorio; cuando se configure y verifique un dominio propio, usará la raíz automáticamente.
+La compilación utiliza una base relativa (`./`) configurada en Vite. El mismo artefacto sirve tanto bajo `/Inventario-mobiliario-Sheraton/` como en la raíz de un dominio, sin depender de la configuración temporal de un dominio personalizado. Las fotografías se resuelven desde la ubicación real de la aplicación.
 
 ## Pasos de activación
 
@@ -16,3 +16,7 @@ La compilación de GitHub Actions usa `base_path` de `actions/configure-pages`. 
 6. Validar resolución DNS, certificado, acceso público y recuperación de datos antes de comunicar el dominio como activo.
 
 Referencias para activación: documentación de GitHub Pages «Managing a custom domain for your GitHub Pages site» y «Verifying your custom domain for GitHub Pages». Las instrucciones DNS de este archivo no representan una comprobación de que el dominio esté libre, comprado o conectado.
+
+## Recuperar el enlace gratuito
+
+El usuario ha confirmado que no ha comprado ningún dominio y prioriza recuperar la web gratuita. No se necesita registrar un dominio. Si GitHub mantiene un dominio personalizado, quitarlo desde Settings → Pages → Custom domain → Remove. La configuración remota no se puede modificar con el acceso disponible a esta sesión (API bloqueada); no confundir esta acción con cambiar archivos del repositorio. La dirección pública a recuperar es https://dcorvoaguado.github.io/Inventario-mobiliario-Sheraton/.
